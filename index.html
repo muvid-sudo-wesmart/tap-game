@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Тапалка</title>
+    <title>Тапалка с уровнями</title>
     <style>
         body {
             display: flex;
@@ -28,18 +28,37 @@
             transform: scale(1.2);
             background-color: #ff5722;
         }
+        #progress-container {
+            width: 80%;
+            height: 30px;
+            background: #ddd;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        #progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #4CAF50, #8BC34A);
+            transition: width 0.3s ease;
+        }
     </style>
 </head>
 <body>
-    <h1>Тапалка</h1>
+    <h1>Тапалка с уровнями 🚀</h1>
     <p>Нажми на кнопку, чтобы тапнуть!</p>
     <button id="tap-button" onclick="tap()">Тап!</button>
 
+    <div id="progress-container">
+        <div id="progress-bar"></div>
+    </div>
+
     <p id="counter">Тапов: 0</p>
+    <p id="level">Уровень: 1</p>
     <p id="best">Лучший результат: 0</p>
 
     <script>
-        // Сначала загружаем сохранённые значения
+        // Загружаем сохранённые значения
         let count = localStorage.getItem('currentCount');
         if (count === null) {
             count = 0;
@@ -57,27 +76,38 @@
         const button = document.getElementById('tap-button');
         const counter = document.getElementById('counter');
         const bestDisplay = document.getElementById('best');
+        const levelDisplay = document.getElementById('level');
+        const progressBar = document.getElementById('progress-bar');
 
-        counter.innerText = 'Тапов: ' + count;
-        bestDisplay.innerText = 'Лучший результат: ' + bestScore;
+        let tapsPerLevel = 50; // Сколько тапов нужно на уровень
+
+        function updateUI() {
+            counter.innerText = 'Тапов: ' + count;
+            bestDisplay.innerText = 'Лучший результат: ' + bestScore;
+            let level = Math.floor(count / tapsPerLevel) + 1;
+            levelDisplay.innerText = 'Уровень: ' + level;
+            let progress = (count % tapsPerLevel) / tapsPerLevel * 100;
+            progressBar.style.width = progress + '%';
+        }
+
+        updateUI();
 
         function tap() {
             count++;
-            counter.innerText = 'Тапов: ' + count;
-            localStorage.setItem('currentCount', count); // Сохраняем текущее количество тапов
+            localStorage.setItem('currentCount', count); // Сохраняем текущие тапы
+
+            if (count > bestScore) {
+                bestScore = count;
+                localStorage.setItem('bestScore', bestScore);
+            }
 
             button.classList.add('jump');
             setTimeout(() => {
                 button.classList.remove('jump');
             }, 200);
 
-            if (count > bestScore) {
-                bestScore = count;
-                localStorage.setItem('bestScore', bestScore);
-                bestDisplay.innerText = 'Лучший результат: ' + bestScore;
-            }
+            updateUI();
         }
     </script>
 </body>
 </html>
-
