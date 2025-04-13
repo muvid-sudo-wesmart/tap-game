@@ -22,10 +22,11 @@
             background-color: #4CAF50;
             color: white;
             border-radius: 12px;
-            transition: transform 0.2s ease;
+            transition: transform 0.2s ease, background-color 0.2s ease;
         }
         button.jump {
             transform: scale(1.2);
+            background-color: #ff5722; /* Оранжевый при нажатии */
         }
     </style>
 </head>
@@ -44,7 +45,7 @@
             count++;
             document.getElementById('counter').innerText = 'Тапов: ' + count;
 
-            // Добавляем анимацию прыжка
+            // Добавляем анимацию прыжка + мигание цветом
             button.classList.add('jump');
 
             // Убираем анимацию через 200 мс
@@ -55,3 +56,4 @@
     </script>
 </body>
 </html>
+
