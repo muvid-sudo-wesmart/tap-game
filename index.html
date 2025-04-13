@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Тапалка</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        button {
+            padding: 20px 40px;
+            font-size: 24px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Тапалка</h1>
+    <p>Нажми на кнопку, чтобы тапнуть!</p>
+    <button onclick="tap()">Тап!</button>
+
+    <p id="counter">Тапов: 0</p>
+
+    <script>
+        let count = 0;
+        function tap() {
+            count++;
+            document.getElementById('counter').innerText = 'Тапов: ' + count;
+        }
+    </script>
+</body>
+</html>
