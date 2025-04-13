@@ -39,8 +39,20 @@
     <p id="best">Лучший результат: 0</p>
 
     <script>
-        let count = parseInt(localStorage.getItem('currentCount')) || 0; // Загружаем текущее количество тапов
-        let bestScore = parseInt(localStorage.getItem('bestScore')) || 0; // Загружаем лучший результат
+        // Сначала загружаем сохранённые значения
+        let count = localStorage.getItem('currentCount');
+        if (count === null) {
+            count = 0;
+        } else {
+            count = parseInt(count);
+        }
+
+        let bestScore = localStorage.getItem('bestScore');
+        if (bestScore === null) {
+            bestScore = 0;
+        } else {
+            bestScore = parseInt(bestScore);
+        }
 
         const button = document.getElementById('tap-button');
         const counter = document.getElementById('counter');
@@ -68,3 +80,4 @@
     </script>
 </body>
 </html>
+
