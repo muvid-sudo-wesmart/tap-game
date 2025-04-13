@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Тапалка!</title>
+    <style>
+        body {
+            text-align: center;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin-top: 50px;
+        }
+        #counter {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+        button {
+            font-size: 24px;
+            padding: 20px 40px;
+            border: none;
+            border-radius: 10px;
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="counter">0</div>
+    <button onclick="tap()">Тап!</button>
+
+    <script>
+        let count = 0;
+
+        function tap() {
+            count++;
+            document.getElementById('counter').innerText = count;
+        }
+    </script>
+
+</body>
+</html>
