@@ -26,7 +26,7 @@
         }
         button.jump {
             transform: scale(1.2);
-            background-color: #ff5722; /* оранжевый при нажатии */
+            background-color: #ff5722;
         }
     </style>
 </head>
@@ -39,26 +39,26 @@
     <p id="best">Лучший результат: 0</p>
 
     <script>
-        let count = 0;
+        let count = parseInt(localStorage.getItem('currentCount')) || 0; // Загружаем текущее количество тапов
+        let bestScore = parseInt(localStorage.getItem('bestScore')) || 0; // Загружаем лучший результат
+
         const button = document.getElementById('tap-button');
         const counter = document.getElementById('counter');
         const bestDisplay = document.getElementById('best');
 
-        // Загружаем лучший результат из браузера
-        let bestScore = localStorage.getItem('bestScore') || 0;
+        counter.innerText = 'Тапов: ' + count;
         bestDisplay.innerText = 'Лучший результат: ' + bestScore;
 
         function tap() {
             count++;
             counter.innerText = 'Тапов: ' + count;
+            localStorage.setItem('currentCount', count); // Сохраняем текущее количество тапов
 
-            // Анимация
             button.classList.add('jump');
             setTimeout(() => {
                 button.classList.remove('jump');
             }, 200);
 
-            // Проверяем лучший результат
             if (count > bestScore) {
                 bestScore = count;
                 localStorage.setItem('bestScore', bestScore);
@@ -68,4 +68,3 @@
     </script>
 </body>
 </html>
-
