@@ -72,61 +72,122 @@
     <canvas id="fireworks"></canvas>
 
     <script>
-        // --- Переменные ---
-        let count = parseInt(localStorage.getItem('currentCount')) || 0;
-        let bestScore = parseInt(localStorage.getItem('bestScore')) || 0;
-        let tapsPerLevel = 50;
-        let currentLevel = Math.floor(count / tapsPerLevel) + 1;
+<script>
+    // --- Переменные ---
+    let count = parseInt(localStorage.getItem('currentCount')) || 0;
+    let bestScore = parseInt(localStorage.getItem('bestScore')) || 0;
 
-        const button = document.getElementById('tap-button');
-        const counter = document.getElementById('counter');
-        const bestDisplay = document.getElementById('best');
-        const levelDisplay = document.getElementById('level');
-        const progressBar = document.getElementById('progress-bar');
+    // Уровни и нужные тапы
+    const levelThresholds = [0, 500, 2000, 5000, 10000];
+    let currentLevel = getCurrentLevel(count);
 
-        const canvas = document.getElementById('fireworks');
-        const ctx = canvas.getContext('2d');
-        resizeCanvas();
+    const button = document.getElementById('tap-button');
+    const counter = document.getElementById('counter');
+    const bestDisplay = document.getElementById('best');
+    const levelDisplay = document.getElementById('level');
+    const progressBar = document.getElementById('progress-bar');
 
-        window.addEventListener('resize', resizeCanvas);
+    const canvas = document.getElementById('fireworks');
+    const ctx = canvas.getContext('2d');
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
 
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+    function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+
+    function getCurrentLevel(taps) {
+        for (let i = levelThresholds.length - 1; i >= 0; i--) {
+            if (taps >= levelThresholds[i]) {
+                return i + 1;
+            }
+        }
+        return 1;
+    }
+
+    function getNextLevelThreshold() {
+        let nextIndex = getCurrentLevel(count);
+        return levelThresholds[nextIndex] || (levelThresholds[levelThresholds.length - 1] + 5000);
+    }
+
+    function updateUI() {
+        counter.innerText = 'Тапов: ' + count;
+        bestDisplay.innerText = 'Лучший результат: ' + bestScore;
+        currentLevel = getCurrentLevel(count);
+        levelDisplay.innerText = 'Уровень: ' + currentLevel;
+
+        const nextLevelTaps = getNextLevelThreshold();
+        const prevLevelTaps = levelThresholds[currentLevel - 1] || 0;
+        const progress = ((count - prevLevelTaps) / (nextLevelTaps - prevLevelTaps)) * 100;
+        progressBar.style.width = Math.min(Math.max(progress, 0), 100) + '%';
+    }
+
+    function tap() {
+        const oldLevel = getCurrentLevel(count);
+        count++;
+        localStorage.setItem('currentCount', count);
+
+        if (count > bestScore) {
+            bestScore = count;
+            localStorage.setItem('bestScore', bestScore);
         }
 
-        // --- Функции интерфейса ---
-        function updateUI() {
-            counter.innerText = 'Тапов: ' + count;
-            bestDisplay.innerText = 'Лучший результат: ' + bestScore;
-            let level = Math.floor(count / tapsPerLevel) + 1;
-            levelDisplay.innerText = 'Уровень: ' + level;
-            let progress = (count % tapsPerLevel) / tapsPerLevel * 100;
-            progressBar.style.width = progress + '%';
+        button.classList.add('jump');
+        setTimeout(() => {
+            button.classList.remove('jump');
+        }, 200);
+
+        const newLevel = getCurrentLevel(count);
+
+        if (newLevel > oldLevel) {
+            launchFireworks();
         }
 
-        function tap() {
-            let oldLevel = Math.floor(count / tapsPerLevel) + 1;
-            count++;
-            localStorage.setItem('currentCount', count);
+        updateUI();
+    }
 
-            if (count > bestScore) {
-                bestScore = count;
-                localStorage.setItem('bestScore', bestScore);
+    function launchFireworks() {
+        let particles = [];
+        const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff'];
+
+        for (let i = 0; i < 100; i++) {
+            particles.push({
+                x: canvas.width / 2,
+                y: canvas.height / 2,
+                speedX: Math.random() * 6 - 3,
+                speedY: Math.random() * 6 - 3,
+                color: colors[Math.floor(Math.random() * colors.length)],
+                life: 100
+            });
+        }
+
+        let interval = setInterval(() => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            particles.forEach((p, index) => {
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, 3, 0, Math.PI * 2);
+                ctx.fillStyle = p.color;
+                ctx.fill();
+
+                p.x += p.speedX;
+                p.y += p.speedY;
+                p.life--;
+
+                if (p.life <= 0) {
+                    particles.splice(index, 1);
+                }
+            });
+
+            if (particles.length === 0) {
+                clearInterval(interval);
             }
+        }, 30);
+    }
 
-            button.classList.add('jump');
-            setTimeout(() => {
-                button.classList.remove('jump');
-            }, 200);
-
-            let newLevel = Math.floor(count / tapsPerLevel) + 1;
-
-            if (newLevel > oldLevel) {
-                launchFireworks();
-            }
-
-            updateUI();
+    updateUI();
+</script>
         }
 
         // --- Функция запуска салюта ---
