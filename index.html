@@ -2,82 +2,121 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>Tap Game</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Тапалка</title>
   <style>
-    body { text-align: center; font-family: Arial, sans-serif; background: #f0f8ff; }
-    #tap-button { padding: 20px 40px; font-size: 24px; margin-top: 20px; transition: transform 0.2s; }
-    #tap-button.jump { transform: scale(1.2); }
-    #counter, #best, #level { margin-top: 20px; font-size: 20px; }
-    #progress-container { width: 80%; height: 20px; background: #ddd; margin: 20px auto; border-radius: 10px; overflow: hidden; }
-    #progress-bar { height: 100%; width: 0; background: #4caf50; transition: width 0.3s; }
-    canvas { position: fixed; top: 0; left: 0; pointer-events: none; z-index: 9999; }
+    body {
+      text-align: center;
+      font-family: Arial, sans-serif;
+      background: #f0f0f0;
+      margin: 0;
+      padding: 50px;
+    }
+    #tap-button {
+      padding: 20px 40px;
+      font-size: 24px;
+      margin-top: 20px;
+      background-color: #4caf50; /* зеленый */
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: transform 0.2s, background-color 0.3s ease;
+    }
+    #tap-button.jump {
+      transform: scale(1.2);
+      background-color: #ff9800; /* оранжевый при нажатии */
+    }
+    #count, #level, #best {
+      font-size: 24px;
+      margin: 20px;
+    }
+    #progress-container {
+      width: 80%;
+      background: #ddd;
+      margin: 20px auto;
+      border-radius: 10px;
+      overflow: hidden;
+      height: 30px;
+    }
+    #progress-bar {
+      height: 100%;
+      width: 0;
+      background: linear-gradient(90deg, #4caf50, #81c784);
+      transition: width 0.3s ease;
+    }
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+    }
   </style>
 </head>
 <body>
 
-<h1>Tap Game</h1>
-<button id="tap-button">Тап!</button>
-
-<div id="counter">Тапов: 0</div>
-<div id="best">Лучший результат: 0</div>
+<h1>✨ Тапай чтобы побеждать ✨</h1>
+<div id="count">Тапы: 0</div>
 <div id="level">Уровень: 1</div>
+<div id="best">Лучший результат: 0</div>
 
 <div id="progress-container">
   <div id="progress-bar"></div>
 </div>
 
-<canvas id="fireworks"></canvas>
+<button id="tap-button">ТАП!</button>
+
+<canvas id="canvas"></canvas>
 
 <script>
+  const button = document.getElementById('tap-button');
+  const countDisplay = document.getElementById('count');
+  const levelDisplay = document.getElementById('level');
+  const bestDisplay = document.getElementById('best');
+  const progressBar = document.getElementById('progress-bar');
+  const canvas = document.getElementById('canvas');
+  const ctx = canvas.getContext('2d');
+
   let count = parseInt(localStorage.getItem('currentCount')) || 0;
   let bestScore = parseInt(localStorage.getItem('bestScore')) || 0;
-  const levelThresholds = [0, 500, 2000, 5000, 10000];
-  let currentLevel = getCurrentLevel(count);
 
-  const button = document.getElementById('tap-button');
-  const counter = document.getElementById('counter');
-  const bestDisplay = document.getElementById('best');
-  const levelDisplay = document.getElementById('level');
-  const progressBar = document.getElementById('progress-bar');
+  const levelThresholds = [0, 100, 500, 2000, 5000, 10000];
 
-  const canvas = document.getElementById('fireworks');
-  const ctx = canvas.getContext('2d');
-  resizeCanvas();
-  window.addEventListener('resize', resizeCanvas);
-
-  function resizeCanvas() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-  }
-
-  function getCurrentLevel(taps) {
+  function getCurrentLevel(count) {
     for (let i = levelThresholds.length - 1; i >= 0; i--) {
-      if (taps >= levelThresholds[i]) {
-        return i + 1;
+      if (count >= levelThresholds[i]) {
+        return i;
       }
     }
     return 1;
   }
 
-  function getNextLevelThreshold() {
-    let nextIndex = getCurrentLevel(count);
-    return levelThresholds[nextIndex] || (levelThresholds[levelThresholds.length - 1] + 5000);
+  function getNextLevelTarget(level) {
+    if (level + 1 < levelThresholds.length) {
+      return levelThresholds[level + 1];
+    } else {
+      return levelThresholds[levelThresholds.length - 1];
+    }
   }
 
   function updateUI() {
-    counter.innerText = 'Тапов: ' + count;
-    bestDisplay.innerText = 'Лучший результат: ' + bestScore;
-    currentLevel = getCurrentLevel(count);
-    levelDisplay.innerText = 'Уровень: ' + currentLevel;
+    countDisplay.textContent = `Тапы: ${count}`;
+    levelDisplay.textContent = `Уровень: ${getCurrentLevel(count)}`;
+    bestDisplay.textContent = `Лучший результат: ${bestScore}`;
+    updateProgressBar();
+  }
 
-    const nextLevelTaps = getNextLevelThreshold();
-    const prevLevelTaps = levelThresholds[currentLevel - 1] || 0;
-    const progress = ((count - prevLevelTaps) / (nextLevelTaps - prevLevelTaps)) * 100;
-    progressBar.style.width = Math.min(Math.max(progress, 0), 100) + '%';
+  function updateProgressBar() {
+    const level = getCurrentLevel(count);
+    const currentThreshold = levelThresholds[level];
+    const nextThreshold = getNextLevelTarget(level);
+    const progress = (count - currentThreshold) / (nextThreshold - currentThreshold) * 100;
+    progressBar.style.width = `${Math.min(progress, 100)}%`;
   }
 
   button.addEventListener('click', () => {
     const oldLevel = getCurrentLevel(count);
+
     count++;
     localStorage.setItem('currentCount', count);
 
@@ -97,38 +136,56 @@
     updateUI();
   });
 
-  function launchFireworks() {
-    let particles = [];
-    const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff'];
+  // Салют 🎆
+  let particles = [];
 
-    for (let i = 0; i < 100; i++) {
+  function launchFireworks() {
+    const numParticles = 100;
+    for (let i = 0; i < numParticles; i++) {
       particles.push({
         x: canvas.width / 2,
         y: canvas.height / 2,
-        speedX: Math.random() * 6 - 3,
-        speedY: Math.random() * 6 - 3,
-        color: colors[Math.floor(Math.random() * colors.length)],
-        life: 100
+        speed: Math.random() * 5 + 2,
+        angle: Math.random() * 2 * Math.PI,
+        radius: Math.random() * 3 + 2,
+        color: `hsl(${Math.random() * 360}, 100%, 50%)`,
+        alpha: 1
       });
     }
-
-    let interval = setInterval(() => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      particles.forEach((p, index) => {
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, 3, 0, Math.PI * 2);
-        ctx.fillStyle = p.color;
-        ctx.fill();
-        p.x += p.speedX;
-        p.y += p.speedY;
-        p.life--;
-        if (p.life <= 0) particles.splice(index, 1);
-      });
-      if (particles.length === 0) clearInterval(interval);
-    }, 30);
   }
 
+  function updateFireworks() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach((p, i) => {
+      p.x += Math.cos(p.angle) * p.speed;
+      p.y += Math.sin(p.angle) * p.speed;
+      p.alpha -= 0.02;
+      if (p.alpha <= 0) {
+        particles.splice(i, 1);
+      } else {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${hexToRgb(p.color)},${p.alpha})`;
+        ctx.fill();
+      }
+    });
+    requestAnimationFrame(updateFireworks);
+  }
+
+  function hexToRgb(h) {
+    const match = h.match(/\d+/g);
+    return `${match[0]},${match[1]},${match[2]}`;
+  }
+
+  function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+
+  window.addEventListener('resize', resizeCanvas);
+  resizeCanvas();
   updateUI();
+  updateFireworks();
 </script>
 
 </body>
