@@ -6,17 +6,49 @@
   <title>Тапалка</title>
   <style>
     body {
-      text-align: center;
       font-family: Arial, sans-serif;
       background: #f0f0f0;
       margin: 0;
-      padding: 50px;
+      padding: 0;
+      text-align: center;
     }
+    header {
+      background: #4caf50;
+      color: white;
+      padding: 15px;
+      font-size: 24px;
+    }
+    nav {
+      display: flex;
+      justify-content: center;
+      background: #eee;
+    }
+    nav button {
+      flex: 1;
+      padding: 15px;
+      background: none;
+      border: none;
+      font-size: 18px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    nav button.active {
+      background: #ddd;
+    }
+    section {
+      display: none;
+      padding: 20px;
+    }
+    section.active {
+      display: block;
+    }
+
+    /* Стиль кнопки тап */
     #tap-button {
       padding: 20px 40px;
       font-size: 24px;
       margin-top: 20px;
-      background-color: #4caf50; /* зеленый */
+      background-color: #4caf50;
       color: white;
       border: none;
       border-radius: 10px;
@@ -25,8 +57,9 @@
     }
     #tap-button.jump {
       transform: scale(1.2);
-      background-color: #ff9800; /* оранжевый при нажатии */
+      background-color: #ff9800;
     }
+
     #count, #level, #best {
       font-size: 24px;
       margin: 20px;
@@ -50,25 +83,67 @@
       top: 0;
       left: 0;
       pointer-events: none;
+      z-index: 0;
     }
   </style>
 </head>
 <body>
 
-<h1>✨ Тапай чтобы побеждать ✨</h1>
-<div id="count">Тапы: 0</div>
-<div id="level">Уровень: 1</div>
-<div id="best">Лучший результат: 0</div>
+<header>✨ Моя Игра ✨</header>
 
-<div id="progress-container">
-  <div id="progress-bar"></div>
-</div>
+<nav>
+  <button class="tab-button active" data-tab="game">Игра</button>
+  <button class="tab-button" data-tab="tasks">Задания</button>
+  <button class="tab-button" data-tab="friends">Друзья</button>
+</nav>
 
-<button id="tap-button">ТАП!</button>
+<!-- Вкладка Игра -->
+<section id="game" class="active">
+  <div id="count">Тапы: 0</div>
+  <div id="level">Уровень: 1</div>
+  <div id="best">Лучший результат: 0</div>
+
+  <div id="progress-container">
+    <div id="progress-bar"></div>
+  </div>
+
+  <button id="tap-button">ТАП!</button>
+</section>
+
+<!-- Вкладка Задания -->
+<section id="tasks">
+  <h2>🎯 Задания</h2>
+  <ul id="task-list">
+    <li>Сделай 50 тапов!</li>
+    <li>Достигни 2 уровня!</li>
+    <li>Пригласи друга!</li>
+  </ul>
+</section>
+
+<!-- Вкладка Друзья -->
+<section id="friends">
+  <h2>👥 Друзья</h2>
+  <p>Добавляй друзей и соревнуйся с ними!</p>
+  <p>👤 Друг 1: 5000 тапов</p>
+  <p>👤 Друг 2: 1200 тапов</p>
+</section>
 
 <canvas id="canvas"></canvas>
 
 <script>
+  const tabButtons = document.querySelectorAll('.tab-button');
+  const sections = document.querySelectorAll('section');
+
+  tabButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      const tab = button.dataset.tab;
+      tabButtons.forEach(btn => btn.classList.remove('active'));
+      sections.forEach(sec => sec.classList.remove('active'));
+      button.classList.add('active');
+      document.getElementById(tab).classList.add('active');
+    });
+  });
+
   const button = document.getElementById('tap-button');
   const countDisplay = document.getElementById('count');
   const levelDisplay = document.getElementById('level');
