@@ -2,38 +2,29 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Тапалка</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tap Game</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f0f0f0;
+      text-align: center;
+      background: #f0f8ff;
       margin: 0;
       padding: 0;
-      text-align: center;
     }
     header {
       background: #4caf50;
+      padding: 20px;
       color: white;
-      padding: 15px;
-      font-size: 24px;
-    }
-    nav {
-      display: flex;
-      justify-content: center;
-      background: #eee;
     }
     nav button {
-      flex: 1;
-      padding: 15px;
-      background: none;
+      margin: 10px;
+      padding: 10px 20px;
       border: none;
-      font-size: 18px;
+      background: #4caf50;
+      color: white;
+      border-radius: 8px;
       cursor: pointer;
-      transition: background 0.3s;
-    }
-    nav button.active {
-      background: #ddd;
     }
     section {
       display: none;
@@ -42,226 +33,169 @@
     section.active {
       display: block;
     }
-
-    /* Стиль кнопки тап */
     #tap-button {
       padding: 20px 40px;
       font-size: 24px;
-      margin-top: 20px;
-      background-color: #4caf50;
+      background-color: green;
       color: white;
       border: none;
       border-radius: 10px;
       cursor: pointer;
-      transition: transform 0.2s, background-color 0.3s ease;
+      transition: transform 0.1s ease, background-color 0.2s ease;
     }
-    #tap-button.jump {
-      transform: scale(1.2);
-      background-color: #ff9800;
-    }
-
-    #count, #level, #best {
-      font-size: 24px;
-      margin: 20px;
-    }
-    #progress-container {
-      width: 80%;
-      background: #ddd;
-      margin: 20px auto;
-      border-radius: 10px;
-      overflow: hidden;
-      height: 30px;
-    }
-    #progress-bar {
-      height: 100%;
-      width: 0;
-      background: linear-gradient(90deg, #4caf50, #81c784);
-      transition: width 0.3s ease;
-    }
-    canvas {
-      position: absolute;
-      top: 0;
-      left: 0;
-      pointer-events: none;
-      z-index: 0;
+    #tap-button:active {
+      background-color: orange;
+      transform: scale(1.1);
     }
   </style>
 </head>
 <body>
+  <header>
+    <h1>🎮 Tap Game</h1>
+    <nav>
+      <button onclick="showSection('game')">Игра</button>
+      <button onclick="showSection('tasks')">Задания</button>
+      <button onclick="showSection('friends')">Друзья</button>
+    </nav>
+  </header>
 
-<header>✨ Моя Игра ✨</header>
+  <section id="game" class="active">
+    <h2>Нажми на кнопку!</h2>
+    <p>Тапов: <span id="counter">0</span></p>
+    <p>Рекорд: <span id="best">0</span></p>
+    <p>Уровень: <span id="level">1</span></p>
+    <progress id="progress" value="0" max="100"></progress><br><br>
+    <button id="tap-button" onclick="tap()">ТАП!</button>
+  </section>
 
-<nav>
-  <button class="tab-button active" data-tab="game">Игра</button>
-  <button class="tab-button" data-tab="tasks">Задания</button>
-  <button class="tab-button" data-tab="friends">Друзья</button>
-</nav>
+  <section id="tasks">
+    <h2>🎯 Задания</h2>
+    <ul id="task-list" style="list-style: none; padding: 0; max-width: 600px; margin: auto;"></ul>
+  </section>
 
-<!-- Вкладка Игра -->
-<section id="game" class="active">
-  <div id="count">Тапы: 0</div>
-  <div id="level">Уровень: 1</div>
-  <div id="best">Лучший результат: 0</div>
+  <section id="friends">
+    <h2>👥 Друзья</h2>
+    <table id="friends-table" style="width: 80%; margin: 20px auto; border-collapse: collapse;">
+      <thead>
+        <tr style="background-color: #4caf50; color: white;">
+          <th style="padding: 10px; border: 1px solid #ddd;">#</th>
+          <th style="padding: 10px; border: 1px solid #ddd;">Имя</th>
+          <th style="padding: 10px; border: 1px solid #ddd;">Тапы</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </section>
 
-  <div id="progress-container">
-    <div id="progress-bar"></div>
-  </div>
+  <script>
+    let count = parseInt(localStorage.getItem('currentCount')) || 0;
+    let bestScore = parseInt(localStorage.getItem('bestScore')) || 0;
+    const levelThresholds = [100, 500, 2000, 5000, 10000];
 
-  <button id="tap-button">ТАП!</button>
-</section>
-
-<!-- Вкладка Задания -->
-<section id="tasks">
-  <h2>🎯 Задания</h2>
-  <ul id="task-list">
-    <li>Сделай 50 тапов!</li>
-    <li>Достигни 2 уровня!</li>
-    <li>Пригласи друга!</li>
-  </ul>
-</section>
-
-<!-- Вкладка Друзья -->
-<section id="friends">
-  <h2>👥 Друзья</h2>
-  <p>Добавляй друзей и соревнуйся с ними!</p>
-  <p>👤 Друг 1: 5000 тапов</p>
-  <p>👤 Друг 2: 1200 тапов</p>
-</section>
-
-<canvas id="canvas"></canvas>
-
-<script>
-  const tabButtons = document.querySelectorAll('.tab-button');
-  const sections = document.querySelectorAll('section');
-
-  tabButtons.forEach(button => {
-    button.addEventListener('click', () => {
-      const tab = button.dataset.tab;
-      tabButtons.forEach(btn => btn.classList.remove('active'));
-      sections.forEach(sec => sec.classList.remove('active'));
-      button.classList.add('active');
-      document.getElementById(tab).classList.add('active');
-    });
-  });
-
-  const button = document.getElementById('tap-button');
-  const countDisplay = document.getElementById('count');
-  const levelDisplay = document.getElementById('level');
-  const bestDisplay = document.getElementById('best');
-  const progressBar = document.getElementById('progress-bar');
-  const canvas = document.getElementById('canvas');
-  const ctx = canvas.getContext('2d');
-
-  let count = parseInt(localStorage.getItem('currentCount')) || 0;
-  let bestScore = parseInt(localStorage.getItem('bestScore')) || 0;
-
-  const levelThresholds = [0, 100, 500, 2000, 5000, 10000];
-
-  function getCurrentLevel(count) {
-    for (let i = levelThresholds.length - 1; i >= 0; i--) {
-      if (count >= levelThresholds[i]) {
-        return i;
+    function updateUI() {
+      document.getElementById('counter').textContent = count;
+      document.getElementById('best').textContent = bestScore;
+      let currentLevel = 1;
+      for (let i = 0; i < levelThresholds.length; i++) {
+        if (count >= levelThresholds[i]) {
+          currentLevel = i + 2;
+        }
       }
-    }
-    return 1;
-  }
-
-  function getNextLevelTarget(level) {
-    if (level + 1 < levelThresholds.length) {
-      return levelThresholds[level + 1];
-    } else {
-      return levelThresholds[levelThresholds.length - 1];
-    }
-  }
-
-  function updateUI() {
-    countDisplay.textContent = `Тапы: ${count}`;
-    levelDisplay.textContent = `Уровень: ${getCurrentLevel(count)}`;
-    bestDisplay.textContent = `Лучший результат: ${bestScore}`;
-    updateProgressBar();
-  }
-
-  function updateProgressBar() {
-    const level = getCurrentLevel(count);
-    const currentThreshold = levelThresholds[level];
-    const nextThreshold = getNextLevelTarget(level);
-    const progress = (count - currentThreshold) / (nextThreshold - currentThreshold) * 100;
-    progressBar.style.width = `${Math.min(progress, 100)}%`;
-  }
-
-  button.addEventListener('click', () => {
-    const oldLevel = getCurrentLevel(count);
-
-    count++;
-    localStorage.setItem('currentCount', count);
-
-    if (count > bestScore) {
-      bestScore = count;
-      localStorage.setItem('bestScore', bestScore);
+      document.getElementById('level').textContent = currentLevel;
+      const nextThreshold = levelThresholds[currentLevel - 1] || 10000;
+      const prevThreshold = levelThresholds[currentLevel - 2] || 0;
+      document.getElementById('progress').max = nextThreshold - prevThreshold;
+      document.getElementById('progress').value = count - prevThreshold;
     }
 
-    button.classList.add('jump');
-    setTimeout(() => button.classList.remove('jump'), 200);
+    function tap() {
+      count++;
+      if (count > bestScore) {
+        bestScore = count;
+        localStorage.setItem('bestScore', bestScore);
+      }
+      localStorage.setItem('currentCount', count);
+      updateUI();
+    }
 
-    const newLevel = getCurrentLevel(count);
-    if (newLevel > oldLevel) {
-      launchFireworks();
+    function showSection(id) {
+      document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    }
+
+    const tasks = [
+      { id: 'task1', text: '📢 Подпишись на Telegram-канал', reward: 300, link: 'https://t.me/your_channel' },
+      { id: 'task2', text: '👥 Подпишись на VK-группу', reward: 300, link: 'https://vk.com/your_group' },
+      { id: 'task3', text: '🤝 Пригласи 3 друзей', reward: 300 },
+      { id: 'task4', text: '🏆 Пригласи 5 друзей', reward: 500 },
+      { id: 'task5', text: '🗳 Перейди на сайт голосования', reward: 10000, link: 'https://example.com/vote' }
+    ];
+
+    function renderTasks() {
+      const taskList = document.getElementById('task-list');
+      taskList.innerHTML = '';
+      tasks.forEach(task => {
+        const isDone = localStorage.getItem(`task_${task.id}`) === 'done';
+        const li = document.createElement('li');
+        li.style.margin = '10px 0';
+        li.style.padding = '15px';
+        li.style.background = '#fff';
+        li.style.borderRadius = '10px';
+        li.style.boxShadow = '0 2px 5px rgba(0,0,0,0.1)';
+        li.innerHTML = `
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <strong>${task.text}</strong><br/>
+              <small>🎁 Награда: ${task.reward} тапов</small>
+            </div>
+            ${isDone ? '<span style="color: green; font-weight: bold;">✅ Выполнено</span>' : `<button style="padding: 8px 12px; background: #4caf50; color: white; border: none; border-radius: 8px; cursor: pointer;" onclick="completeTask('${task.id}', ${task.reward}, '${task.link || ''}')">Выполнить</button>`}
+          </div>
+        `;
+        taskList.appendChild(li);
+      });
+    }
+
+    function completeTask(id, reward, link = '') {
+      if (link) {
+        window.open(link, '_blank');
+      }
+      count += reward;
+      localStorage.setItem('currentCount', count);
+      if (count > bestScore) {
+        bestScore = count;
+        localStorage.setItem('bestScore', bestScore);
+      }
+      localStorage.setItem(`task_${id}`, 'done');
+      updateUI();
+      renderTasks();
+    }
+
+    const friends = [
+      { name: "Алиса", taps: 5000 },
+      { name: "Боб", taps: 1200 },
+      { name: "Чарли", taps: 3200 },
+      { name: "Дейв", taps: 800 },
+      { name: "Ева", taps: 15000 }
+    ];
+
+    function renderFriendsTable() {
+      const tbody = document.querySelector('#friends-table tbody');
+      tbody.innerHTML = '';
+      friends.sort((a, b) => b.taps - a.taps);
+      friends.forEach((friend, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td style="padding: 10px; border: 1px solid #ddd; text-align: center;">${index + 1}</td>
+          <td style="padding: 10px; border: 1px solid #ddd;">${friend.name}</td>
+          <td style="padding: 10px; border: 1px solid #ddd; text-align: center;">${friend.taps}</td>
+        `;
+        tbody.appendChild(row);
+      });
     }
 
     updateUI();
-  });
-
-  // Салют 🎆
-  let particles = [];
-
-  function launchFireworks() {
-    const numParticles = 100;
-    for (let i = 0; i < numParticles; i++) {
-      particles.push({
-        x: canvas.width / 2,
-        y: canvas.height / 2,
-        speed: Math.random() * 5 + 2,
-        angle: Math.random() * 2 * Math.PI,
-        radius: Math.random() * 3 + 2,
-        color: `hsl(${Math.random() * 360}, 100%, 50%)`,
-        alpha: 1
-      });
-    }
-  }
-
-  function updateFireworks() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    particles.forEach((p, i) => {
-      p.x += Math.cos(p.angle) * p.speed;
-      p.y += Math.sin(p.angle) * p.speed;
-      p.alpha -= 0.02;
-      if (p.alpha <= 0) {
-        particles.splice(i, 1);
-      } else {
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(${hexToRgb(p.color)},${p.alpha})`;
-        ctx.fill();
-      }
-    });
-    requestAnimationFrame(updateFireworks);
-  }
-
-  function hexToRgb(h) {
-    const match = h.match(/\d+/g);
-    return `${match[0]},${match[1]},${match[2]}`;
-  }
-
-  function resizeCanvas() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-  }
-
-  window.addEventListener('resize', resizeCanvas);
-  resizeCanvas();
-  updateUI();
-  updateFireworks();
-</script>
-
+    renderTasks();
+    renderFriendsTable();
+  </script>
 </body>
 </html>
