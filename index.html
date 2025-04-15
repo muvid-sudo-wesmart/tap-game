@@ -75,7 +75,13 @@
 
   <section id="friends">
     <h2>👥 Друзья</h2>
-    <table id="friends-table" style="width: 80%; margin: 20px auto; border-collapse: collapse;">
+    <form id="add-friend-form" onsubmit="addFriend(event)" style="margin-bottom: 20px;">
+      <input type="text" id="friend-name" placeholder="Имя друга" required style="padding: 8px; border-radius: 6px; border: 1px solid #ccc;">
+      <input type="number" id="friend-taps" placeholder="Тапов" required style="padding: 8px; border-radius: 6px; border: 1px solid #ccc;">
+      <button type="submit" style="padding: 8px 12px; background-color: #4caf50; color: white; border: none; border-radius: 6px; cursor: pointer;">Добавить</button>
+    </form>
+
+    <table id="friends-table" style="width: 80%; margin: 0 auto; border-collapse: collapse;">
       <thead>
         <tr style="background-color: #4caf50; color: white;">
           <th style="padding: 10px; border: 1px solid #ddd;">#</th>
@@ -170,15 +176,16 @@
       renderTasks();
     }
 
-    const friends = [
-      { name: "Алиса", taps: 5000 },
-      { name: "Боб", taps: 1200 },
-      { name: "Чарли", taps: 3200 },
-      { name: "Дейв", taps: 800 },
-      { name: "Ева", taps: 15000 }
-    ];
+    function getFriends() {
+      return JSON.parse(localStorage.getItem('friendsList') || '[]');
+    }
+
+    function saveFriends(friends) {
+      localStorage.setItem('friendsList', JSON.stringify(friends));
+    }
 
     function renderFriendsTable() {
+      const friends = getFriends();
       const tbody = document.querySelector('#friends-table tbody');
       tbody.innerHTML = '';
       friends.sort((a, b) => b.taps - a.taps);
@@ -191,6 +198,18 @@
         `;
         tbody.appendChild(row);
       });
+    }
+
+    function addFriend(event) {
+      event.preventDefault();
+      const name = document.getElementById('friend-name').value.trim();
+      const taps = parseInt(document.getElementById('friend-taps').value);
+      if (!name || isNaN(taps)) return;
+      const friends = getFriends();
+      friends.push({ name, taps });
+      saveFriends(friends);
+      renderFriendsTable();
+      document.getElementById('add-friend-form').reset();
     }
 
     updateUI();
