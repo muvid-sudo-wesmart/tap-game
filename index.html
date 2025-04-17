@@ -33,18 +33,12 @@
     section.active {
       display: block;
     }
-    #tap-button {
-      padding: 20px 40px;
-      font-size: 24px;
-      background-color: green;
-      color: white;
-      border: none;
-      border-radius: 10px;
+    #tap-image {
+      width: 150px;
       cursor: pointer;
-      transition: transform 0.1s ease, background-color 0.2s ease;
+      transition: transform 0.1s ease;
     }
-    #tap-button:active {
-      background-color: orange;
+    #tap-image:active {
       transform: scale(1.1);
     }
   </style>
@@ -60,12 +54,12 @@
   </header>
 
   <section id="game" class="active">
-    <h2>Нажми на кнопку!</h2>
+    <h2>Нажми на картинку!</h2>
     <p>Тапов: <span id="counter">0</span></p>
     <p>Рекорд: <span id="best">0</span></p>
     <p>Уровень: <span id="level">1</span></p>
     <progress id="progress" value="0" max="100"></progress><br><br>
-    <img id="tap-image" src="https://github.com/muvid-sudo-wesmart/tap-game/blob/main/tap.png" alt="Tap!" style="width: 150px; cursor: pointer; transition: transform 0.1s ease;" onclick="tap()">
+    <img id="tap-image" src="https://github.com/muvid-sudo-wesmart/tap-game/blob/main/tap.png" alt="Tap!" onclick="tap()">
   </section>
 
   <section id="tasks">
@@ -123,12 +117,11 @@
       localStorage.setItem('currentCount', count);
       updateUI();
 
-       const img = document.getElementById('tap-image');
+      const img = document.getElementById('tap-image');
       img.style.transform = 'scale(1.1)';
       setTimeout(() => {
         img.style.transform = 'scale(1)';
       }, 100);
-    
     }
 
     function showSection(id) {
