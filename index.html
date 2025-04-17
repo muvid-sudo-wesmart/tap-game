@@ -65,7 +65,7 @@
     <p>Рекорд: <span id="best">0</span></p>
     <p>Уровень: <span id="level">1</span></p>
     <progress id="progress" value="0" max="100"></progress><br><br>
-    <button id="tap-button" onclick="tap()">ТАП!</button>
+    <img id="tap-image" src="https://github.com/muvid-sudo-wesmart/tap-game/blob/main/tap.png" alt="Tap!" style="width: 150px; cursor: pointer; transition: transform 0.1s ease;" onclick="tap()">
   </section>
 
   <section id="tasks">
@@ -122,6 +122,13 @@
       }
       localStorage.setItem('currentCount', count);
       updateUI();
+
+       const img = document.getElementById('tap-image');
+      img.style.transform = 'scale(1.1)';
+      setTimeout(() => {
+        img.style.transform = 'scale(1)';
+      }, 100);
+    
     }
 
     function showSection(id) {
