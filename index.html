@@ -14,25 +14,21 @@
     }
 
     /* Загрузчик */
-#loader {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: black;
-  z-index: 9999;
-  overflow: hidden;
-}
+    #loader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: black;
+      z-index: 9999;
+    }
 
-#loader img {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  object-fit: cover;
-}
+    #loader img {
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+    }
 
     header {
       background: #4caf50;
@@ -71,11 +67,13 @@
   </style>
 </head>
 <body>
-  <!-- Загрузчик -->
+
+  <!-- Загрузочный экран -->
   <div id="loader">
-    <img id="loader-img" src="https://raw.githubusercontent.com/muvid-sudo-wesmart/tap-game/main/Frame_159-3.png" alt="Загрузка..." />
+    <img src="https://raw.githubusercontent.com/muvid-sudo-wesmart/tap-game/main/Frame_159-3.png" alt="Загрузка..." />
   </div>
 
+  <!-- Основной интерфейс -->
   <header>
     <h1>🎮 Tap Game</h1>
     <nav>
@@ -91,7 +89,7 @@
     <p>Рекорд: <span id="best">0</span></p>
     <p>Уровень: <span id="level">1</span></p>
     <progress id="progress" value="0" max="100"></progress><br><br>
-    <img id="tap-image" src="https://raw.githubusercontent.com/muvid-sudo-wesmart/tap-game/main/tap.png" alt="Tap!" onclick="tap()">
+    <img id="tap-image" src="https://raw.githubusercontent.com/muvid-sudo-wesmart/tap-game/main/tap.png" alt="Tap!" onclick="tap()" />
   </section>
 
   <section id="tasks">
@@ -106,7 +104,6 @@
       <input type="number" id="friend-taps" placeholder="Тапов" required style="padding: 8px; border-radius: 6px; border: 1px solid #ccc;">
       <button type="submit" style="padding: 8px 12px; background-color: #4caf50; color: white; border: none; border-radius: 6px; cursor: pointer;">Добавить</button>
     </form>
-
     <table id="friends-table" style="width: 80%; margin: 0 auto; border-collapse: collapse;">
       <thead>
         <tr style="background-color: #4caf50; color: white;">
@@ -120,22 +117,11 @@
   </section>
 
   <script>
-    // Загрузчик
-    const loader = document.getElementById('loader');
-    const loaderImg = document.getElementById('loader-img');
-
-    loaderImg.onload = () => {
-      setTimeout(() => {
-        loader.style.transition = 'opacity 0.5s ease';
-        loader.style.opacity = '0';
-        setTimeout(() => loader.style.display = 'none', 500);
-      }, 300);
-    };
-
+    // Прячем загрузку через 2 секунды после полной загрузки страницы
     window.addEventListener('load', () => {
-      if (loaderImg.complete) {
-        loaderImg.onload();
-      }
+      setTimeout(() => {
+        document.getElementById('loader').style.display = 'none';
+      }, 2000);
     });
 
     let count = parseInt(localStorage.getItem('currentCount')) || 0;
@@ -166,12 +152,6 @@
       }
       localStorage.setItem('currentCount', count);
       updateUI();
-
-      const img = document.getElementById('tap-image');
-      img.style.transform = 'scale(1.1)';
-      setTimeout(() => {
-        img.style.transform = 'scale(1)';
-      }, 100);
     }
 
     function showSection(id) {
@@ -266,4 +246,3 @@
   </script>
 </body>
 </html>
-
