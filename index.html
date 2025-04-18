@@ -1,39 +1,77 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tap Game</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      background: #f0f8ff;
+    * {
+      box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f8ff;
+    }
 
-    /* Загрузчик */
+    /* Загрузочный экран */
     #loader {
       position: fixed;
       top: 0;
       left: 0;
       width: 100vw;
       height: 100vh;
-      background: black;
+      background: #000;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
       z-index: 9999;
+      overflow: hidden;
     }
 
     #loader img {
-      width: 100vw;
-      height: 100vh;
+      width: 100%;
+      height: 100%;
       object-fit: cover;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: -1;
     }
 
+    /* Прогресс-блок */
+    .loader-progress {
+      position: absolute;
+      bottom: 20px;
+      width: 80%;
+      height: 10px;
+      background-color: rgba(255, 255, 255, 0.5);
+      border-radius: 5px;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    .loader-progress-bar {
+      height: 100%;
+      width: 0%;
+      background-color: #4caf50;
+      transition: width 2s linear;
+    }
+
+    .loader-text {
+      color: white;
+      font-size: 1.5em;
+      z-index: 1;
+    }
+
+    /* Игра */
     header {
       background: #4caf50;
       padding: 20px;
       color: white;
+      text-align: center;
     }
 
     nav button {
@@ -49,6 +87,7 @@
     section {
       display: none;
       padding: 20px;
+      text-align: center;
     }
 
     section.active {
@@ -70,7 +109,11 @@
 
   <!-- Загрузочный экран -->
   <div id="loader">
-    <img src="https://raw.githubusercontent.com/muvid-sudo-wesmart/tap-game/main/Frame_159-3.png" alt="Загрузка..." />
+    <img src="https://raw.githubusercontent.com/muvid-sudo-wesmart/tap-game/main/Frame_159-3.png" alt="Загрузка">
+    <div class="loader-progress">
+      <div class="loader-progress-bar"></div>
+    </div>
+    <p class="loader-text">Загрузка...</p>
   </div>
 
   <!-- Основной интерфейс -->
@@ -89,7 +132,7 @@
     <p>Рекорд: <span id="best">0</span></p>
     <p>Уровень: <span id="level">1</span></p>
     <progress id="progress" value="0" max="100"></progress><br><br>
-    <img id="tap-image" src="https://raw.githubusercontent.com/muvid-sudo-wesmart/tap-game/main/tap.png" alt="Tap!" onclick="tap()" />
+    <img id="tap-image" src="https://raw.githubusercontent.com/muvid-sudo-wesmart/tap-game/main/tap.png" alt="Tap!" onclick="tap()">
   </section>
 
   <section id="tasks">
@@ -104,6 +147,7 @@
       <input type="number" id="friend-taps" placeholder="Тапов" required style="padding: 8px; border-radius: 6px; border: 1px solid #ccc;">
       <button type="submit" style="padding: 8px 12px; background-color: #4caf50; color: white; border: none; border-radius: 6px; cursor: pointer;">Добавить</button>
     </form>
+
     <table id="friends-table" style="width: 80%; margin: 0 auto; border-collapse: collapse;">
       <thead>
         <tr style="background-color: #4caf50; color: white;">
@@ -117,10 +161,17 @@
   </section>
 
   <script>
-    // Прячем загрузку через 2 секунды после полной загрузки страницы
+    // Показ загрузки и скрытие после 2 секунд
     window.addEventListener('load', () => {
+      const loader = document.getElementById('loader');
+      const progressBar = document.querySelector('.loader-progress-bar');
+
+      // Запуск анимации шкалы
+      progressBar.style.width = '100%';
+
+      // Убираем загрузку через 2 секунды
       setTimeout(() => {
-        document.getElementById('loader').style.display = 'none';
+        loader.style.display = 'none';
       }, 2000);
     });
 
@@ -192,7 +243,9 @@
     }
 
     function completeTask(id, reward, link = '') {
-      if (link) window.open(link, '_blank');
+      if (link) {
+        window.open(link, '_blank');
+      }
       count += reward;
       localStorage.setItem('currentCount', count);
       if (count > bestScore) {
@@ -215,34 +268,4 @@
     function renderFriendsTable() {
       const friends = getFriends();
       const tbody = document.querySelector('#friends-table tbody');
-      tbody.innerHTML = '';
-      friends.sort((a, b) => b.taps - a.taps);
-      friends.forEach((friend, index) => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-          <td style="padding: 10px; border: 1px solid #ddd; text-align: center;">${index + 1}</td>
-          <td style="padding: 10px; border: 1px solid #ddd;">${friend.name}</td>
-          <td style="padding: 10px; border: 1px solid #ddd; text-align: center;">${friend.taps}</td>
-        `;
-        tbody.appendChild(row);
-      });
-    }
-
-    function addFriend(event) {
-      event.preventDefault();
-      const name = document.getElementById('friend-name').value.trim();
-      const taps = parseInt(document.getElementById('friend-taps').value);
-      if (!name || isNaN(taps)) return;
-      const friends = getFriends();
-      friends.push({ name, taps });
-      saveFriends(friends);
-      renderFriendsTable();
-      document.getElementById('add-friend-form').reset();
-    }
-
-    updateUI();
-    renderTasks();
-    renderFriendsTable();
-  </script>
-</body>
-</html>
+      tbody
