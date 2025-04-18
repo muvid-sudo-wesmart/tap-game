@@ -109,7 +109,7 @@
 
   <!-- Загрузочный экран -->
   <div id="loader">
-    <img src="https://raw.githubusercontent.com/muvid-sudo-wesmart/tap-game/main/Frame_159-3.png" alt="Загрузка">
+    <img src="https://raw.githubusercontent.com/muvid-sudo-wesmart/tap-game/main/Frame_159-3.png alt="Загрузка">
     <div class="loader-progress">
       <div class="loader-progress-bar"></div>
     </div>
@@ -165,14 +165,22 @@
     window.addEventListener('load', () => {
       const loader = document.getElementById('loader');
       const progressBar = document.querySelector('.loader-progress-bar');
+      let progress = 0;
 
-      // Запуск анимации шкалы
-      progressBar.style.width = '100%';
+      // Анимация загрузки
+      const interval = setInterval(() => {
+        progress += 5; // увеличиваем прогресс
+        progressBar.style.width = progress + '%';
 
-      // Убираем загрузку через 2 секунды
-      setTimeout(() => {
-        loader.style.display = 'none';
-      }, 2000);
+        // Когда прогресс достигает 100%, скрываем экран
+        if (progress >= 100) {
+          clearInterval(interval); // остановка прогресса
+          setTimeout(() => {
+            loader.style.display = 'none';
+          }, 500); // скрытие после 0.5 секунды
+        }
+      }, 100); // каждые 100мс увеличиваем прогресс
+
     });
 
     let count = parseInt(localStorage.getItem('currentCount')) || 0;
@@ -268,4 +276,34 @@
     function renderFriendsTable() {
       const friends = getFriends();
       const tbody = document.querySelector('#friends-table tbody');
-      tbody
+      tbody.innerHTML = '';
+      friends.sort((a, b) => b.taps - a.taps);
+      friends.forEach((friend, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td style="padding: 10px; border: 1px solid #ddd; text-align: center;">${index + 1}</td>
+          <td style="padding: 10px; border: 1px solid #ddd;">${friend.name}</td>
+          <td style="padding: 10px; border: 1px solid #ddd; text-align: center;">${friend.taps}</td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    function addFriend(event) {
+      event.preventDefault();
+      const name = document.getElementById('friend-name').value.trim();
+      const taps = parseInt(document.getElementById('friend-taps').value);
+      if (!name || isNaN(taps)) return;
+      const friends = getFriends();
+      friends.push({ name, taps });
+      saveFriends(friends);
+      renderFriendsTable();
+      document.getElementById('add-friend-form').reset();
+    }
+
+    updateUI();
+    renderTasks();
+    renderFriendsTable();
+  </script>
+</body>
+</html>
