@@ -1,25 +1,20 @@
+
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Tap Game</title>
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-    body {
-      font-family: Arial, sans-serif;
-      background: #f0f8ff;
-    }
+    /* Твои стили (без изменений) */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: Arial, sans-serif; background: #f0f8ff; }
+
     #loader {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
       background: #000;
       display: flex;
       flex-direction: column;
@@ -28,15 +23,16 @@
       z-index: 9999;
       overflow: hidden;
     }
+
     #loader img {
       width: 100%;
       height: 100%;
       object-fit: cover;
       position: absolute;
-      top: 0;
-      left: 0;
+      top: 0; left: 0;
       z-index: -1;
     }
+
     .loader-progress {
       position: absolute;
       bottom: 20px;
@@ -47,23 +43,27 @@
       overflow: hidden;
       z-index: 1;
     }
+
     .loader-progress-bar {
       height: 100%;
       width: 0%;
       background-color: #4caf50;
       transition: width 2s linear;
     }
+
     .loader-text {
       color: white;
       font-size: 1.5em;
       z-index: 1;
     }
+
     header {
       background: #4caf50;
       padding: 20px;
       color: white;
       text-align: center;
     }
+
     nav button {
       margin: 10px;
       padding: 10px 20px;
@@ -73,25 +73,30 @@
       border-radius: 8px;
       cursor: pointer;
     }
+
     section {
       display: none;
       padding: 20px;
       text-align: center;
     }
+
     section.active {
       display: block;
     }
+
     #tap-image {
       width: 150px;
       cursor: pointer;
       transition: transform 0.1s ease;
     }
+
     #tap-image:active {
       transform: scale(1.1);
     }
   </style>
 </head>
 <body>
+  <!-- Загрузочный экран -->
   <div id="loader">
     <img src="https://raw.githubusercontent.com/muvid-sudo-wesmart/tap-game/main/Frame_159-3.png" alt="Загрузка">
     <div class="loader-progress">
@@ -99,6 +104,8 @@
     </div>
     <p class="loader-text">Загрузка...</p>
   </div>
+
+  <!-- Основной интерфейс -->
   <header>
     <h1>🎮 Tap Game</h1>
     <nav>
@@ -107,6 +114,7 @@
       <button onclick="showSection('friends')">Друзья</button>
     </nav>
   </header>
+
   <section id="game" class="active">
     <h2>Нажми на картинку!</h2>
     <p>Тапов: <span id="counter">0</span></p>
@@ -115,25 +123,35 @@
     <progress id="progress" value="0" max="100"></progress><br><br>
     <img id="tap-image" src="https://raw.githubusercontent.com/muvid-sudo-wesmart/tap-game/main/tap.png" alt="Tap!" onclick="tap()">
   </section>
+
   <section id="tasks">
     <h2>🎯 Задания</h2>
     <ul id="task-list" style="list-style: none; padding: 0; max-width: 600px; margin: auto;"></ul>
   </section>
+
   <section id="friends">
     <h2>👥 Друзья</h2>
     <form id="add-friend-form" onsubmit="addFriend(event)" style="margin-bottom: 20px;">
-      <input type="text" id="friend-name" placeholder="Имя друга" required>
-      <input type="number" id="friend-taps" placeholder="Тапов" required>
+      <input type="text" id="friend-name" placeholder="Имя друга" required />
+      <input type="number" id="friend-taps" placeholder="Тапов" required />
       <button type="submit">Добавить</button>
     </form>
-    <table id="friends-table" style="width: 80%; margin: 0 auto; border-collapse: collapse;">
+    <table id="friends-table" style="width: 80%; margin: 0 auto;">
       <thead>
-        <tr><th>#</th><th>Имя</th><th>Тапы</th></tr>
+        <tr>
+          <th>#</th><th>Имя</th><th>Тапы</th>
+        </tr>
       </thead>
       <tbody></tbody>
     </table>
   </section>
 
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+
+  <script>
+    
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
@@ -151,46 +169,47 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    const userId = "user1";
-    let count = 0;
-    let bestScore = 0;
+    // Загрузка
+    window.addEventListener('load', () => {
+      const loader = document.getElementById('loader');
+      const progressBar = document.querySelector('.loader-progress-bar');
+      let progress = 0;
+      const interval = setInterval(() => {
+        progress += 5;
+        progressBar.style.width = progress + '%';
+        if (progress >= 100) {
+          clearInterval(interval);
+          setTimeout(() => loader.style.display = 'none', 500);
+        }
+      }, 100);
+    });
+
+    let count = parseInt(localStorage.getItem('currentCount')) || 0;
+    let bestScore = parseInt(localStorage.getItem('bestScore')) || 0;
+    const levelThresholds = [100, 500, 2000, 5000, 10000];
 
     function updateUI() {
       document.getElementById('counter').textContent = count;
       document.getElementById('best').textContent = bestScore;
-      let level = 1;
-      const thresholds = [100, 500, 2000, 5000, 10000];
-      for (let i = 0; i < thresholds.length; i++) {
-        if (count >= thresholds[i]) level = i + 2;
+      let currentLevel = 1;
+      for (let i = 0; i < levelThresholds.length; i++) {
+        if (count >= levelThresholds[i]) currentLevel = i + 2;
       }
-      document.getElementById('level').textContent = level;
-      const max = thresholds[level - 1] || 10000;
-      const prev = thresholds[level - 2] || 0;
-      document.getElementById('progress').max = max - prev;
+      document.getElementById('level').textContent = currentLevel;
+      const next = levelThresholds[currentLevel - 1] || 10000;
+      const prev = levelThresholds[currentLevel - 2] || 0;
+      document.getElementById('progress').max = next - prev;
       document.getElementById('progress').value = count - prev;
-    }
-
-    function saveBestScore() {
-      db.ref('users/' + userId).set({ bestScore, taps: count });
-    }
-
-    function loadBestScore() {
-      db.ref('users/' + userId).once('value').then(snapshot => {
-        const data = snapshot.val();
-        if (data) {
-          bestScore = data.bestScore || 0;
-          count = data.taps || 0;
-          updateUI();
-        }
-      });
     }
 
     function tap() {
       count++;
       if (count > bestScore) {
         bestScore = count;
-        saveBestScore();
+        localStorage.setItem('bestScore', bestScore);
       }
+      localStorage.setItem('currentCount', count);
+      db.ref('game/score').set({ count, bestScore });
       updateUI();
     }
 
@@ -199,45 +218,82 @@
       document.getElementById(id).classList.add('active');
     }
 
-    function addFriend(e) {
-      e.preventDefault();
-      const name = document.getElementById('friend-name').value;
-      const taps = parseInt(document.getElementById('friend-taps').value);
-      db.ref('friends').push({ name, taps });
-      renderFriendsTable();
-    }
+    const tasks = [
+      { id: 'task1', text: 'Подписаться на Telegram', reward: 300, link: 'https://t.me/yourchannel' },
+      { id: 'task2', text: 'Подписаться на VK', reward: 300, link: 'https://vk.com/yourgroup' },
+      { id: 'task3', text: 'Посетить сайт', reward: 200, link: 'https://example.com' },
+      { id: 'task4', text: 'Посмотреть видео', reward: 400, link: 'https://youtu.be/yourvideo' },
+      { id: 'task5', text: 'Поделиться игрой', reward: 500, link: 'https://yourgame.link/share' }
+    ];
 
-    function renderFriendsTable() {
-      db.ref('friends').once('value').then(snapshot => {
-        const tbody = document.querySelector('#friends-table tbody');
-        tbody.innerHTML = '';
-        const data = snapshot.val() || {};
-        const friends = Object.values(data);
-        friends.sort((a, b) => b.taps - a.taps);
-        friends.forEach((friend, i) => {
-          const row = document.createElement('tr');
-          row.innerHTML = `<td>${i + 1}</td><td>${friend.name}</td><td>${friend.taps}</td>`;
-          tbody.appendChild(row);
-        });
+    function renderTasks() {
+      const taskList = document.getElementById('task-list');
+      taskList.innerHTML = '';
+      tasks.forEach(task => {
+        const isDone = localStorage.getItem(`task_${task.id}`) === 'done';
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <div style="padding: 10px; background: #fff; margin: 10px; border-radius: 8px;">
+            <strong>${task.text}</strong><br>
+            🎁 Награда: ${task.reward} тапов<br>
+            ${isDone ? '<span style="color:green;">✅ Выполнено</span>' :
+              `<button onclick="completeTask('${task.id}', ${task.reward}, '${task.link}')">Выполнить</button>`}
+          </div>`;
+        taskList.appendChild(li);
       });
     }
 
-    window.addEventListener('load', () => {
-      const loader = document.getElementById('loader');
-      const bar = document.querySelector('.loader-progress-bar');
-      let p = 0;
-      const intv = setInterval(() => {
-        p += 5;
-        bar.style.width = p + '%';
-        if (p >= 100) {
-          clearInterval(intv);
-          setTimeout(() => { loader.style.display = 'none'; }, 500);
-        }
-      }, 100);
+    function completeTask(id, reward, link = '') {
+      if (link) window.open(link, '_blank');
+      count += reward;
+      localStorage.setItem('currentCount', count);
+      if (count > bestScore) {
+        bestScore = count;
+        localStorage.setItem('bestScore', bestScore);
+      }
+      localStorage.setItem(`task_${id}`, 'done');
+      db.ref('game/score').set({ count, bestScore });
+      updateUI();
+      renderTasks();
+    }
 
-      loadBestScore();
+    function getFriends() {
+      return JSON.parse(localStorage.getItem('friendsList') || '[]');
+    }
+
+    function saveFriends(friends) {
+      localStorage.setItem('friendsList', JSON.stringify(friends));
+      db.ref('game/friends').set(friends);
+    }
+
+    function renderFriendsTable() {
+      const friends = getFriends();
+      const tbody = document.querySelector('#friends-table tbody');
+      tbody.innerHTML = '';
+      friends.sort((a, b) => b.taps - a.taps);
+      friends.forEach((f, i) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `<td>${i+1}</td><td>${f.name}</td><td>${f.taps}</td>`;
+        tbody.appendChild(row);
+      });
+    }
+
+    function addFriend(e) {
+      e.preventDefault();
+      const name = document.getElementById('friend-name').value.trim();
+      const taps = parseInt(document.getElementById('friend-taps').value);
+      if (!name || isNaN(taps)) return;
+      const friends = getFriends();
+      friends.push({ name, taps });
+      saveFriends(friends);
       renderFriendsTable();
-    });
+      document.getElementById('add-friend-form').reset();
+    }
+
+    updateUI();
+    renderTasks();
+    renderFriendsTable();
   </script>
 </body>
 </html>
+
