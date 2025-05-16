@@ -6,120 +6,60 @@
   <title>Тапай за Калашникова</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: Arial, sans-serif; background: #f0f8ff; padding-bottom: 70px; }
-
-    #loader {
-      position: fixed; top: 0; left: 0;
-      width: 100vw; height: 100vh;
-      background: #000;
-      display: flex; flex-direction: column;
-      justify-content: center; align-items: center;
-      z-index: 9999;
-    }
-
-    #loader img {
-      width: 100%; height: 100%;
-      object-fit: cover; position: absolute;
-      z-index: -1;
-    }
-
-    .loader-progress {
-      position: absolute; bottom: 20px;
-      width: 80%; height: 10px;
-      background-color: rgba(255,255,255,0.5);
-      border-radius: 5px; overflow: hidden;
-    }
-
-    .loader-progress-bar {
-      height: 100%; width: 0%;
-      background-color: #4caf50;
-      transition: width 2s linear;
-    }
-
-    .loader-text {
-      color: white;
-      font-size: 1.5em;
-      z-index: 1;
-    }
-
-    section {
-      display: none;
-      padding: 20px; text-align: center;
-    }
-
-    section.active {
-      display: block;
-    }
-
-    #tap-image {
-      width: 150px; cursor: pointer;
-      transition: transform 0.1s ease;
-    }
-
-    #tap-image:active {
-      transform: scale(1.1);
-    }
-
+    body { font-family: Arial, sans-serif; background: #f0f8ff; padding-bottom: 60px; }
+    header { background: #4caf50; padding: 20px; color: white; text-align: center; }
     nav {
-      position: fixed; bottom: 0;
-      width: 100%;
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      background: #4caf50;
       display: flex;
       justify-content: space-around;
-      background: #4caf50;
-      padding: 10px 0;
-      box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
-      z-index: 100;
+      padding: 10px;
+      z-index: 10;
+      transition: transform 0.3s ease;
     }
-
     nav button {
       flex: 1;
+      margin: 0 5px;
       padding: 10px;
-      background: transparent;
       border: none;
-      color: white;
-      font-size: 16px;
-      transition: background 0.3s;
+      background: white;
+      color: #4caf50;
+      border-radius: 10px;
+      font-weight: bold;
     }
+    section { display: none; padding: 20px; text-align: center; }
+    section.active { display: block; animation: fadeIn 0.3s ease; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-    nav button:hover {
-      background: rgba(255,255,255,0.1);
-    }
+    #tap-image { width: 150px; cursor: pointer; transition: transform 0.1s ease; }
+    #tap-image:active { transform: scale(1.1); }
   </style>
 </head>
 <body>
-  <div id="loader">
-    <img src="https://raw.githubusercontent.com/muvid-sudo-wesmart/tap-game/main/Frame_159-3.png" alt="Загрузка">
-    <div class="loader-progress">
-      <div class="loader-progress-bar"></div>
-    </div>
-    <p class="loader-text">Загрузка...</p>
-  </div>
+  <header>
+    <h1>Тапай за Калашникова!</h1>
+  </header>
 
   <section id="game" class="active">
     <h2>Нажми на картинку!</h2>
     <p>Тапов: <span id="counter">0</span></p>
-    <p>Рекорд: <span id="best">0</span></p>
-    <p>Уровень: <span id="level">1</span></p>
-    <progress id="progress" value="0" max="100"></progress><br><br>
-    <img id="tap-image" src="https://raw.githubusercontent.com/muvid-sudo-wesmart/tap-game/main/tap.png" onclick="tap()">
+    <img id="tap-image" src="https://raw.githubusercontent.com/muvid-sudo-wesmart/tap-game/main/tap.png" alt="Tap!" onclick="tap()">
   </section>
 
   <section id="tasks">
     <h2>🎯 Задания</h2>
-    <ul id="task-list" style="list-style:none; padding:0;"></ul>
+    <ul id="task-list"></ul>
   </section>
 
   <section id="friends">
     <h2>👥 Друзья</h2>
     <form onsubmit="addFriend(event)">
-      <input type="text" id="friend-name" placeholder="Имя друга" required />
-      <input type="number" id="friend-taps" placeholder="Тапов" required />
+      <input id="friend-name" placeholder="Имя друга" required>
+      <input id="friend-taps" type="number" placeholder="Тапы" required>
       <button type="submit">Добавить</button>
     </form>
-    <table style="width:100%; margin-top:10px;">
-      <thead><tr><th>#</th><th>Имя</th><th>Тапы</th></tr></thead>
-      <tbody id="friends-table"></tbody>
-    </table>
+    <ul id="friend-list"></ul>
   </section>
 
   <nav>
@@ -128,68 +68,19 @@
     <button onclick="showSection('friends')">Друзья</button>
   </nav>
 
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <script>
-    // Загрузочный экран
-    window.addEventListener('load', () => {
-      const loader = document.getElementById('loader');
-      const progressBar = document.querySelector('.loader-progress-bar');
-      let progress = 0;
-      const interval = setInterval(() => {
-        progress += 5;
-        progressBar.style.width = progress + '%';
-        if (progress >= 100) {
-          clearInterval(interval);
-          setTimeout(() => loader.style.display = 'none', 500);
-        }
-      }, 100);
-    });
-
-    // Telegram WebApp init
     const tg = window.Telegram.WebApp;
-    tg.expand();
+    tg.expand(); // Раскрыть WebApp
 
-    // Игровая логика
+    const user = tg.initDataUnsafe?.user || {};
+    const user_id = user?.id || null;
+
     let count = 0;
-    let bestScore = 0;
-    let levelThresholds = [100, 500, 1000, 3000, 5000];
-
-    async function loadData() {
-      const res = await fetch('/api/load');
-      const data = await res.json();
-      count = data.count || 0;
-      bestScore = data.best || 0;
-      updateUI();
-      renderTasks();
-      renderFriends();
-    }
-
-    async function saveData() {
-      await fetch('/api/save', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ count, best: bestScore, friends: getFriends() })
-      });
-    }
-
-    function updateUI() {
-      document.getElementById('counter').textContent = count;
-      document.getElementById('best').textContent = bestScore;
-      let level = 1;
-      for (let i = 0; i < levelThresholds.length; i++) {
-        if (count >= levelThresholds[i]) level = i + 2;
-      }
-      document.getElementById('level').textContent = level;
-      const next = levelThresholds[level - 1] || 10000;
-      const prev = levelThresholds[level - 2] || 0;
-      document.getElementById('progress').max = next - prev;
-      document.getElementById('progress').value = count - prev;
-    }
 
     function tap() {
       count++;
-      if (count > bestScore) bestScore = count;
-      updateUI();
-      saveData();
+      document.getElementById('counter').textContent = count;
     }
 
     function showSection(id) {
@@ -197,79 +88,43 @@
       document.getElementById(id).classList.add('active');
     }
 
-    // Задания
-    const tasks = [
-      { id: 'subscribe-tg', text: 'Подписаться на канал', reward: 300, link: 'https://t.me/volonteri_kalashnikova' },
-      { id: 'invite-3', text: 'Пригласить 3 друзей', reward: 500 },
-      { id: 'invite-5', text: 'Пригласить 5 друзей', reward: 1000 },
-    ];
-
-    async function renderTasks() {
-      const taskList = document.getElementById('task-list');
-      taskList.innerHTML = '';
-      for (let task of tasks) {
-        const done = localStorage.getItem(`task_${task.id}`) === 'done';
-        let extra = '';
-        if (task.link) extra = ` <a href="${task.link}" target="_blank">🔗</a>`;
-        let btn = done ? '✅ Выполнено' : `<button onclick="completeTask('${task.id}', ${task.reward})">Выполнить</button>`;
-        if (task.id === 'subscribe-tg') {
-          const subRes = await fetch('/api/check-subscription');
-          const subData = await subRes.json();
-          if (!subData.subscribed) btn = `<a href="${task.link}" target="_blank">Подписаться</a>`;
-          else localStorage.setItem('task_subscribe-tg', 'done');
-        }
-        if (task.id === 'invite-3' && getFriends().length < 3) btn = 'Пригласите 3 друзей';
-        if (task.id === 'invite-5' && getFriends().length < 5) btn = 'Пригласите 5 друзей';
-        if ((task.id === 'invite-3' && getFriends().length >= 3) || (task.id === 'invite-5' && getFriends().length >= 5)) {
-          if (!done) btn = `<button onclick="completeTask('${task.id}', ${task.reward})">Получить</button>`;
-        }
-        taskList.innerHTML += `<li style="margin:10px;padding:10px;background:#fff;border-radius:8px;">
-          <strong>${task.text}</strong>${extra}<br>🎁 ${task.reward} тапов<br>${btn}</li>`;
-      }
-    }
-
-    function completeTask(id, reward) {
-      if (localStorage.getItem(`task_${id}`) === 'done') return;
-      count += reward;
-      if (count > bestScore) bestScore = count;
-      localStorage.setItem(`task_${id}`, 'done');
-      updateUI();
-      renderTasks();
-      saveData();
-    }
-
-    function getFriends() {
-      return JSON.parse(localStorage.getItem('friends') || '[]');
-    }
-
-    function saveFriends(friends) {
-      localStorage.setItem('friends', JSON.stringify(friends));
-    }
-
     function addFriend(e) {
       e.preventDefault();
-      const name = document.getElementById('friend-name').value.trim();
-      const taps = parseInt(document.getElementById('friend-taps').value);
-      if (!name || isNaN(taps)) return;
-      const friends = getFriends();
-      friends.push({ name, taps });
-      saveFriends(friends);
-      renderFriends();
-      renderTasks();
-      saveData();
-      e.target.reset();
+      const name = document.getElementById('friend-name').value;
+      const taps = document.getElementById('friend-taps').value;
+      const li = document.createElement('li');
+      li.textContent = `${name} — ${taps} тапов`;
+      document.getElementById('friend-list').appendChild(li);
     }
 
-    function renderFriends() {
-      const table = document.getElementById('friends-table');
-      const friends = getFriends();
-      table.innerHTML = '';
-      friends.forEach((f, i) => {
-        table.innerHTML += `<tr><td>${i+1}</td><td>${f.name}</td><td>${f.taps}</td></tr>`;
+    const tasks = [
+      { text: 'Подписаться на канал', link: 'https://t.me/volonteri_kalashnikova' },
+      { text: 'Посмотреть сайт', link: 'https://example.com' },
+    ];
+
+    function renderTasks() {
+      const ul = document.getElementById('task-list');
+      tasks.forEach(t => {
+        const li = document.createElement('li');
+        li.innerHTML = `<a href="${t.link}" target="_blank">${t.text}</a>`;
+        ul.appendChild(li);
       });
     }
 
-    loadData();
+    renderTasks();
+
+    // Отправка данных на сервер
+    window.addEventListener('beforeunload', () => {
+      if (!user_id) return;
+      fetch('server.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          initData: tg.initData || '',
+          taps: count
+        })
+      });
+    });
   </script>
 </body>
 </html>
