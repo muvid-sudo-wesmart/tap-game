@@ -6,7 +6,7 @@
   <title>Тапай за Калашникова</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: Arial, sans-serif; background: #f0f8ff; padding-bottom: 70px; }
+    body { font-family: Arial, sans-serif; background: #f0f8ff; position: relative; }
 
     #loader {
       position: fixed;
@@ -53,10 +53,47 @@
       z-index: 1;
     }
 
+    header {
+      background: #4caf50;
+      padding: 20px;
+      color: white;
+      text-align: center;
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-around;
+      background: #4caf50;
+      position: fixed;
+      bottom: -60px;
+      left: 0;
+      width: 100%;
+      padding: 10px 0;
+      opacity: 0;
+      transition: all 0.6s ease;
+      z-index: 1000;
+    }
+
+    nav.visible {
+      bottom: 0;
+      opacity: 1;
+    }
+
+    nav button {
+      padding: 10px 20px;
+      border: none;
+      background: #4caf50;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
     section {
       display: none;
       padding: 20px;
       text-align: center;
+      padding-bottom: 80px; /* для отступа от нижних вкладок */
     }
 
     section.active {
@@ -72,46 +109,6 @@
     #tap-image:active {
       transform: scale(1.1);
     }
-
-    #bottom-nav {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      background: #4caf50;
-      display: flex;
-      justify-content: space-around;
-      padding: 10px 0;
-      z-index: 10000;
-    }
-
-    #bottom-nav button {
-      background: transparent;
-      border: none;
-      color: white;
-      font-size: 16px;
-      padding: 8px 16px;
-      border-radius: 6px;
-      transition: all 0.2s ease;
-    }
-
-    #bottom-nav button.active {
-      background-color: white;
-      color: #4caf50;
-      transform: scale(1.05);
-    }
-
-    table {
-      width: 100%;
-      max-width: 500px;
-      margin: auto;
-      border-collapse: collapse;
-    }
-
-    th, td {
-      border: 1px solid #ccc;
-      padding: 8px;
-    }
   </style>
 </head>
 <body>
@@ -125,7 +122,17 @@
     <p class="loader-text">Загрузка...</p>
   </div>
 
-  <!-- Основные разделы -->
+  <!-- Основной интерфейс -->
+  <header>
+    <h1>Тапай за Калашникова!</h1>
+  </header>
+
+  <nav id="main-nav">
+    <button onclick="showSection('game')">Игра</button>
+    <button onclick="showSection('tasks')">Задания</button>
+    <button onclick="showSection('friends')">Друзья</button>
+  </nav>
+
   <section id="game" class="active">
     <h2>Нажми на картинку!</h2>
     <p>Тапов: <span id="counter">0</span></p>
@@ -147,22 +154,17 @@
       <input type="number" id="friend-taps" placeholder="Тапов" required />
       <button type="submit">Добавить</button>
     </form>
-    <table>
+    <table id="friends-table" style="width: 80%; margin: 0 auto;">
       <thead>
-        <tr><th>#</th><th>Имя</th><th>Тапы</th></tr>
+        <tr>
+          <th>#</th><th>Имя</th><th>Тапы</th>
+        </tr>
       </thead>
       <tbody></tbody>
     </table>
   </section>
 
-  <!-- Нижнее меню -->
-  <nav id="bottom-nav">
-    <button onclick="showSection('game')">🎮 Игра</button>
-    <button onclick="showSection('tasks')">📋 Задания</button>
-    <button onclick="showSection('friends')">👥 Друзья</button>
-  </nav>
-
-  <!-- Firebase SDK -->
+  <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
   <script>
@@ -183,13 +185,17 @@
     window.addEventListener('load', () => {
       const loader = document.getElementById('loader');
       const progressBar = document.querySelector('.loader-progress-bar');
+      const nav = document.getElementById('main-nav');
       let progress = 0;
       const interval = setInterval(() => {
         progress += 5;
         progressBar.style.width = progress + '%';
         if (progress >= 100) {
           clearInterval(interval);
-          setTimeout(() => loader.style.display = 'none', 500);
+          setTimeout(() => {
+            loader.style.display = 'none';
+            nav.classList.add('visible');
+          }, 500);
         }
       }, 100);
     });
@@ -226,11 +232,6 @@
     function showSection(id) {
       document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
       document.getElementById(id).classList.add('active');
-
-      // Анимация и выделение кнопки
-      document.querySelectorAll('#bottom-nav button').forEach(btn => btn.classList.remove('active'));
-      const sectionToButton = { game: 0, tasks: 1, friends: 2 };
-      document.querySelectorAll('#bottom-nav button')[sectionToButton[id]].classList.add('active');
     }
 
     const tasks = [
@@ -238,7 +239,8 @@
       { id: 'task2', text: 'Подписаться на VK', reward: 300, link: 'https://m.vk.com/id803959232' },
       { id: 'task3', text: 'Посетить сайт', reward: 200, link: 'https://example.com' },
       { id: 'task4', text: 'Посмотреть видео', reward: 400, link: 'https://youtu.be/yourvideo' },
-      { id: 'task5', text: 'Проголосовать 14 сентября', reward: 500 }
+      { id: 'task5', text: 'Приведи 3 друзей', reward: 600 },
+      { id: 'task6', text: 'Приведи 5 друзей', reward: 1000 }
     ];
 
     function renderTasks() {
@@ -283,7 +285,7 @@
 
     function renderFriendsTable() {
       const friends = getFriends();
-      const tbody = document.querySelector('tbody');
+      const tbody = document.querySelector('#friends-table tbody');
       tbody.innerHTML = '';
       friends.sort((a, b) => b.taps - a.taps);
       friends.forEach((f, i) => {
@@ -308,7 +310,6 @@
     updateUI();
     renderTasks();
     renderFriendsTable();
-    showSection('game');
   </script>
 </body>
 </html>
