@@ -6,7 +6,10 @@
   <title>Тапай за Калашникова</title>
   <style>
     /* ====== Страница и фон ====== */
-    html, body { height:100%; margin:0; }
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
     body {
       font-family: Arial, sans-serif;
       background: radial-gradient(
@@ -17,175 +20,276 @@
       );
       color: #fff;
       overflow-x: hidden;
-      padding-bottom: 100px; /* пространство под меню */
+      padding-bottom: 100px;
+      text-align: center;
     }
 
     /* ====== Лоадер ====== */
     #loader {
-      position: fixed; inset:0;
+      position: fixed; inset: 0;
       background: rgba(0,0,0,0.4);
-      display:flex; flex-direction:column;
-      align-items:center; justify-content:center;
-      z-index:1000;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      z-index: 1000;
     }
     #loader img {
-      position:absolute; top:0; left:0;
-      width:100%; height:100%; object-fit:cover;
+      position: absolute; top: 0; left: 0;
+      width: 100%; height: 100%; object-fit: cover;
       filter: brightness(0.5);
     }
     .loader-progress {
-      width:80%; height:8px;
-      background:rgba(255,255,255,0.2);
-      border-radius:4px; overflow:hidden;
-      margin-top:12px;
+      width: 80%; height: 8px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 4px; overflow: hidden;
+      margin-top: 12px;
     }
     .loader-progress-bar {
-      width:0; height:100%;
-      background:#ff9800; transition:width .4s ease-out;
+      width: 0; height: 100%;
+      background: #ff9800;
+      transition: width 0.4s ease-out;
     }
     .loader-text {
-      margin-top:10px; font-size:1.2em; color:#fff;
+      margin-top: 10px;
+      font-size: 1.2em;
+      color: #fff;
     }
 
     /* ====== Анимация сердечек ====== */
     .heart {
-      position:absolute; font-size:24px; color:#ff6b81;
-      pointer-events:none; user-select:none;
-      animation:floatUp .8s ease-out forwards;
+      position: absolute;
+      font-size: 24px;
+      color: #ff6b81;
+      pointer-events: none;
+      user-select: none;
+      animation: floatUp 0.8s ease-out forwards;
     }
     @keyframes floatUp {
-      0%   { opacity:1; transform:translateY(0) scale(1) }
-      100% { opacity:0; transform:translateY(-60px) scale(1.5) }
+      0%   { opacity: 1; transform: translateY(0) scale(1); }
+      100% { opacity: 0; transform: translateY(-60px) scale(1.5); }
     }
 
     /* ====== Хедер ====== */
-    header { text-align:center; padding:20px 0 0; }
-    header h1 { margin:0; font-size:1.8em; }
-    header p  { margin:8px 0 0; font-size:1.2em; }
+    header {
+      padding: 20px 0 0;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 1.8em;
+    }
+    header p {
+      margin: 8px 0 0;
+      font-size: 1.2em;
+    }
 
     /* ====== Секции ====== */
-    main section { display:none; padding:20px; animation:fadeIn .3s ease forwards; }
-    main section.active { display:block; }
+    main section {
+      display: none;
+      padding: 20px;
+      animation: fadeIn .3s ease forwards;
+    }
+    main section.active {
+      display: block;
+    }
     @keyframes fadeIn {
-      from { opacity:0; transform:translateY(10px) }
-      to   { opacity:1; transform:translateY(0) }
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
 
     /* ====== Секция «Игра» ====== */
-    #game { position:relative; text-align:center; }
+    #game {
+      position: relative;
+      text-align: center;
+    }
     .tap-container {
-      width:240px; height:240px;
-      margin:24px auto;
-      background:#fff; border-radius:50%;
-      display:flex; align-items:center; justify-content:center;
-      position:relative; overflow:hidden;
+      display: inline-block;
+      padding: 20px;
+      background: #fff;
+      border-radius: 50%;
+      position: relative;
+      overflow: hidden;
     }
     #tap-image {
-      width:180px; cursor:pointer;
-      transition:transform .1s ease;
+      display: block;
+      width: 240px;
+      height: auto;
+      cursor: pointer;
+      transition: transform .1s ease;
     }
-    #tap-image:active { transform:scale(1.1); }
+    #tap-image:active {
+      transform: scale(1.1);
+    }
 
     /* ====== Уровень и прогресс ====== */
     .level-container {
-      width:80%; max-width:320px;
-      margin:12px auto;
+      width: 80%;
+      max-width: 320px;
+      margin: 12px auto;
     }
-    .level-info { font-size:1em; margin-bottom:6px; }
+    .level-info {
+      font-size: 1em;
+      margin-bottom: 6px;
+    }
     .level-progress-container {
-      width:100%; height:12px;
-      background:rgba(255,255,255,0.2);
-      border-radius:6px; overflow:hidden;
+      width: 100%;
+      height: 12px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 6px;
+      overflow: hidden;
     }
     .level-progress {
-      width:0; height:100%;
-      background:#ffd54f; transition:width .3s ease;
+      width: 0;
+      height: 100%;
+      background: #ffd54f;
+      transition: width .3s ease;
     }
-
-    /* ====== Текстовые показатели ====== */
     #game p, #game span {
-      margin:8px 0; font-size:1.1em;
-      color:#fff;
+      margin: 8px 0;
+      font-size: 1.1em;
+      color: #fff;
     }
 
     /* ====== Задания ====== */
-    #tasks ul { list-style:none; padding:0; max-width:600px; margin:auto; }
+    #tasks ul {
+      list-style: none;
+      padding: 0;
+      max-width: 600px;
+      margin: auto;
+    }
     .task-card {
-      background:rgba(255,255,255,0.1);
-      border-radius:8px; padding:12px; margin:8px 0;
-      text-align:left;
+      background: rgba(255,255,255,0.1);
+      border-radius: 8px;
+      padding: 12px;
+      margin: 8px 0;
+      text-align: left;
     }
-    .task-card a { color:#ffd54f; text-decoration:none; font-weight:bold; }
+    .task-card a {
+      color: #ffd54f;
+      text-decoration: none;
+      font-weight: bold;
+    }
     .task-card button {
-      margin-top:8px; padding:8px 12px;
-      background:#ff9800; color:#fff;
-      border:none; border-radius:4px;
-      cursor:pointer; transition:transform .1s;
+      margin-top: 8px;
+      padding: 8px 12px;
+      background: #ff9800;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: transform .1s;
     }
-    .task-card button:active { transform:scale(0.95) }
-    .done { color:#8bc34a; font-weight:bold; }
+    .task-card button:active {
+      transform: scale(0.95);
+    }
+    .done {
+      color: #8bc34a;
+      font-weight: bold;
+    }
 
     /* ====== Друзья ====== */
     #friends form {
-      display:flex; gap:8px; justify-content:center; margin-bottom:12px;
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      margin-bottom: 12px;
     }
-    #friends form input, #friends form button {
-      font-size:1em; border-radius:4px;
+    #friends form input,
+    #friends form button {
+      font-size: 1em;
+      border-radius: 4px;
     }
     #friends form input {
-      width:150px; padding:8px; border:1px solid #ccc;
+      width: 150px;
+      padding: 8px;
+      border: 1px solid #ccc;
     }
     #friends form button {
-      padding:8px 12px; background:#ff9800; color:#fff;
-      border:none; cursor:pointer; transition:transform .1s;
+      padding: 8px 12px;
+      background: #ff9800;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      transition: transform .1s;
     }
-    #friends form button:active { transform:scale(0.95) }
+    #friends form button:active {
+      transform: scale(0.95);
+    }
     #friends table {
-      width:90%; max-width:600px; margin:auto; border-collapse:collapse;
+      width: 90%;
+      max-width: 600px;
+      margin: auto;
+      border-collapse: collapse;
     }
-    #friends th, #friends td {
-      padding:8px; border-bottom:1px solid rgba(255,255,255,0.2);
-      text-align:left; color:#fff; font-size:0.95em;
+    #friends th,
+    #friends td {
+      padding: 8px;
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+      text-align: left;
+      font-size: 0.95em;
+      color: #fff;
     }
 
     /* ====== Статистика ====== */
-    #stats p { margin:8px 0; font-size:1.1em; }
+    #stats p {
+      margin: 8px 0;
+      font-size: 1.1em;
+    }
 
     /* ====== Достижения ====== */
-    #achievements ul { list-style:none; padding:0; }
-    #achievements li { margin:6px 0; }
+    #achievements ul {
+      list-style: none;
+      padding: 0;
+    }
+    #achievements li {
+      margin: 6px 0;
+    }
 
     /* ====== Нижнее меню ====== */
     nav.bottom-nav {
-      position:fixed; bottom:12px; left:50%;
-      transform:translateX(-50%);
-      display:flex; gap:8px;
-      background:rgba(255,255,255,0.25);
-      padding:6px; border-radius:20px;
-      width:calc(100% - 32px); max-width:500px;
-      box-shadow:0 2px 8px rgba(0,0,0,0.3);
-      z-index:500;
+      position: fixed;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 8px;
+      background: rgba(255,255,255,0.25);
+      padding: 6px;
+      border-radius: 20px;
+      width: calc(100% - 32px);
+      max-width: 500px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      z-index: 500;
     }
     nav.bottom-nav .tab {
-      flex:1; display:flex; flex-direction:column;
-      align-items:center; justify-content:center;
-      padding:6px 0; background:transparent;
-      border:none; outline:none;
-      color:#fff; font-size:0.8em;
-      cursor:pointer; transition:background .2s,color .2s;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 6px 0;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #fff;
+      font-size: 0.8em;
+      cursor: pointer;
+      transition: background .2s, color .2s;
     }
     nav.bottom-nav .tab img {
-      width:24px; height:24px; margin-bottom:4px;
-      filter:brightness(1.2);
+      width: 24px;
+      height: 24px;
+      margin-bottom: 4px;
+      filter: brightness(1.2);
     }
     nav.bottom-nav .tab:hover {
-      background:rgba(255,255,255,0.15);
+      background: rgba(255,255,255,0.15);
     }
     nav.bottom-nav .tab.active {
-      background:#fff; color:#1e88e5; border-radius:12px;
+      background: #fff;
+      color: #1e88e5;
+      border-radius: 12px;
     }
     nav.bottom-nav .tab.active img {
-      filter:none;
+      filter: none;
     }
   </style>
 </head>
@@ -200,8 +304,8 @@
 
   <!-- Header -->
   <header>
-    <h1>Тапай за Калашникова</h1>
-    <p>СЛЫШАТЬ. ПОМОГАТЬ. РЕШАТЬ.</p>
+    <h2>Тапай за Калашникова</h2>
+    <p>СЛЫШАТЬ ПОМОГАТЬ РЕШАТЬ</p>
   </header>
 
   <!-- Main content -->
@@ -297,11 +401,11 @@
         }
       }, 400);
 
-      // Данные
+      // Игровые данные
       let count = 0, best = 0, friends = [];
-      const MAX_LEVEL = 5, LEVEL_STEP = 1000;
+      const MAX_LEVEL = 5, STEP = 1000;
 
-      // Добавляет «сердечко»
+      // Создание «сердечка»
       function createHeart(e) {
         const heart = document.createElement('div');
         heart.className = 'heart';
@@ -313,7 +417,7 @@
         setTimeout(() => heart.remove(), 800);
       }
 
-      // Обновляет интерфейс
+      // Обновление UI
       function updateUI() {
         document.getElementById('counter').textContent    = count;
         document.getElementById('best').textContent       = best;
@@ -321,14 +425,12 @@
         document.getElementById('stat-best').textContent  = best;
 
         // уровень и прогресс
-        let lvl = Math.min(Math.floor(count/LEVEL_STEP)+1, MAX_LEVEL);
+        let lvl = Math.min(Math.floor(count/STEP) + 1, MAX_LEVEL);
         document.getElementById('level').textContent = lvl;
         document.querySelector('.level-info').textContent =
           `Уровень: ${lvl} / ${MAX_LEVEL}`;
-        let prog = lvl < MAX_LEVEL
-          ? count % LEVEL_STEP
-          : count - (MAX_LEVEL-1)*LEVEL_STEP;
-        let pct = Math.min(prog/LEVEL_STEP*100,100);
+        let prog = lvl < MAX_LEVEL ? count % STEP : count - (MAX_LEVEL-1)*STEP;
+        let pct = Math.min(prog/STEP*100,100);
         document.getElementById('level-progress').style.width = pct + '%';
 
         // достижения
@@ -340,7 +442,7 @@
         ach.innerHTML += `<li>👥 Друзей: ${friends.length}</li>`;
       }
 
-      // Рендер заданий
+      // Рендер задач
       function renderTasks() {
         const tasks = [
           {id:'t1', text:'Подпишись на <a href="https://t.me/volonteri_kalashnikova" target="_blank">Telegram</a>', reward:300},
@@ -396,13 +498,13 @@
 
       // Переключение вкладок
       window.showTab = (e,id) => {
-        document.querySelectorAll('main section').forEach(s=>s.classList.remove('active'));
+        document.querySelectorAll('main section').forEach(s => s.classList.remove('active'));
         document.getElementById(id).classList.add('active');
-        document.querySelectorAll('nav.bottom-nav .tab').forEach(b=>b.classList.remove('active'));
+        document.querySelectorAll('nav.bottom-nav .tab').forEach(b => b.classList.remove('active'));
         e.currentTarget.classList.add('active');
       };
 
-      // Обработчик клика
+      // Обработка клика по картинке
       window.tap = e => {
         createHeart(e);
         count++;
