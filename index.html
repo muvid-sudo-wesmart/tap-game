@@ -5,17 +5,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Тапай за Калашникова</title>
   <style>
-    /* ========== Обёртка и фон ========== */
+    /* ========== Страница и фон ========== */
     html, body {
       height: 100%;
       margin: 0;
     }
     body {
       font-family: Arial, sans-serif;
-      background: radial-gradient(circle at center, #ffffff 0%,, #4a5d8c 50%, #1e2a47 100%);
+      /* радиальный градиент: белый центр → синий край */
+      background: radial-gradient(
+        circle at center,
+        #ffffff 0%,
+        #4a5d8c 50%,
+        #1e2a47 100%
+      );
       color: #fff;
       overflow-x: hidden;
-      padding-bottom: 100px; /* под меню */
+      padding-bottom: 100px; /* место под меню */
     }
 
     /* ========== Анимация «сердечек» ========== */
@@ -87,15 +93,21 @@
       to   { opacity: 1; transform: translateY(0); }
     }
 
-    /* ========== Игра ========== */
+    /* ========== Секция «Игра» ========== */
     #game {
       position: relative;
       text-align: center;
     }
+    #game h2 {
+      margin-bottom: 12px;
+      font-size: 1.6em;
+      letter-spacing: 1px;
+    }
     #tap-image {
       display: block;
       margin: 16px auto;
-      width: 240px;
+      width: 240px;       /* увеличили размер */
+      height: auto;
       cursor: pointer;
       position: relative;
       z-index: 1;
@@ -103,11 +115,6 @@
     }
     #tap-image:active {
       transform: scale(1.1);
-    }
-    #game h2 {
-      margin-bottom: 12px;
-      font-size: 1.6em;
-      letter-spacing: 1px;
     }
     #game p, #game span {
       font-size: 1.1em;
@@ -138,13 +145,8 @@
       cursor: pointer;
       transition: transform .1s;
     }
-    .task-card button:active {
-      transform: scale(0.95);
-    }
-    .done {
-      color: #8bc34a;
-      font-weight: bold;
-    }
+    .task-card button:active { transform: scale(0.95); }
+    .done { color: #8bc34a; font-weight: bold; }
 
     /* ========== Друзья ========== */
     form {
@@ -153,10 +155,7 @@
       justify-content: center;
       margin-bottom: 12px;
     }
-    form input, form button {
-      font-size: 1em;
-      border-radius: 4px;
-    }
+    form input, form button { font-size: 1em; border-radius: 4px; }
     form input {
       width: 150px;
       border: 1px solid #ccc;
@@ -170,20 +169,15 @@
       cursor: pointer;
       transition: transform .1s;
     }
-    form button:active {
-      transform: scale(0.95);
-    }
+    form button:active { transform: scale(0.95); }
     table {
-      width: 90%;
-      max-width: 600px;
-      margin: auto;
-      border-collapse: collapse;
+      width: 90%; max-width: 600px;
+      margin: auto; border-collapse: collapse;
     }
     th, td {
       padding: 8px;
       border-bottom: 1px solid rgba(255,255,255,0.2);
-      text-align: left;
-      font-size: 0.95em;
+      text-align: left; font-size: 0.95em;
     }
 
     /* ========== Нижнее меню ========== */
@@ -218,8 +212,7 @@
       transition: background .2s, color .2s;
     }
     nav.bottom-nav .tab img {
-      width: 24px;
-      height: 24px;
+      width: 24px; height: 24px;
       margin-bottom: 4px;
       filter: brightness(1.2);
     }
@@ -245,14 +238,16 @@
     <p class="loader-text">Загрузка…</p>
   </div>
 
+  <!-- Header -->
   <header>
-    <h2>Тапай за Калашникова</h2>
+    <h1>Тапай за Калашникова</h1>
   </header>
 
+  <!-- Main Content -->
   <main>
     <!-- Игра -->
     <section id="game" class="active">
-      <h3>СЛЫШАТЬ ПОМОГАТЬ РЕШАТЬ</h3>
+      <h2>СЛЫШАТЬ. ПОМОГАТЬ. РЕШАТЬ.</h2>
       <img id="tap-image"
            src="https://raw.githubusercontent.com/muvid-sudo-wesmart/tap-game/main/tap.png"
            alt="Tap"
@@ -320,6 +315,7 @@
     </button>
   </nav>
 
+  <!-- Скрипты -->
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       // Лоадер
@@ -431,7 +427,7 @@
         e.currentTarget.classList.add('active');
       };
 
-      // Функция tap с эффектом сердца
+      // Обработка тапов
       window.tap = e => {
         createHeart(e);
         count++;
