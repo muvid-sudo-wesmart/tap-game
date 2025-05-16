@@ -1,44 +1,61 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Тапай за Калашникова</title>
   <style>
-    * { box-sizing: border-box; margin:0; padding:0 }
+    /* Сброс */
+    * { box-sizing: border-box; margin: 0; padding: 0 }
     body {
       font-family: Arial, sans-serif;
       background: #f0f8ff;
       color: #333;
-      overflow-x: hidden;
-      padding-bottom: 60px; /* пространство под меню */
+      padding-bottom: 60px; /* под меню */
     }
 
-    /* ==== Загрузочный экран ==== */
+    /* === Лоадер === */
     #loader {
-      position: fixed; inset:0;
-      background: #000;
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
+      position: fixed;
+      inset: 0;
+      background: transparent; /* прозрачный фон */
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
       z-index: 1000;
     }
-    #loader p {
-      color: #fff;
-      font-size: 1.5em;
-      margin-bottom: 12px;
+    #loader img {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0; /* за прогресс-баром и текстом */
     }
-    .bar {
+    .loader-progress {
       width: 80%; height: 10px;
       background: rgba(255,255,255,0.3);
-      border-radius: 5px; overflow: hidden;
+      border-radius: 5px;
+      overflow: hidden;
+      position: relative;
+      z-index: 1;
+      margin-top: 8px;
     }
-    .bar-inner {
-      width: 0; height:100%;
+    .loader-progress-bar {
+      width: 0; height: 100%;
       background: #4caf50;
       transition: width 2s linear;
     }
+    .loader-text {
+      margin-top: 12px;
+      color: #fff;
+      font-size: 1.25em;
+      position: relative;
+      z-index: 1;
+    }
 
-    /* ==== Шапка ==== */
+    /* === Шапка === */
     header {
       background: #4caf50;
       padding: 16px;
@@ -46,10 +63,10 @@
     }
     header h1 {
       color: #fff;
-      font-size: 2em;
+      font-size: 1.8em;
     }
 
-    /* ==== Секции ==== */
+    /* === Секции === */
     main section {
       display: none;
       padding: 20px;
@@ -63,6 +80,8 @@
       from { opacity:0; transform: translateY(20px) }
       to   { opacity:1; transform: translateY(0) }
     }
+
+    /* Заголовки и тексты */
     main h2 {
       font-size: 1.5em;
       margin-bottom: 12px;
@@ -72,24 +91,24 @@
       margin: 8px 0;
     }
 
-    /* ==== Игра ==== */
+    /* === Игра === */
     #tap-image {
       width: 200px;
       cursor: pointer;
-      transition: transform .1s;
+      transition: transform .1s ease;
       margin: 16px 0;
     }
     #tap-image:active {
       transform: scale(1.1);
     }
 
-    /* ==== Задания ==== */
+    /* === Задания === */
     ul { list-style:none; padding:0; max-width:600px; margin:auto }
     .task-card {
       background: #fff;
       border-radius: 8px;
-      margin: 8px 0;
       padding: 12px;
+      margin: 8px 0;
       text-align: left;
     }
     .task-card a {
@@ -106,9 +125,12 @@
       border-radius:4px;
       cursor:pointer;
     }
-    .done { color: green; font-weight: bold }
+    .done {
+      color: green;
+      font-weight: bold;
+    }
 
-    /* ==== Друзья ==== */
+    /* === Друзья === */
     form {
       display: flex;
       gap: 8px;
@@ -120,9 +142,16 @@
       font-size: 1em;
       border-radius: 4px;
     }
-    form input { width: 150px; border:1px solid #ccc }
-    form button { background:#4caf50; color:#fff; border:none; cursor:pointer }
-
+    form input {
+      width: 150px;
+      border: 1px solid #ccc;
+    }
+    form button {
+      background: #4caf50;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+    }
     table {
       width: 90%;
       max-width: 600px;
@@ -132,25 +161,26 @@
     th, td {
       padding: 8px;
       border-bottom: 1px solid #bbb;
-      font-size: 0.95em;
       text-align: left;
+      font-size: 0.95em;
     }
 
-    /* ==== Нижнее меню ==== */
+    /* === Нижнее меню === */
     nav.bottom-nav {
-      position: fixed; bottom:0; left:0; right:0;
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
       background: #4caf50;
       display: flex;
       z-index: 500;
     }
     nav.bottom-nav button {
-      flex:1;
+      flex: 1;
       padding: 12px 0;
-      background:none;
-      border:none;
-      color:#fff;
+      background: none;
+      border: none;
+      color: #fff;
       font-size: 1em;
-      cursor:pointer;
+      cursor: pointer;
     }
     nav.bottom-nav button:hover {
       background: rgba(255,255,255,0.15);
@@ -161,18 +191,18 @@
 
   <!-- Loader -->
   <div id="loader">
-    <p>Загрузка…</p>
-    <div class="bar"><div class="bar-inner"></div></div>
+    <img src="https://raw.githubusercontent.com/muvid-sudo-wesmart/tap-game/main/Frame_159-3.png" alt="Загрузка">
+    <div class="loader-progress"><div class="loader-progress-bar"></div></div>
+    <p class="loader-text">Загрузка…</p>
   </div>
 
-  <!-- Header -->
   <header><h1>Тапай за Калашникова</h1></header>
 
   <main>
     <!-- Игра -->
     <section id="game" class="active">
       <h2>Нажми на картинку!</h2>
-      <img id="tap-image" src="https://raw.githubusercontent.com/muvid-sudo-wesmart/tap-game/main/tap.png" alt="Тап">
+      <img id="tap-image" src="https://raw.githubusercontent.com/muvid-sudo-wesmart/tap-game/main/tap.png" alt="Tap" onclick="tap()">
       <p>Тапов: <span id="counter">0</span></p>
       <p>Рекорд: <span id="best">0</span></p>
       <p>Уровень: <span id="level">1</span></p>
@@ -212,7 +242,6 @@
     </section>
   </main>
 
-  <!-- Bottom Nav -->
   <nav class="bottom-nav">
     <button onclick="showTab('game')">Игра</button>
     <button onclick="showTab('tasks')">Задания</button>
@@ -221,113 +250,114 @@
     <button onclick="showTab('achievements')">Достижения</button>
   </nav>
 
-
   <script>
-    document.addEventListener('DOMContentLoaded',()=> {
-      // loader animation
-      let p=0;
-      const bar = document.querySelector('.bar-inner');
+    document.addEventListener('DOMContentLoaded', () => {
+      // Лоадер
+      let progress = 0;
+      const bar = document.querySelector('.loader-progress-bar');
       const loader = document.getElementById('loader');
-      const iv = setInterval(()=>{
-        p+=20;
-        bar.style.width=p+'%';
-        if(p>=100) {
-          clearInterval(iv);
-          setTimeout(()=>loader.style.display='none',200);
+      const interval = setInterval(() => {
+        progress += 20;
+        bar.style.width = progress + '%';
+        if (progress >= 100) {
+          clearInterval(interval);
+          setTimeout(() => loader.style.display = 'none', 200);
         }
-      },400);
+      }, 400);
 
-      // данные
-      let count = 0;
-      let best = 0;
-      let friends = [];
+      // Данные
+      let count = 0, best = 0, friends = [];
+      const thresholds = [100,500,2000,5000,10000];
 
-      // обновить UI
-      function updateUI(){
+      // UI обновление
+      function updateUI() {
         document.getElementById('counter').textContent = count;
         document.getElementById('best').textContent = best;
         document.getElementById('stat-total').textContent = count;
         document.getElementById('stat-best').textContent = best;
-        // уровень
-        const th=[100,500,2000,5000,10000];
-        let lvl=1;
-        th.forEach((t,i)=>{ if(count>=t) lvl=i+2 });
+        let lvl = 1;
+        thresholds.forEach((t,i)=>{ if(count>=t) lvl=i+2 });
         document.getElementById('level').textContent = lvl;
-        // достижения
+        // Достижения
         const ach = document.getElementById('achievement-list');
-        ach.innerHTML='';
-        if(best>=100) ach.innerHTML+='<li>🔥 100 тапов</li>';
-        if(best>=1000) ach.innerHTML+='<li>💥 1 000 тапов</li>';
-        if(best>=5000) ach.innerHTML+='<li>🚀 5 000 тапов</li>';
-        ach.innerHTML+=`<li>👥 Друзей: ${friends.length}</li>`;
+        ach.innerHTML = '';
+        if (best >= 100) ach.innerHTML += '<li>🔥 100 тапов</li>';
+        if (best >= 1000) ach.innerHTML += '<li>💥 1 000 тапов</li>';
+        if (best >= 5000) ach.innerHTML += '<li>🚀 5 000 тапов</li>';
+        ach.innerHTML += `<li>👥 Друзей: ${friends.length}</li>`;
       }
 
-      // переключение вкладок
-      window.showTab=id=>{
+      // Вкладки
+      window.showTab = id => {
         document.querySelectorAll('main section').forEach(s=>s.classList.remove('active'));
         document.getElementById(id).classList.add('active');
       };
 
-      // тап
-      window.tap=()=>{
+      // Тап
+      window.tap = () => {
         count++;
-        if(count>best) best=count;
+        if (count > best) best = count;
         updateUI();
         renderTasks();
       };
 
-      // задания
-      function renderTasks(){
-        const tasks=[
+      // Задания
+      function renderTasks() {
+        const tasks = [
           {id:'t1', text:'Подпишись на <a href="https://t.me/volonteri_kalashnikova" target="_blank">Telegram</a>', reward:300},
           {id:'t2', text:'Подпишись на <a href="https://vk.com/id803959232" target="_blank">VK</a>', reward:300},
           {id:'t3', text:'Проголосуй 14 сентября', reward:500},
           {id:'t4', text:'Пригласи 3 друзей', reward:700},
-          {id:'t5', text:'Пригласи 5 друзей', reward:1000},
+          {id:'t5', text:'Пригласи 5 друзей', reward:1000}
         ];
         const ul = document.getElementById('task-list');
-        ul.innerHTML='';
-        tasks.forEach(t=>{
+        ul.innerHTML = '';
+        tasks.forEach(t => {
           const done = localStorage.getItem('task_'+t.id);
           const li = document.createElement('li');
-          li.className='task-card';
-          li.innerHTML=`
+          li.className = 'task-card';
+          li.innerHTML = `
             <strong>${t.text}</strong><br>🎁 ${t.reward} тапов<br>
-            ${done?'<span class="done">✅ Выполнено</span>':
+            ${done ? '<span class="done">✅ Выполнено</span>' :
               `<button onclick="completeTask('${t.id}',${t.reward})">Выполнить</button>`}
           `;
           ul.appendChild(li);
         });
       }
-      window.completeTask=(id,rew)=>{
-        if(!localStorage.getItem('task_'+id)){
-          count+=rew; if(count>best)best=count;
+      window.completeTask = (id, reward) => {
+        if (!localStorage.getItem('task_'+id)) {
+          count += reward;
+          if (count > best) best = count;
           localStorage.setItem('task_'+id,'done');
-          updateUI(); renderTasks();
+          updateUI();
+          renderTasks();
         }
       };
 
-      // друзья
-      function renderFriends(){
-        const tb=document.getElementById('friends-table');
-        tb.innerHTML='';
-        friends.forEach((f,i)=>{
-          tb.innerHTML+=`<tr><td>${i+1}</td><td>${f.name}</td><td>${f.taps}</td></tr>`;
+      // Друзья
+      function renderFriends() {
+        const tb = document.getElementById('friends-table');
+        tb.innerHTML = '';
+        friends.forEach((f,i) => {
+          tb.innerHTML += `<tr><td>${i+1}</td><td>${f.name}</td><td>${f.taps}</td></tr>`;
         });
       }
-      window.addFriend=e=>{
+      window.addFriend = e => {
         e.preventDefault();
-        const n=document.getElementById('friend-name').value.trim();
-        const t=parseInt(document.getElementById('friend-taps').value);
-        if(n&& !isNaN(t)){
-          friends.push({name:n,taps:t});
-          renderFriends(); updateUI();  
+        const name = document.getElementById('friend-name').value.trim();
+        const taps = parseInt(document.getElementById('friend-taps').value);
+        if (name && !isNaN(taps)) {
+          friends.push({name,taps});
+          updateUI();
+          renderFriends();
         }
         e.target.reset();
       };
 
-      // инициализация
-      updateUI(); renderTasks(); renderFriends();
+      // Инициализация
+      updateUI();
+      renderTasks();
+      renderFriends();
     });
   </script>
 </body>
