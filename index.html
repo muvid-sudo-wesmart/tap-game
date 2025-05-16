@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -7,9 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Тапай за Калашникова</title>
   <style>
-    /* Твои стили (без изменений) */
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: Arial, sans-serif; background: #f0f8ff; }
+    body { font-family: Arial, sans-serif; background: #f0f8ff; padding-bottom: 70px; }
 
     #loader {
       position: fixed;
@@ -21,7 +18,6 @@
       justify-content: center;
       align-items: center;
       z-index: 9999;
-      overflow: hidden;
     }
 
     #loader img {
@@ -57,23 +53,6 @@
       z-index: 1;
     }
 
-    header {
-      background: #4caf50;
-      padding: 20px;
-      color: white;
-      text-align: center;
-    }
-
-    nav button {
-      margin: 10px;
-      padding: 10px 20px;
-      border: none;
-      background: #4caf50;
-      color: white;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-
     section {
       display: none;
       padding: 20px;
@@ -93,9 +72,50 @@
     #tap-image:active {
       transform: scale(1.1);
     }
+
+    #bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: #4caf50;
+      display: flex;
+      justify-content: space-around;
+      padding: 10px 0;
+      z-index: 10000;
+    }
+
+    #bottom-nav button {
+      background: transparent;
+      border: none;
+      color: white;
+      font-size: 16px;
+      padding: 8px 16px;
+      border-radius: 6px;
+      transition: all 0.2s ease;
+    }
+
+    #bottom-nav button.active {
+      background-color: white;
+      color: #4caf50;
+      transform: scale(1.05);
+    }
+
+    table {
+      width: 100%;
+      max-width: 500px;
+      margin: auto;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+    }
   </style>
 </head>
 <body>
+
   <!-- Загрузочный экран -->
   <div id="loader">
     <img src="https://raw.githubusercontent.com/muvid-sudo-wesmart/tap-game/main/Frame_159-3.png" alt="Загрузка">
@@ -105,16 +125,7 @@
     <p class="loader-text">Загрузка...</p>
   </div>
 
-  <!-- Основной интерфейс -->
-  <header>
-    <h1>Тапай за Калашникова!</h1>
-    <nav>
-      <button onclick="showSection('game')">Игра</button>
-      <button onclick="showSection('tasks')">Задания</button>
-      <button onclick="showSection('friends')">Друзья</button>
-    </nav>
-  </header>
-
+  <!-- Основные разделы -->
   <section id="game" class="active">
     <h2>Нажми на картинку!</h2>
     <p>Тапов: <span id="counter">0</span></p>
@@ -136,22 +147,21 @@
       <input type="number" id="friend-taps" placeholder="Тапов" required />
       <button type="submit">Добавить</button>
     </form>
-    <table id="friends-table" style="width: 80%; margin: 0 auto;">
+    <table>
       <thead>
-        <tr>
-          <th>#</th><th>Имя</th><th>Тапы</th>
-        </tr>
+        <tr><th>#</th><th>Имя</th><th>Тапы</th></tr>
       </thead>
       <tbody></tbody>
     </table>
   </section>
 
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+  <!-- Нижнее меню -->
+  <nav id="bottom-nav">
+    <button onclick="showSection('game')">🎮 Игра</button>
+    <button onclick="showSection('tasks')">📋 Задания</button>
+    <button onclick="showSection('friends')">👥 Друзья</button>
+  </nav>
 
-  <script>
-    
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
@@ -161,7 +171,7 @@
       authDomain: "tapgame-35abf.firebaseapp.com",
       databaseURL: "https://tapgame-35abf-default-rtdb.firebaseio.com",
       projectId: "tapgame-35abf",
-      storageBucket: "tapgame-35abf.firebasestorage.app",
+      storageBucket: "tapgame-35abf.appspot.com",
       messagingSenderId: "34906975722",
       appId: "1:34906975722:web:abe58668a3ac34fdddd693"
     };
@@ -216,6 +226,11 @@
     function showSection(id) {
       document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
       document.getElementById(id).classList.add('active');
+
+      // Анимация и выделение кнопки
+      document.querySelectorAll('#bottom-nav button').forEach(btn => btn.classList.remove('active'));
+      const sectionToButton = { game: 0, tasks: 1, friends: 2 };
+      document.querySelectorAll('#bottom-nav button')[sectionToButton[id]].classList.add('active');
     }
 
     const tasks = [
@@ -237,7 +252,7 @@
             <strong>${task.text}</strong><br>
             🎁 Награда: ${task.reward} тапов<br>
             ${isDone ? '<span style="color:green;">✅ Выполнено</span>' :
-              `<button onclick="completeTask('${task.id}', ${task.reward}, '${task.link}')">Выполнить</button>`}
+              `<button onclick="completeTask('${task.id}', ${task.reward}, '${task.link || ''}')">Выполнить</button>`}
           </div>`;
         taskList.appendChild(li);
       });
@@ -268,7 +283,7 @@
 
     function renderFriendsTable() {
       const friends = getFriends();
-      const tbody = document.querySelector('#friends-table tbody');
+      const tbody = document.querySelector('tbody');
       tbody.innerHTML = '';
       friends.sort((a, b) => b.taps - a.taps);
       friends.forEach((f, i) => {
@@ -293,7 +308,7 @@
     updateUI();
     renderTasks();
     renderFriendsTable();
+    showSection('game');
   </script>
 </body>
 </html>
-
