@@ -1,20 +1,38 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Тапай за Калашникова</title>
   <style>
-    /* === Сброс и фон === */
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    /* ========== Обёртка и фон ========== */
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
     body {
       font-family: Arial, sans-serif;
-      background: linear-gradient(to bottom, #37517e 0%, #304770 100%);
+      background: radial-gradient(circle at center, #4a5d8c 0%, #1e2a47 100%);
       color: #fff;
-      padding-bottom: 80px; /* место под нижнее меню */
+      overflow-x: hidden;
+      padding-bottom: 100px; /* под меню */
     }
 
-    /* === Лоадер === */
+    /* ========== Анимация «сердечек» ========== */
+    .heart {
+      position: absolute;
+      font-size: 24px;
+      color: #ff6b81;
+      pointer-events: none;
+      user-select: none;
+      animation: floatUp 0.8s ease-out forwards;
+    }
+    @keyframes floatUp {
+      0%   { opacity: 1; transform: translateY(0) scale(1); }
+      100% { opacity: 0; transform: translateY(-60px) scale(1.5); }
+    }
+
+    /* ========== Лоадер ========== */
     #loader {
       position: fixed; inset: 0;
       background: rgba(0,0,0,0.4);
@@ -36,7 +54,7 @@
     }
     .loader-progress-bar {
       width: 0; height: 100%;
-      background: #ff9800; /* апельсиновый */
+      background: #ff9800;
       transition: width 0.4s ease-out;
     }
     .loader-text {
@@ -45,18 +63,17 @@
       color: #fff;
     }
 
-    /* === Шапка === */
+    /* ========== Хедер ========== */
     header {
-      background: transparent;
-      padding: 12px 16px;
       text-align: center;
+      padding: 16px 0;
     }
     header h1 {
-      font-size: 1.6em;
-      color: #fff;
+      margin: 0;
+      font-size: 1.8em;
     }
 
-    /* === Секции === */
+    /* ========== Секции ========== */
     main section {
       display: none;
       padding: 20px;
@@ -70,51 +87,34 @@
       to   { opacity: 1; transform: translateY(0); }
     }
 
-    /* === Игра === */
+    /* ========== Игра ========== */
     #game {
-  position: relative;
-  /* чтобы фон-псевдоэлемент не обрезался: */
-  overflow: visible;
-  text-align: center;
-}
-    #game::before {
-  content: "";
-  position: absolute;
-  /* центрируем под самой картинкой */
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  /* подберите размер так, чтобы градиент доходил до нужных краёв */
-  width: 350px;
-  height: 350px;
-  /* радиальный градиент: в центре более плотный, к краям прозрачный */
-  background: radial-gradient(
-    circle at center,
-    rgba(224, 247, 250, 0.6) 0%,   /* светло-голубой полупрозрачный */
-    rgba(224, 247, 250, 0) 80%     /* полностью прозрачный */
-  );
-  border-radius: 50%;
-  z-index: 0;
-}
+      position: relative;
+      text-align: center;
+    }
     #tap-image {
       display: block;
-      width: 200px;
-      cursor: pointer;
-      transition: transform .1s ease;
       margin: 16px auto;
+      width: 180px;
+      cursor: pointer;
       position: relative;
-    z-index: 1;
+      z-index: 1;
+      transition: transform .1s ease;
     }
     #tap-image:active {
       transform: scale(1.1);
     }
+    #game h2 {
+      margin-bottom: 12px;
+      font-size: 1.6em;
+      letter-spacing: 1px;
+    }
     #game p, #game span {
-      color: #fff;
       font-size: 1.1em;
       margin: 6px 0;
     }
 
-    /* === Задания === */
+    /* ========== Задания ========== */
     ul { list-style: none; padding: 0; max-width: 600px; margin: auto; }
     .task-card {
       background: rgba(255,255,255,0.1);
@@ -146,7 +146,7 @@
       font-weight: bold;
     }
 
-    /* === Друзья === */
+    /* ========== Друзья ========== */
     form {
       display: flex;
       gap: 8px;
@@ -184,66 +184,56 @@
       border-bottom: 1px solid rgba(255,255,255,0.2);
       text-align: left;
       font-size: 0.95em;
-      color: #fff;
     }
 
-    /* === Нижнее меню === */
-   /* общий контейнер */
-nav.bottom-nav {
-  position: fixed;
-  bottom: 12px;           /* отступ от низа экрана */
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  gap: 8px;
-  background: rgba(255,255,255,0.25);
-  padding: 6px;
-  border-radius: 20px;
-  width: calc(100% - 32px);
-  max-width: 500px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-  z-index: 500;
-}
-
-/* каждая кнопка */
-nav.bottom-nav .tab {
-  flex: 1;
-  background: transparent;
-  border: none;
-  outline: none;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 6px 0;
-  color: #fff;
-  font-size: 0.8em;
-  cursor: pointer;
-  transition: background .2s, color .2s;
-}
-
-/* иконки */
-nav.bottom-nav .tab img {
-  width: 24px;
-  height: 24px;
-  margin-bottom: 4px;
-  filter: brightness(1.2);
-}
-
-/* состояние hover */
-nav.bottom-nav .tab:hover {
-  background: rgba(255,255,255,0.15);
-}
-
-/* активная вкладка */
-nav.bottom-nav .tab.active {
-  background: #fff;
-  color: #1e88e5;
-  border-radius: 12px;
-}
-nav.bottom-nav .tab.active img {
-  filter: none; /* показать оригинальный цвет иконки, если цвет внутри SVG задан */
-}
+    /* ========== Нижнее меню ========== */
+    nav.bottom-nav {
+      position: fixed;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 8px;
+      background: rgba(255,255,255,0.25);
+      padding: 6px;
+      border-radius: 20px;
+      width: calc(100% - 32px);
+      max-width: 500px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      z-index: 500;
+    }
+    nav.bottom-nav .tab {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 6px 0;
+      color: #fff;
+      font-size: 0.8em;
+      cursor: pointer;
+      transition: background .2s, color .2s;
+    }
+    nav.bottom-nav .tab img {
+      width: 24px;
+      height: 24px;
+      margin-bottom: 4px;
+      filter: brightness(1.2);
+    }
+    nav.bottom-nav .tab:hover {
+      background: rgba(255,255,255,0.15);
+    }
+    nav.bottom-nav .tab.active {
+      background: #fff;
+      color: #1e88e5;
+      border-radius: 12px;
+    }
+    nav.bottom-nav .tab.active img {
+      filter: none;
+    }
   </style>
 </head>
 <body>
@@ -255,13 +245,18 @@ nav.bottom-nav .tab.active img {
     <p class="loader-text">Загрузка…</p>
   </div>
 
-  <header><h2>Тапай за Калашникова</h2></header>
+  <header>
+    <h1>Тапай за Калашникова</h1>
+  </header>
 
   <main>
     <!-- Игра -->
     <section id="game" class="active">
-      <h3>СЛЫШАТЬ ПОМОГАТЬ РЕШАТЬ</h3>
-      <img id="tap-image" src="https://raw.githubusercontent.com/muvid-sudo-wesmart/tap-game/main/tap.png" alt="Tap" onclick="tap()">
+      <h2>СЛЫШАТЬ. ПОМОГАТЬ. РЕШАТЬ.</h2>
+      <img id="tap-image"
+           src="https://raw.githubusercontent.com/muvid-sudo-wesmart/tap-game/main/tap.png"
+           alt="Tap"
+           onclick="tap(event)">
       <p>Тапов: <span id="counter">0</span></p>
       <p>Рекорд: <span id="best">0</span></p>
       <p>Уровень: <span id="level">1</span></p>
@@ -301,28 +296,29 @@ nav.bottom-nav .tab.active img {
     </section>
   </main>
 
-<nav class="bottom-nav">
-  <button class="tab active" onclick="showTab('game')">
-    <img src="https://img.icons8.com/ios-filled/50/000000/home.png" alt="Главная">
-    <span>Главная</span>
-  </button>
-  <button class="tab" onclick="showTab('tasks')">
-    <img src="https://img.icons8.com/ios-filled/50/000000/checklist.png" alt="Задания">
-    <span>Задания</span>
-  </button>
-  <button class="tab" onclick="showTab('friends')">
-    <img src="https://img.icons8.com/ios-filled/50/000000/user-group-man-man.png" alt="Друзья">
-    <span>Друзья</span>
-  </button>
-  <button class="tab" onclick="showTab('stats')">
-    <img src="https://img.icons8.com/ios-filled/50/000000/combo-chart.png" alt="Статистика">
-    <span>Статистика</span>
-  </button>
-  <button class="tab" onclick="showTab('achievements')">
-    <img src="https://img.icons8.com/ios-filled/50/000000/medal.png" alt="Достижения">
-    <span>Топ</span>
-  </button>
-</nav>
+  <!-- Нижнее меню -->
+  <nav class="bottom-nav">
+    <button class="tab active" onclick="showTab(event,'game')">
+      <img src="https://img.icons8.com/ios-filled/50/000000/home.png" alt="Главная">
+      <span>Главная</span>
+    </button>
+    <button class="tab" onclick="showTab(event,'tasks')">
+      <img src="https://img.icons8.com/ios-filled/50/000000/checklist.png" alt="Задания">
+      <span>Задания</span>
+    </button>
+    <button class="tab" onclick="showTab(event,'friends')">
+      <img src="https://img.icons8.com/ios-filled/50/000000/user-group-man-man.png" alt="Друзья">
+      <span>Друзья</span>
+    </button>
+    <button class="tab" onclick="showTab(event,'stats')">
+      <img src="https://img.icons8.com/ios-filled/50/000000/combo-chart.png" alt="Статистика">
+      <span>Статистика</span>
+    </button>
+    <button class="tab" onclick="showTab(event,'achievements')">
+      <img src="https://img.icons8.com/ios-filled/50/000000/medal.png" alt="Топ">
+      <span>Топ</span>
+    </button>
+  </nav>
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -343,40 +339,37 @@ nav.bottom-nav .tab.active img {
       let count = 0, best = 0, friends = [];
       const thresholds = [100, 500, 2000, 5000, 10000];
 
+      // Создание «сердечка»
+      function createHeart(e) {
+        const heart = document.createElement('div');
+        heart.className = 'heart';
+        heart.textContent = '❤';
+        const rect = e.target.getBoundingClientRect();
+        heart.style.left = rect.left + rect.width/2 - 12 + 'px';
+        heart.style.top  = rect.top  + rect.height/2 - 12 + 'px';
+        document.body.appendChild(heart);
+        setTimeout(() => heart.remove(), 800);
+      }
+
       // Обновление UI
       function updateUI() {
-        document.getElementById('counter').textContent = count;
-        document.getElementById('best').textContent = best;
+        document.getElementById('counter').textContent    = count;
+        document.getElementById('best').textContent       = best;
         document.getElementById('stat-total').textContent = count;
-        document.getElementById('stat-best').textContent = best;
+        document.getElementById('stat-best').textContent  = best;
         let lvl = 1;
         thresholds.forEach((t,i) => { if (count >= t) lvl = i + 2; });
         document.getElementById('level').textContent = lvl;
+
         const ach = document.getElementById('achievement-list');
         ach.innerHTML = '';
-        if (best >= 100) ach.innerHTML += '<li>🔥 100 тапов</li>';
+        if (best >= 100)  ach.innerHTML += '<li>🔥 100 тапов</li>';
         if (best >= 1000) ach.innerHTML += '<li>💥 1 000 тапов</li>';
         if (best >= 5000) ach.innerHTML += '<li>🚀 5 000 тапов</li>';
         ach.innerHTML += `<li>👥 Друзей: ${friends.length}</li>`;
       }
 
-      // Вкладки
-      window.showTab = id => {
-        document.querySelectorAll('main section').forEach(s => s.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-        document.querySelectorAll('nav.bottom-nav button').forEach(b => b.classList.remove('active'));
-        event.currentTarget?.classList.add('active');
-      };
-
-      // Тап
-      window.tap = () => {
-        count++;
-        if (count > best) best = count;
-        updateUI();
-        renderTasks();
-      };
-
-      // Задания
+      // Рендер задач
       function renderTasks() {
         const tasks = [
           {id:'t1', text:'Подпишись на <a href="https://t.me/volonteri_kalashnikova" target="_blank">Telegram</a>', reward:300},
@@ -403,14 +396,14 @@ nav.bottom-nav .tab.active img {
       window.completeTask = (id, reward) => {
         if (!localStorage.getItem('task_' + id)) {
           count += reward;
-          if (count > best) best = count;
+          best = Math.max(best, count);
           localStorage.setItem('task_' + id, 'done');
           updateUI();
           renderTasks();
         }
       };
 
-      // Друзья
+      // Рендер друзей
       function renderFriends() {
         const tb = document.getElementById('friends-table');
         tb.innerHTML = '';
@@ -428,6 +421,23 @@ nav.bottom-nav .tab.active img {
           renderFriends();
         }
         e.target.reset();
+      };
+
+      // Переключение табов
+      window.showTab = (e, id) => {
+        document.querySelectorAll('main section').forEach(s => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        document.querySelectorAll('nav.bottom-nav .tab').forEach(b => b.classList.remove('active'));
+        e.currentTarget.classList.add('active');
+      };
+
+      // Функция tap с эффектом сердца
+      window.tap = e => {
+        createHeart(e);
+        count++;
+        best = Math.max(best, count);
+        updateUI();
+        renderTasks();
       };
 
       // Инициализация
