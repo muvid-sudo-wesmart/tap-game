@@ -6,7 +6,10 @@
   <title>Тапай за Калашникова</title>
   <style>
     /* ====== Страница и фон ====== */
-    html, body { height: 100%; margin: 0; }
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
     body {
       font-family: Arial, sans-serif;
       background: radial-gradient(
@@ -17,10 +20,10 @@
       );
       color: #fff;
       overflow-x: hidden;
-      padding-bottom: 100px; /* под меню */
+      padding-bottom: 100px; /* место под меню */
     }
 
-    /* ====== Анимация сердечек ====== */
+    /* ====== Анимация «сердечек» ====== */
     .heart {
       position: absolute;
       font-size: 24px;
@@ -50,7 +53,8 @@
     .loader-progress {
       width: 80%; height: 8px;
       background: rgba(255,255,255,0.2);
-      border-radius: 4px; overflow: hidden;
+      border-radius: 4px;
+      overflow: hidden;
       margin-top: 12px;
     }
     .loader-progress-bar {
@@ -64,7 +68,7 @@
       color: #fff;
     }
 
-    /* ====== Хедер ====== */
+    /* ====== Header ====== */
     header {
       text-align: center;
       padding: 16px 0;
@@ -98,10 +102,14 @@
       font-size: 1.6em;
       letter-spacing: 1px;
     }
+    /* белый круглый фон под картинкой */
     #tap-image {
       display: block;
       margin: 16px auto;
-      width: 240px; /* увеличенный размер */
+      width: 240px;
+      padding: 20px;
+      background: #fff;
+      border-radius: 50%;
       cursor: pointer;
       position: relative;
       z-index: 1;
@@ -148,72 +156,104 @@
       margin: 8px 0;
       text-align: left;
     }
-    .task-card a { color: #ffd54f; font-weight: bold; text-decoration: none; }
+    .task-card a {
+      color: #ffd54f;
+      text-decoration: none;
+      font-weight: bold;
+    }
     .task-card button {
       margin-top: 8px;
       padding: 8px 12px;
       background: #ff9800;
       color: #fff;
-      border: none; border-radius: 4px;
-      cursor: pointer; transition: transform .1s;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: transform .1s;
     }
-    .task-card button:active { transform: scale(0.95); }
-    .done { color: #8bc34a; font-weight: bold; }
+    .task-card button:active {
+      transform: scale(0.95);
+    }
+    .done {
+      color: #8bc34a;
+      font-weight: bold;
+    }
 
     /* ====== Друзья ====== */
     form {
-      display: flex; gap: 8px;
-      justify-content: center; margin-bottom: 12px;
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      margin-bottom: 12px;
     }
-    form input, form button { font-size: 1em; border-radius: 4px; }
+    form input, form button {
+      font-size: 1em;
+      border-radius: 4px;
+    }
     form input {
-      width: 150px; padding: 8px;
+      width: 150px;
       border: 1px solid #ccc;
+      padding: 8px;
     }
     form button {
       padding: 8px 12px;
-      background: #ff9800; color: #fff;
-      border: none; cursor: pointer;
+      background: #ff9800;
+      color: #fff;
+      border: none;
+      cursor: pointer;
       transition: transform .1s;
     }
-    form button:active { transform: scale(0.95); }
+    form button:active {
+      transform: scale(0.95);
+    }
     table {
-      width: 90%; max-width: 600px;
-      margin: auto; border-collapse: collapse;
+      width: 90%;
+      max-width: 600px;
+      margin: auto;
+      border-collapse: collapse;
     }
     th, td {
       padding: 8px;
       border-bottom: 1px solid rgba(255,255,255,0.2);
-      text-align: left; font-size: 0.95em;
+      text-align: left;
+      font-size: 0.95em;
+      color: #fff;
     }
 
     /* ====== Нижнее меню ====== */
     nav.bottom-nav {
       position: fixed;
       bottom: 12px;
-      left: 50%; transform: translateX(-50%);
-      display: flex; gap: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 8px;
       background: rgba(255,255,255,0.25);
-      padding: 6px; border-radius: 20px;
-      width: calc(100% - 32px); max-width: 500px;
+      padding: 6px;
+      border-radius: 20px;
+      width: calc(100% - 32px);
+      max-width: 500px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.3);
       z-index: 500;
     }
     nav.bottom-nav .tab {
-      flex: 1; display: flex;
+      flex: 1;
+      display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       padding: 6px 0;
       background: transparent;
-      border: none; outline: none;
+      border: none;
+      outline: none;
       color: #fff;
       font-size: 0.8em;
       cursor: pointer;
       transition: background .2s, color .2s;
     }
     nav.bottom-nav .tab img {
-      width: 24px; height: 24px;
+      width: 24px;
+      height: 24px;
       margin-bottom: 4px;
       filter: brightness(1.2);
     }
@@ -241,14 +281,14 @@
 
   <!-- Header -->
   <header>
-    <h2>Тапай за Калашникова</h2>
+    <h1>Тапай за Калашникова</h1>
   </header>
 
   <!-- Main Content -->
   <main>
     <!-- Игра -->
     <section id="game" class="active">
-      <h3>СЛЫШАТЬ ПОМОГАТЬ РЕШАТЬ</h3>
+      <h2>СЛЫШАТЬ. ПОМОГАТЬ. РЕШАТЬ.</h2>
       <img id="tap-image"
            src="https://raw.githubusercontent.com/muvid-sudo-wesmart/tap-game/main/tap.png"
            alt="Tap"
@@ -297,7 +337,7 @@
     </section>
   </main>
 
-  <!-- Нижнее меню -->
+  <!-- Bottom Navigation -->
   <nav class="bottom-nav">
     <button class="tab active" onclick="showTab(event,'game')">
       <img src="https://img.icons8.com/ios-filled/50/000000/home.png" alt="Главная">
@@ -340,7 +380,7 @@
       let count = 0, best = 0, friends = [];
       const MAX_LEVEL = 5, LEVEL_STEP = 1000;
 
-      // Создаёт «сердечко»
+      // Создание «сердечка»
       function createHeart(e) {
         const heart = document.createElement('div');
         heart.className = 'heart';
@@ -352,19 +392,18 @@
         setTimeout(() => heart.remove(), 800);
       }
 
-      // Обновление интерфейса
+      // Обновление UI
       function updateUI() {
-        document.getElementById('counter').textContent = count;
-        document.getElementById('best').textContent    = best;
+        document.getElementById('counter').textContent    = count;
+        document.getElementById('best').textContent       = best;
         document.getElementById('stat-total').textContent = count;
         document.getElementById('stat-best').textContent  = best;
 
-        // уровень
-        let lvl = Math.min(Math.floor(count / LEVEL_STEP) + 1, MAX_LEVEL);
+        // вычисляем уровень и прогресс
+        let lvl = Math.min(Math.floor(count/LEVEL_STEP) + 1, MAX_LEVEL);
         document.getElementById('level').textContent = lvl;
-        document.querySelector('.level-info').textContent = `Уровень: ${lvl} / ${MAX_LEVEL}`;
-
-        // прогресс внутри уровня
+        document.querySelector('.level-info').textContent =
+          `Уровень: ${lvl} / ${MAX_LEVEL}`;
         let progressed = lvl < MAX_LEVEL
           ? count % LEVEL_STEP
           : count - (MAX_LEVEL - 1) * LEVEL_STEP;
@@ -380,7 +419,7 @@
         ach.innerHTML += `<li>👥 Друзей: ${friends.length}</li>`;
       }
 
-      // Рендер задач
+      // Рендер заданий
       function renderTasks() {
         const tasks = [
           {id:'t1', text:'Подпишись на <a href="https://t.me/volonteri_kalashnikova" target="_blank">Telegram</a>', reward:300},
@@ -392,7 +431,7 @@
         const ul = document.getElementById('task-list');
         ul.innerHTML = '';
         tasks.forEach(t => {
-          const done = localStorage.getItem('task_' + t.id);
+          const done = localStorage.getItem('task_'+t.id);
           const li = document.createElement('li');
           li.className = 'task-card';
           li.innerHTML = `
@@ -405,10 +444,10 @@
         });
       }
       window.completeTask = (id, reward) => {
-        if (!localStorage.getItem('task_' + id)) {
+        if (!localStorage.getItem('task_'+id)) {
           count += reward;
           best = Math.max(best, count);
-          localStorage.setItem('task_' + id, 'done');
+          localStorage.setItem('task_'+id, 'done');
           updateUI();
           renderTasks();
         }
@@ -418,7 +457,7 @@
       function renderFriends() {
         const tb = document.getElementById('friends-table');
         tb.innerHTML = '';
-        friends.forEach((f, i) => {
+        friends.forEach((f,i) => {
           tb.innerHTML += `<tr><td>${i+1}</td><td>${f.name}</td><td>${f.taps}</td></tr>`;
         });
       }
@@ -427,14 +466,14 @@
         const name = document.getElementById('friend-name').value.trim();
         const taps = parseInt(document.getElementById('friend-taps').value);
         if (name && !isNaN(taps)) {
-          friends.push({ name, taps });
+          friends.push({name, taps});
           updateUI();
           renderFriends();
         }
         e.target.reset();
       };
 
-      // Переключение вкладок
+      // Переключение табов
       window.showTab = (e, id) => {
         document.querySelectorAll('main section').forEach(s => s.classList.remove('active'));
         document.getElementById(id).classList.add('active');
@@ -442,7 +481,7 @@
         e.currentTarget.classList.add('active');
       };
 
-      // Обработчик тапа
+      // Обработка клика по картинке
       window.tap = e => {
         createHeart(e);
         count++;
