@@ -167,35 +167,62 @@
     }
 
     /* === Нижнее меню === */
-    nav.bottom-nav {
-      position: fixed; bottom: 0; left: 0; right: 0;
-      background: #1e88e5;
-      display: flex;
-      box-shadow: 0 -2px 6px rgba(0,0,0,0.3);
-    }
-    nav.bottom-nav button {
-      flex: 1;
-      padding: 10px 0 6px;
-      background: none;
-      border: none;
-      color: #fff;
-      font-size: 0.85em;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    nav.bottom-nav button img {
-      width: 24px;
-      height: 24px;
-      margin-bottom: 4px;
-      filter: brightness(1.2);
-    }
-    nav.bottom-nav button:hover {
-      background: rgba(255,255,255,0.15);
-    }
-    nav.bottom-nav button.active {
-      background: rgba(255,255,255,0.25);
-    }
+   /* общий контейнер */
+nav.bottom-nav {
+  position: fixed;
+  bottom: 12px;           /* отступ от низа экрана */
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  background: rgba(255,255,255,0.25);
+  padding: 6px;
+  border-radius: 20px;
+  width: calc(100% - 32px);
+  max-width: 500px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  z-index: 500;
+}
+
+/* каждая кнопка */
+nav.bottom-nav .tab {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 0;
+  color: #fff;
+  font-size: 0.8em;
+  cursor: pointer;
+  transition: background .2s, color .2s;
+}
+
+/* иконки */
+nav.bottom-nav .tab img {
+  width: 24px;
+  height: 24px;
+  margin-bottom: 4px;
+  filter: brightness(1.2);
+}
+
+/* состояние hover */
+nav.bottom-nav .tab:hover {
+  background: rgba(255,255,255,0.15);
+}
+
+/* активная вкладка */
+nav.bottom-nav .tab.active {
+  background: #fff;
+  color: #1e88e5;
+  border-radius: 12px;
+}
+nav.bottom-nav .tab.active img {
+  filter: none; /* показать оригинальный цвет иконки, если цвет внутри SVG задан */
+}
   </style>
 </head>
 <body>
@@ -253,28 +280,28 @@
     </section>
   </main>
 
-  <nav class="bottom-nav">
-    <button class="active" onclick="showTab('game')">
-      <img src="https://img.icons8.com/ios-filled/50/ffffff/home.png" alt="Главная">
-      Главная
-    </button>
-    <button onclick="showTab('tasks')">
-      <img src="https://img.icons8.com/ios-filled/50/ffffff/checklist.png" alt="Задания">
-      Задания
-    </button>
-    <button onclick="showTab('friends')">
-      <img src="https://img.icons8.com/ios-filled/50/ffffff/user-group-man-man.png" alt="Друзья">
-      Друзья
-    </button>
-    <button onclick="showTab('stats')">
-      <img src="https://img.icons8.com/ios-filled/50/ffffff/combo-chart.png" alt="Статистика">
-      Статистика
-    </button>
-    <button onclick="showTab('achievements')">
-      <img src="https://img.icons8.com/ios-filled/50/ffffff/medal.png" alt="Достижения">
-      Достижения
-    </button>
-  </nav>
+<nav class="bottom-nav">
+  <button class="tab active" onclick="showTab('game')">
+    <img src="https://img.icons8.com/ios-filled/50/000000/home.png" alt="Главная">
+    <span>Главная</span>
+  </button>
+  <button class="tab" onclick="showTab('tasks')">
+    <img src="https://img.icons8.com/ios-filled/50/000000/checklist.png" alt="Задания">
+    <span>Задания</span>
+  </button>
+  <button class="tab" onclick="showTab('friends')">
+    <img src="https://img.icons8.com/ios-filled/50/000000/user-group-man-man.png" alt="Друзья">
+    <span>Друзья</span>
+  </button>
+  <button class="tab" onclick="showTab('stats')">
+    <img src="https://img.icons8.com/ios-filled/50/000000/combo-chart.png" alt="Статистика">
+    <span>Статистика</span>
+  </button>
+  <button class="tab" onclick="showTab('achievements')">
+    <img src="https://img.icons8.com/ios-filled/50/000000/medal.png" alt="Достижения">
+    <span>Топ</span>
+  </button>
+</nav>
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
