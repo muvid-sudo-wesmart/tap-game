@@ -72,17 +72,36 @@
 
     /* === Игра === */
     #game {
-      text-align: center;
-    }
-    #game h2 {
-      font-size: 1.8em;
-      margin-bottom: 10px;
-    }
+  position: relative;
+  /* чтобы фон-псевдоэлемент не обрезался: */
+  overflow: visible;
+}
+    #game::before {
+  content: "";
+  position: absolute;
+  /* центрируем под самой картинкой */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  /* подберите размер так, чтобы градиент доходил до нужных краёв */
+  width: 350px;
+  height: 350px;
+  /* радиальный градиент: в центре более плотный, к краям прозрачный */
+  background: radial-gradient(
+    circle at center,
+    rgba(224, 247, 250, 0.6) 0%,   /* светло-голубой полупрозрачный */
+    rgba(224, 247, 250, 0) 80%     /* полностью прозрачный */
+  );
+  border-radius: 50%;
+  z-index: 0;
+}
     #tap-image {
       width: 200px;
       cursor: pointer;
       transition: transform .1s ease;
       margin: 16px 0;
+      position: relative;
+    z-index: 1;
     }
     #tap-image:active {
       transform: scale(1.1);
