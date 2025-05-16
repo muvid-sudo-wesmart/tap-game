@@ -1,222 +1,218 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <title>Тапай за Калашникова</title>
   <style>
-    /* Общие сбросы */
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * { box-sizing: border-box; margin:0; padding:0 }
     body {
       font-family: Arial, sans-serif;
       background: #f0f8ff;
-      font-size: 18px; /* Увеличенный базовый размер шрифта */
-      padding-bottom: 70px; /* Отступ под навигацию */
+      color: #333;
+      overflow-x: hidden;
+      padding-bottom: 60px; /* пространство под меню */
     }
 
+    /* ==== Загрузочный экран ==== */
+    #loader {
+      position: fixed; inset:0;
+      background: #000;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      z-index: 1000;
+    }
+    #loader p {
+      color: #fff;
+      font-size: 1.5em;
+      margin-bottom: 12px;
+    }
+    .bar {
+      width: 80%; height: 10px;
+      background: rgba(255,255,255,0.3);
+      border-radius: 5px; overflow: hidden;
+    }
+    .bar-inner {
+      width: 0; height:100%;
+      background: #4caf50;
+      transition: width 2s linear;
+    }
+
+    /* ==== Шапка ==== */
     header {
       background: #4caf50;
-      padding: 20px;
+      padding: 16px;
       text-align: center;
     }
     header h1 {
-      font-size: 2em; /* Примерно 32px */
-      color: white;
-    }
-
-    /* Загрузочный экран */
-    #loader {
-      position: fixed; top: 0; left: 0;
-      width: 100vw; height: 100vh;
-      background: #000;
-      display: flex; flex-direction: column;
-      justify-content: center; align-items: center;
-      z-index: 9999;
-    }
-    #loader img {
-      position: absolute; top: 0; left: 0;
-      width: 100%; height: 100%; object-fit: cover;
-      z-index: -1;
-    }
-    .loader-progress {
-      position: absolute; bottom: 20px;
-      width: 80%; height: 10px;
-      background: rgba(255,255,255,0.5);
-      border-radius: 5px; overflow: hidden;
-      z-index: 1;
-    }
-    .loader-progress-bar {
-      width: 0%; height:100%;
-      background: #4caf50;
-      transition: width 1s linear;
-    }
-    .loader-text {
       color: #fff;
-      font-size: 1.5em;
-      z-index: 1;
+      font-size: 2em;
     }
 
-    /* Секции */
-    section {
+    /* ==== Секции ==== */
+    main section {
       display: none;
       padding: 20px;
       text-align: center;
-      animation: fadeIn 0.3s ease;
+      animation: fadeIn .3s ease;
     }
-    section.active {
+    main section.active {
       display: block;
     }
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to   { opacity: 1; transform: translateY(0); }
+      from { opacity:0; transform: translateY(20px) }
+      to   { opacity:1; transform: translateY(0) }
     }
-    section h2 {
-      font-size: 1.5em; /* Примерно 27px */
-      margin-bottom: 10px;
+    main h2 {
+      font-size: 1.5em;
+      margin-bottom: 12px;
     }
-    section p, section li {
-      font-size: 1.125em; /* Около 20px */
+    main p, main li {
+      font-size: 1.125em;
       margin: 8px 0;
     }
 
-    /* Картинка для тапов */
+    /* ==== Игра ==== */
     #tap-image {
-      width: 200px; /* Увеличенный размер */
-      height: auto;
+      width: 200px;
       cursor: pointer;
-      transition: transform 0.1s ease;
+      transition: transform .1s;
+      margin: 16px 0;
     }
     #tap-image:active {
       transform: scale(1.1);
     }
-    @media (min-width: 768px) {
-      #tap-image {
-        width: 250px;
-      }
-    }
 
-    /* Навигация внизу */
-    nav.bottom-nav {
-      position: fixed; bottom: 0; left: 0; right: 0;
-      background: #4caf50;
-      display: flex;
-      z-index: 1000;
-    }
-    nav.bottom-nav button {
-      flex: 1;
-      padding: 15px 0;
-      background: none;
-      border: none;
-      color: white;
-      font-size: 1.125em; /* Около 20px */
-      cursor: pointer;
-    }
-    nav.bottom-nav button:hover {
-      background: rgba(255,255,255,0.1);
-    }
-
-    /* Задания */
-    ul { list-style: none; padding: 0; max-width: 600px; margin: auto; }
+    /* ==== Задания ==== */
+    ul { list-style:none; padding:0; max-width:600px; margin:auto }
     .task-card {
       background: #fff;
-      margin: 10px;
-      padding: 15px;
       border-radius: 8px;
-      transition: transform 0.2s;
-    }
-    .task-card:hover {
-      transform: scale(1.02);
+      margin: 8px 0;
+      padding: 12px;
+      text-align: left;
     }
     .task-card a {
-      color: #4caf50;
+      color: #0077cc;
       text-decoration: none;
       font-weight: bold;
     }
     .task-card button {
       margin-top: 8px;
-      padding: 8px 12px;
-      font-size: 1em;
-      cursor: pointer;
-      border: none;
+      padding: 6px 12px;
       background: #4caf50;
       color: #fff;
-      border-radius: 6px;
+      border:none;
+      border-radius:4px;
+      cursor:pointer;
     }
-    .done {
-      color: green;
-      font-weight: bold;
-    }
+    .done { color: green; font-weight: bold }
 
-    /* Таблица друзей */
+    /* ==== Друзья ==== */
+    form {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      margin-bottom: 12px;
+    }
+    form input, form button {
+      padding: 8px;
+      font-size: 1em;
+      border-radius: 4px;
+    }
+    form input { width: 150px; border:1px solid #ccc }
+    form button { background:#4caf50; color:#fff; border:none; cursor:pointer }
+
     table {
-      width: 100%;
+      width: 90%;
+      max-width: 600px;
+      margin: auto;
       border-collapse: collapse;
-      margin-top: 10px;
     }
     th, td {
-      padding: 10px;
-      border-bottom: 1px solid #ccc;
-      font-size: 1em; /* Примерно 18px */
+      padding: 8px;
+      border-bottom: 1px solid #bbb;
+      font-size: 0.95em;
       text-align: left;
     }
-    input, button {
-      font-size: 1em; /* Примерно 18px */
+
+    /* ==== Нижнее меню ==== */
+    nav.bottom-nav {
+      position: fixed; bottom:0; left:0; right:0;
+      background: #4caf50;
+      display: flex;
+      z-index: 500;
+    }
+    nav.bottom-nav button {
+      flex:1;
+      padding: 12px 0;
+      background:none;
+      border:none;
+      color:#fff;
+      font-size: 1em;
+      cursor:pointer;
+    }
+    nav.bottom-nav button:hover {
+      background: rgba(255,255,255,0.15);
     }
   </style>
 </head>
 <body>
 
-  <!-- Загрузка -->
+  <!-- Loader -->
   <div id="loader">
-    <img src="https://raw.githubusercontent.com/muvid-sudo-wesmart/tap-game/main/Frame_159-3.png" alt="Загрузка">
-    <div class="loader-progress"><div class="loader-progress-bar"></div></div>
-    <p class="loader-text">Загрузка...</p>
+    <p>Загрузка…</p>
+    <div class="bar"><div class="bar-inner"></div></div>
   </div>
 
-  <header>
-    <h1>Тапай за Калашникова!</h1>
-  </header>
+  <!-- Header -->
+  <header><h1>Тапай за Калашникова</h1></header>
 
-  <!-- Секции -->
-  <section id="game" class="active">
-    <h2>Нажми на картинку!</h2>
-    <p>Тапов: <span id="counter">0</span></p>
-    <p>Рекорд: <span id="best">0</span></p>
-    <p>Уровень: <span id="level">1</span></p>
-    <progress id="progress" value="0" max="100"></progress><br><br>
-    <img id="tap-image" src="https://raw.githubusercontent.com/muvid-sudo-wesmart/tap-game/main/tap.png" onclick="tap()">
-  </section>
+  <main>
+    <!-- Игра -->
+    <section id="game" class="active">
+      <h2>Нажми на картинку!</h2>
+      <img id="tap-image" src="https://raw.githubusercontent.com/muvid-sudo-wesmart/tap-game/main/tap.png" alt="Тап">
+      <p>Тапов: <span id="counter">0</span></p>
+      <p>Рекорд: <span id="best">0</span></p>
+      <p>Уровень: <span id="level">1</span></p>
+    </section>
 
-  <section id="tasks">
-    <h2>🎯 Задания</h2>
-    <ul id="task-list"></ul>
-  </section>
+    <!-- Задания -->
+    <section id="tasks">
+      <h2>🎯 Задания</h2>
+      <ul id="task-list"></ul>
+    </section>
 
-  <section id="friends">
-    <h2>👥 Друзья</h2>
-    <form onsubmit="addFriend(event)" style="margin-bottom:10px;">
-      <input id="friend-name" type="text" placeholder="Имя друга" required />
-      <input id="friend-taps" type="number" placeholder="Тапов" required />
-      <button type="submit">Добавить</button>
-    </form>
-    <table>
-      <thead><tr><th>#</th><th>Имя</th><th>Тапы</th></tr></thead>
-      <tbody id="friends-table"></tbody>
-    </table>
-  </section>
+    <!-- Друзья -->
+    <section id="friends">
+      <h2>👥 Друзья</h2>
+      <form onsubmit="addFriend(event)">
+        <input id="friend-name" placeholder="Имя" required>
+        <input id="friend-taps" type="number" placeholder="Тапы" required>
+        <button type="submit">OK</button>
+      </form>
+      <table>
+        <thead><tr><th>#</th><th>Имя</th><th>Тапы</th></tr></thead>
+        <tbody id="friends-table"></tbody>
+      </table>
+    </section>
 
-  <section id="stats">
-    <h2>📊 Статистика</h2>
-    <p>Всего тапов: <span id="stat-total">0</span></p>
-    <p>Рекорд: <span id="stat-best">0</span></p>
-  </section>
+    <!-- Статистика -->
+    <section id="stats">
+      <h2>📊 Статистика</h2>
+      <p>Всего тапов: <span id="stat-total">0</span></p>
+      <p>Рекорд: <span id="stat-best">0</span></p>
+    </section>
 
-  <section id="achievements">
-    <h2>🏅 Достижения</h2>
-    <ul id="achievement-list" style="max-width:600px;margin:auto;text-align:left;"></ul>
-  </section>
+    <!-- Достижения -->
+    <section id="achievements">
+      <h2>🏅 Достижения</h2>
+      <ul id="achievement-list"></ul>
+    </section>
+  </main>
 
-  <!-- Нижнее меню -->
+  <!-- Bottom Nav -->
   <nav class="bottom-nav">
     <button onclick="showTab('game')">Игра</button>
     <button onclick="showTab('tasks')">Задания</button>
@@ -225,152 +221,113 @@
     <button onclick="showTab('achievements')">Достижения</button>
   </nav>
 
-  <!-- Telegram WebApp SDK -->
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const tg = window.Telegram?.WebApp;
-      if (tg) tg.expand();
-
-      // API URL — замените на ваш
-      const API_URL = 'https://your-server.com/api/';
-
-      // Локальные данные
-      let count = parseInt(localStorage.getItem('count')) || 0;
-      let best = parseInt(localStorage.getItem('best')) || 0;
-      let friends = JSON.parse(localStorage.getItem('friends') || '[]');
-      const thresholds = [100, 500, 2000, 5000, 10000];
-
-      // Лоадер
-      let p = 0;
-      const bar = document.querySelector('.loader-progress-bar');
+    document.addEventListener('DOMContentLoaded',()=> {
+      // loader animation
+      let p=0;
+      const bar = document.querySelector('.bar-inner');
       const loader = document.getElementById('loader');
-      const iv = setInterval(() => {
-        p += 10;
-        bar.style.width = p + '%';
-        if (p >= 100) {
+      const iv = setInterval(()=>{
+        p+=20;
+        bar.style.width=p+'%';
+        if(p>=100) {
           clearInterval(iv);
-          setTimeout(() => loader.style.display = 'none', 300);
+          setTimeout(()=>loader.style.display='none',200);
         }
-      }, 80);
+      },400);
 
-      // UI Обновление
-      function updateUI() {
+      // данные
+      let count = 0;
+      let best = 0;
+      let friends = [];
+
+      // обновить UI
+      function updateUI(){
         document.getElementById('counter').textContent = count;
         document.getElementById('best').textContent = best;
         document.getElementById('stat-total').textContent = count;
         document.getElementById('stat-best').textContent = best;
-        let lvl = 1;
-        thresholds.forEach((t,i) => { if (count >= t) lvl = i+2; });
+        // уровень
+        const th=[100,500,2000,5000,10000];
+        let lvl=1;
+        th.forEach((t,i)=>{ if(count>=t) lvl=i+2 });
         document.getElementById('level').textContent = lvl;
-        document.getElementById('achievement-list').querySelector('#achieve-level');
-        const next = thresholds[lvl-1]||10000;
-        const prev = thresholds[lvl-2]||0;
-        document.getElementById('progress').max = next - prev;
-        document.getElementById('progress').value = count - prev;
+        // достижения
+        const ach = document.getElementById('achievement-list');
+        ach.innerHTML='';
+        if(best>=100) ach.innerHTML+='<li>🔥 100 тапов</li>';
+        if(best>=1000) ach.innerHTML+='<li>💥 1 000 тапов</li>';
+        if(best>=5000) ach.innerHTML+='<li>🚀 5 000 тапов</li>';
+        ach.innerHTML+=`<li>👥 Друзей: ${friends.length}</li>`;
       }
 
-      // Рендер
-      function renderTasks() {
-      const tasks = [
+      // переключение вкладок
+      window.showTab=id=>{
+        document.querySelectorAll('main section').forEach(s=>s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+      };
+
+      // тап
+      window.tap=()=>{
+        count++;
+        if(count>best) best=count;
+        updateUI();
+        renderTasks();
+      };
+
+      // задания
+      function renderTasks(){
+        const tasks=[
           {id:'t1', text:'Подпишись на <a href="https://t.me/volonteri_kalashnikova" target="_blank">Telegram</a>', reward:300},
-          {id:'t2', text:'Подпишись на <a href="https://m.vk.com/id803959232" target="_blank">VK</a>', reward:300},
-          {id:'t3', text:'Проголосуй 14 сентября!', reward:500},
+          {id:'t2', text:'Подпишись на <a href="https://vk.com/id803959232" target="_blank">VK</a>', reward:300},
+          {id:'t3', text:'Проголосуй 14 сентября', reward:500},
           {id:'t4', text:'Пригласи 3 друзей', reward:700},
-          {id:'t5', text:'Пригласи 5 друзей', reward:1000}
+          {id:'t5', text:'Пригласи 5 друзей', reward:1000},
         ];
         const ul = document.getElementById('task-list');
-        ul.innerHTML = '';
-        tasks.forEach(t => {
-          const done = localStorage.getItem('task_'+t.id)==='done';
+        ul.innerHTML='';
+        tasks.forEach(t=>{
+          const done = localStorage.getItem('task_'+t.id);
           const li = document.createElement('li');
-          li.className = 'task-card';
-          li.innerHTML = `
+          li.className='task-card';
+          li.innerHTML=`
             <strong>${t.text}</strong><br>🎁 ${t.reward} тапов<br>
-            ${done ? '<span class="done">✅ Выполнено</span>' :
+            ${done?'<span class="done">✅ Выполнено</span>':
               `<button onclick="completeTask('${t.id}',${t.reward})">Выполнить</button>`}
           `;
           ul.appendChild(li);
         });
       }
-
-      function renderFriends() {
-        const tb = document.getElementById('friends-table');
-        tb.innerHTML = '';
-        friends.forEach((f,i) => {
-          tb.innerHTML += `<tr><td>${i+1}</td><td>${f.name}</td><td>${f.taps}</td></tr>`;
-        });
-        document.getElementById('achieve-friends')?.textContent = friends.length;
-      }
-
-      function renderAchievements() {
-        const ach = document.getElementById('achievement-list');
-        ach.innerHTML = '';
-        if (best >= 100) ach.innerHTML += '<li>🔥 100 тапов!</li>';
-        if (best >= 1000) ach.innerHTML += '<li>💥 1 000 тапов!</li>';
-        if (best >= 5000) ach.innerHTML += '<li>🚀 5 000 тапов!</li>';
-        ach.innerHTML += `<li>👥 Друзей: ${friends.length}</li>`;
-      }
-
-      // Действия
-      window.tap = () => {
-        count++; if (count>best) best=count;
-        localStorage.setItem('count',count);
-        localStorage.setItem('best',best);
-        updateUI(); saveToServer();
-      };
-
-      window.completeTask = (id,reward) => {
-        if (!localStorage.getItem('task_'+id)) {
-          count+=reward; if(count>best)best=count;
-          localStorage.setItem('count',count);
-          localStorage.setItem('best',best);
+      window.completeTask=(id,rew)=>{
+        if(!localStorage.getItem('task_'+id)){
+          count+=rew; if(count>best)best=count;
           localStorage.setItem('task_'+id,'done');
-          updateUI(); renderTasks(); saveToServer();
+          updateUI(); renderTasks();
         }
       };
 
-      window.addFriend = e => {
+      // друзья
+      function renderFriends(){
+        const tb=document.getElementById('friends-table');
+        tb.innerHTML='';
+        friends.forEach((f,i)=>{
+          tb.innerHTML+=`<tr><td>${i+1}</td><td>${f.name}</td><td>${f.taps}</td></tr>`;
+        });
+      }
+      window.addFriend=e=>{
         e.preventDefault();
-        const n = document.getElementById('friend-name').value.trim();
-        const t = parseInt(document.getElementById('friend-taps').value);
-        if (n && !isNaN(t)) {
+        const n=document.getElementById('friend-name').value.trim();
+        const t=parseInt(document.getElementById('friend-taps').value);
+        if(n&& !isNaN(t)){
           friends.push({name:n,taps:t});
-          localStorage.setItem('friends',JSON.stringify(friends));
-          renderFriends(); saveToServer();
+          renderFriends(); updateUI();  
         }
         e.target.reset();
       };
 
-      window.showTab = id => {
-        document.querySelectorAll('section').forEach(s=>s.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-      };
-
-      function saveToServer() {
-        const uid = window.Telegram?.WebApp.initDataUnsafe?.user?.id || 'anon';
-        fetch(API_URL+'save.php',{ method:'POST',
-          headers:{'Content-Type':'application/json'},
-          body:JSON.stringify({user:uid,count,best,friends})
-        });
-      }
-
-      function loadFromServer() {
-        const uid = window.Telegram?.WebApp.initDataUnsafe?.user?.id || 'anon';
-        fetch(API_URL+'load.php?user='+uid)
-          .then(r=>r.json())
-          .then(d=>{
-            count=d.count||0; best=d.best||0;
-            friends=d.friends||[];
-            localStorage.setItem('count',count);
-            localStorage.setItem('best',best);
-            localStorage.setItem('friends',JSON.stringify(friends));
-            updateUI(); renderTasks(); renderFriends(); renderAchievements();
-          });
-      }
-
-      // Инициализация
-      updateUI(); renderTasks(); renderFriends(); renderAchievements(); loadFromServer();
+      // инициализация
+      updateUI(); renderTasks(); renderFriends();
     });
   </script>
 </body>
