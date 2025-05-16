@@ -3,46 +3,35 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Тапай ЗА Калашникова</title>
+  <title>Тапай за Калашникова</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: Arial, sans-serif; background: #f0f8ff; position: relative; }
+    body { font-family: Arial, sans-serif; background: #f0f8ff; padding-bottom: 70px; }
 
     #loader {
-      position: fixed;
-      top: 0; left: 0;
+      position: fixed; top: 0; left: 0;
       width: 100vw; height: 100vh;
       background: #000;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
+      display: flex; flex-direction: column;
+      justify-content: center; align-items: center;
       z-index: 9999;
     }
 
     #loader img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      position: absolute;
-      top: 0; left: 0;
+      width: 100%; height: 100%;
+      object-fit: cover; position: absolute;
       z-index: -1;
     }
 
     .loader-progress {
-      position: absolute;
-      bottom: 20px;
-      width: 80%;
-      height: 10px;
-      background-color: rgba(255, 255, 255, 0.5);
-      border-radius: 5px;
-      overflow: hidden;
-      z-index: 1;
+      position: absolute; bottom: 20px;
+      width: 80%; height: 10px;
+      background-color: rgba(255,255,255,0.5);
+      border-radius: 5px; overflow: hidden;
     }
 
     .loader-progress-bar {
-      height: 100%;
-      width: 0%;
+      height: 100%; width: 0%;
       background-color: #4caf50;
       transition: width 2s linear;
     }
@@ -53,47 +42,9 @@
       z-index: 1;
     }
 
-    header {
-      background: #4caf50;
-      padding: 20px;
-      color: white;
-      text-align: center;
-    }
-
-    nav {
-      display: flex;
-      justify-content: space-around;
-      background: #4caf50;
-      position: fixed;
-      bottom: -60px;
-      left: 0;
-      width: 100%;
-      padding: 10px 0;
-      opacity: 0;
-      transition: all 0.6s ease;
-      z-index: 1000;
-    }
-
-    nav.visible {
-      bottom: 0;
-      opacity: 1;
-    }
-
-    nav button {
-      padding: 10px 20px;
-      border: none;
-      background: #4caf50;
-      color: white;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 16px;
-    }
-
     section {
       display: none;
-      padding: 20px;
-      text-align: center;
-      padding-bottom: 80px; /* для отступа от нижних вкладок */
+      padding: 20px; text-align: center;
     }
 
     section.active {
@@ -101,19 +52,41 @@
     }
 
     #tap-image {
-      width: 150px;
-      cursor: pointer;
+      width: 150px; cursor: pointer;
       transition: transform 0.1s ease;
     }
 
     #tap-image:active {
       transform: scale(1.1);
     }
+
+    nav {
+      position: fixed; bottom: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-around;
+      background: #4caf50;
+      padding: 10px 0;
+      box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+      z-index: 100;
+    }
+
+    nav button {
+      flex: 1;
+      padding: 10px;
+      background: transparent;
+      border: none;
+      color: white;
+      font-size: 16px;
+      transition: background 0.3s;
+    }
+
+    nav button:hover {
+      background: rgba(255,255,255,0.1);
+    }
   </style>
 </head>
 <body>
-
-  <!-- Загрузочный экран -->
   <div id="loader">
     <img src="https://raw.githubusercontent.com/muvid-sudo-wesmart/tap-game/main/Frame_159-3.png" alt="Загрузка">
     <div class="loader-progress">
@@ -122,111 +95,101 @@
     <p class="loader-text">Загрузка...</p>
   </div>
 
-  <!-- Основной интерфейс -->
-  <header>
-    <h1>Тапай за Калашникова!</h1>
-  </header>
-
-  <nav id="main-nav">
-    <button onclick="showSection('game')">Игра</button>
-    <button onclick="showSection('tasks')">Задания</button>
-    <button onclick="showSection('friends')">Друзья</button>
-  </nav>
-
   <section id="game" class="active">
     <h2>Нажми на картинку!</h2>
     <p>Тапов: <span id="counter">0</span></p>
     <p>Рекорд: <span id="best">0</span></p>
     <p>Уровень: <span id="level">1</span></p>
     <progress id="progress" value="0" max="100"></progress><br><br>
-    <img id="tap-image" src="https://raw.githubusercontent.com/muvid-sudo-wesmart/tap-game/main/tap.png" alt="Tap!" onclick="tap()">
+    <img id="tap-image" src="https://raw.githubusercontent.com/muvid-sudo-wesmart/tap-game/main/tap.png" onclick="tap()">
   </section>
 
   <section id="tasks">
     <h2>🎯 Задания</h2>
-    <ul id="task-list" style="list-style: none; padding: 0; max-width: 600px; margin: auto;"></ul>
+    <ul id="task-list" style="list-style:none; padding:0;"></ul>
   </section>
 
   <section id="friends">
     <h2>👥 Друзья</h2>
-    <form id="add-friend-form" onsubmit="addFriend(event)" style="margin-bottom: 20px;">
+    <form onsubmit="addFriend(event)">
       <input type="text" id="friend-name" placeholder="Имя друга" required />
       <input type="number" id="friend-taps" placeholder="Тапов" required />
       <button type="submit">Добавить</button>
     </form>
-    <table id="friends-table" style="width: 80%; margin: 0 auto;">
-      <thead>
-        <tr>
-          <th>#</th><th>Имя</th><th>Тапы</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
+    <table style="width:100%; margin-top:10px;">
+      <thead><tr><th>#</th><th>Имя</th><th>Тапы</th></tr></thead>
+      <tbody id="friends-table"></tbody>
     </table>
   </section>
 
-  <!-- Firebase -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+  <nav>
+    <button onclick="showSection('game')">Игра</button>
+    <button onclick="showSection('tasks')">Задания</button>
+    <button onclick="showSection('friends')">Друзья</button>
+  </nav>
+
   <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyCwEb_LAx3H80y_HBpz8Uotxf_YbvWccrE",
-      authDomain: "tapgame-35abf.firebaseapp.com",
-      databaseURL: "https://tapgame-35abf-default-rtdb.firebaseio.com",
-      projectId: "tapgame-35abf",
-      storageBucket: "tapgame-35abf.appspot.com",
-      messagingSenderId: "34906975722",
-      appId: "1:34906975722:web:abe58668a3ac34fdddd693"
-    };
-
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
-
-    // Загрузка
+    // Загрузочный экран
     window.addEventListener('load', () => {
       const loader = document.getElementById('loader');
       const progressBar = document.querySelector('.loader-progress-bar');
-      const nav = document.getElementById('main-nav');
       let progress = 0;
       const interval = setInterval(() => {
         progress += 5;
         progressBar.style.width = progress + '%';
         if (progress >= 100) {
           clearInterval(interval);
-          setTimeout(() => {
-            loader.style.display = 'none';
-            nav.classList.add('visible');
-          }, 500);
+          setTimeout(() => loader.style.display = 'none', 500);
         }
       }, 100);
     });
 
-    let count = parseInt(localStorage.getItem('currentCount')) || 0;
-    let bestScore = parseInt(localStorage.getItem('bestScore')) || 0;
-    const levelThresholds = [100, 500, 2000, 5000, 10000];
+    // Telegram WebApp init
+    const tg = window.Telegram.WebApp;
+    tg.expand();
+
+    // Игровая логика
+    let count = 0;
+    let bestScore = 0;
+    let levelThresholds = [100, 500, 1000, 3000, 5000];
+
+    async function loadData() {
+      const res = await fetch('/api/load');
+      const data = await res.json();
+      count = data.count || 0;
+      bestScore = data.best || 0;
+      updateUI();
+      renderTasks();
+      renderFriends();
+    }
+
+    async function saveData() {
+      await fetch('/api/save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ count, best: bestScore, friends: getFriends() })
+      });
+    }
 
     function updateUI() {
       document.getElementById('counter').textContent = count;
       document.getElementById('best').textContent = bestScore;
-      let currentLevel = 1;
+      let level = 1;
       for (let i = 0; i < levelThresholds.length; i++) {
-        if (count >= levelThresholds[i]) currentLevel = i + 2;
+        if (count >= levelThresholds[i]) level = i + 2;
       }
-      document.getElementById('level').textContent = currentLevel;
-      const next = levelThresholds[currentLevel - 1] || 10000;
-      const prev = levelThresholds[currentLevel - 2] || 0;
+      document.getElementById('level').textContent = level;
+      const next = levelThresholds[level - 1] || 10000;
+      const prev = levelThresholds[level - 2] || 0;
       document.getElementById('progress').max = next - prev;
       document.getElementById('progress').value = count - prev;
     }
 
     function tap() {
       count++;
-      if (count > bestScore) {
-        bestScore = count;
-        localStorage.setItem('bestScore', bestScore);
-      }
-      localStorage.setItem('currentCount', count);
-      db.ref('game/score').set({ count, bestScore });
+      if (count > bestScore) bestScore = count;
       updateUI();
+      saveData();
     }
 
     function showSection(id) {
@@ -234,65 +197,53 @@
       document.getElementById(id).classList.add('active');
     }
 
+    // Задания
     const tasks = [
-      { id: 'task1', text: 'Подписаться на Telegram', reward: 300, link: 'https://t.me/volonteri_kalashnikova' },
-      { id: 'task2', text: 'Подписаться на VK', reward: 300, link: 'https://m.vk.com/id803959232' },
-      { id: 'task3', text: 'Посетить сайт', reward: 200, link: 'https://example.com' },
-      { id: 'task4', text: 'Посмотреть видео', reward: 400, link: 'https://youtu.be/yourvideo' },
-      { id: 'task5', text: 'Приведи 3 друзей', reward: 600 },
-      { id: 'task6', text: 'Приведи 5 друзей', reward: 1000 }
+      { id: 'subscribe-tg', text: 'Подписаться на канал', reward: 300, link: 'https://t.me/volonteri_kalashnikova' },
+      { id: 'invite-3', text: 'Пригласить 3 друзей', reward: 500 },
+      { id: 'invite-5', text: 'Пригласить 5 друзей', reward: 1000 },
     ];
 
-    function renderTasks() {
+    async function renderTasks() {
       const taskList = document.getElementById('task-list');
       taskList.innerHTML = '';
-      tasks.forEach(task => {
-        const isDone = localStorage.getItem(`task_${task.id}`) === 'done';
-        const li = document.createElement('li');
-        li.innerHTML = `
-          <div style="padding: 10px; background: #fff; margin: 10px; border-radius: 8px;">
-            <strong>${task.text}</strong><br>
-            🎁 Награда: ${task.reward} тапов<br>
-            ${isDone ? '<span style="color:green;">✅ Выполнено</span>' :
-              `<button onclick="completeTask('${task.id}', ${task.reward}, '${task.link || ''}')">Выполнить</button>`}
-          </div>`;
-        taskList.appendChild(li);
-      });
+      for (let task of tasks) {
+        const done = localStorage.getItem(`task_${task.id}`) === 'done';
+        let extra = '';
+        if (task.link) extra = ` <a href="${task.link}" target="_blank">🔗</a>`;
+        let btn = done ? '✅ Выполнено' : `<button onclick="completeTask('${task.id}', ${task.reward})">Выполнить</button>`;
+        if (task.id === 'subscribe-tg') {
+          const subRes = await fetch('/api/check-subscription');
+          const subData = await subRes.json();
+          if (!subData.subscribed) btn = `<a href="${task.link}" target="_blank">Подписаться</a>`;
+          else localStorage.setItem('task_subscribe-tg', 'done');
+        }
+        if (task.id === 'invite-3' && getFriends().length < 3) btn = 'Пригласите 3 друзей';
+        if (task.id === 'invite-5' && getFriends().length < 5) btn = 'Пригласите 5 друзей';
+        if ((task.id === 'invite-3' && getFriends().length >= 3) || (task.id === 'invite-5' && getFriends().length >= 5)) {
+          if (!done) btn = `<button onclick="completeTask('${task.id}', ${task.reward})">Получить</button>`;
+        }
+        taskList.innerHTML += `<li style="margin:10px;padding:10px;background:#fff;border-radius:8px;">
+          <strong>${task.text}</strong>${extra}<br>🎁 ${task.reward} тапов<br>${btn}</li>`;
+      }
     }
 
-    function completeTask(id, reward, link = '') {
-      if (link) window.open(link, '_blank');
+    function completeTask(id, reward) {
+      if (localStorage.getItem(`task_${id}`) === 'done') return;
       count += reward;
-      localStorage.setItem('currentCount', count);
-      if (count > bestScore) {
-        bestScore = count;
-        localStorage.setItem('bestScore', bestScore);
-      }
+      if (count > bestScore) bestScore = count;
       localStorage.setItem(`task_${id}`, 'done');
-      db.ref('game/score').set({ count, bestScore });
       updateUI();
       renderTasks();
+      saveData();
     }
 
     function getFriends() {
-      return JSON.parse(localStorage.getItem('friendsList') || '[]');
+      return JSON.parse(localStorage.getItem('friends') || '[]');
     }
 
     function saveFriends(friends) {
-      localStorage.setItem('friendsList', JSON.stringify(friends));
-      db.ref('game/friends').set(friends);
-    }
-
-    function renderFriendsTable() {
-      const friends = getFriends();
-      const tbody = document.querySelector('#friends-table tbody');
-      tbody.innerHTML = '';
-      friends.sort((a, b) => b.taps - a.taps);
-      friends.forEach((f, i) => {
-        const row = document.createElement('tr');
-        row.innerHTML = `<td>${i+1}</td><td>${f.name}</td><td>${f.taps}</td>`;
-        tbody.appendChild(row);
-      });
+      localStorage.setItem('friends', JSON.stringify(friends));
     }
 
     function addFriend(e) {
@@ -303,13 +254,22 @@
       const friends = getFriends();
       friends.push({ name, taps });
       saveFriends(friends);
-      renderFriendsTable();
-      document.getElementById('add-friend-form').reset();
+      renderFriends();
+      renderTasks();
+      saveData();
+      e.target.reset();
     }
 
-    updateUI();
-    renderTasks();
-    renderFriendsTable();
+    function renderFriends() {
+      const table = document.getElementById('friends-table');
+      const friends = getFriends();
+      table.innerHTML = '';
+      friends.forEach((f, i) => {
+        table.innerHTML += `<tr><td>${i+1}</td><td>${f.name}</td><td>${f.taps}</td></tr>`;
+      });
+    }
+
+    loadData();
   </script>
 </body>
 </html>
