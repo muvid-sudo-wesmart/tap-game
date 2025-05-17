@@ -8,13 +8,7 @@
     /* ====== Сброс и фон ====== */
     html, body { height:100%; margin:0; padding:0; overflow:hidden; }
     body {
-      font-family: Arial, sans-serif;
-  background-color: #4a5d8c;
-  color: #fff;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin:0; padding:0; overflow:hidden;
+     background-color: #4a5d8c;
     }
 
     /* ====== Хедер ====== */
@@ -37,18 +31,29 @@
     }
 
     /* Белый круг 240×240 с картинкой по центру */
-    .tap-container {
-      background: radial-gradient(circle at center, #ffffff 120px, #4a5d8c 100%);
-    }
-    #tap-image {
-      width: 220px;
-      height: auto;
-      cursor: pointer;
-      transition: transform .1s ease;
-    }
-    #tap-image:active {
-      transform: scale(1.1);
-    }
+ .tap-container {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  /* размер круга вместе с градиентом */
+  width: 280px;
+  height: 280px;
+
+  /* сначала чистый белый радиус 120px, потом градиент до прозрачности к 140px */
+  background: radial-gradient(
+    circle at center,
+    #ffffff 120px,
+    rgba(255,255,255,0) 140px
+  );
+
+  border-radius: 50%;
+}
+ #tap-image {
+  width: 200px;
+  height: auto;
+}
 
     /* ====== Уровень и прогресс ====== */
     .level-container {
