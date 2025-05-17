@@ -8,9 +8,12 @@
     * { box-sizing: border-box; margin: 0; padding: 0 }
     body {
       font-family: Arial, sans-serif;
-      background: #1a2440;
+      background: radial-gradient(circle at center, #ffffff 120px, #1a2440 100%);
+      background-repeat: no-repeat;
+      background-size: cover;
       color: #fff;
       padding-bottom: 60px;
+      min-height: 100vh;
     }
 
     /* === Лоадер === */
@@ -45,7 +48,6 @@
       z-index: 1;
     }
 
-    /* === Шапка === */
     header {
       background: #2196F3;
       padding: 16px;
@@ -56,7 +58,6 @@
       font-size: 1.8em;
     }
 
-    /* === Секции === */
     main section {
       display: none;
       padding: 20px;
@@ -71,27 +72,9 @@
       to   { opacity: 1; transform: translateY(0) }
     }
 
-    /* === Эффект градиента вокруг картинки === */
     .tap-wrapper {
-      position: relative;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
       margin: 24px auto;
-      width: 240px;
-      height: 240px;
-      z-index: 0;
-    }
-    .tap-wrapper::before {
-      content: '';
-      position: absolute;
-      top: -40px;
-      left: -40px;
-      width: calc(100% + 80px);
-      height: calc(100% + 80px);
-      border-radius: 50%;
-      background: radial-gradient(circle, #fff 40%, rgba(33,150,243,0.5) 70%, rgba(33,150,243,0) 100%);
-      z-index: -1;
+      text-align: center;
     }
 
     #tap-image {
@@ -105,7 +88,6 @@
       transform: scale(1.1);
     }
 
-    /* === Общий текст === */
     main h2 {
       font-size: 1.5em;
       margin-bottom: 12px;
@@ -115,7 +97,6 @@
       margin: 8px 0;
     }
 
-    /* === Задания === */
     ul { list-style: none; padding: 0; max-width: 600px; margin: auto }
     .task-card {
       background: #fff;
@@ -144,7 +125,6 @@
       font-weight: bold;
     }
 
-    /* === Друзья === */
     form {
       display: flex;
       gap: 8px;
@@ -180,7 +160,6 @@
       font-size: 0.95em;
     }
 
-    /* === Нижнее меню === */
     nav.bottom-nav {
       position: fixed; bottom: 0; left: 0; right: 0;
       background: #2196F3;
@@ -203,7 +182,6 @@
 </head>
 <body>
 
-  <!-- Loader -->
   <div id="loader">
     <img src="https://raw.githubusercontent.com/muvid-sudo-wesmart/tap-game/main/Frame_159-3.png" alt="Загрузка">
     <div class="loader-progress"><div class="loader-progress-bar"></div></div>
@@ -213,7 +191,6 @@
   <header><h1>Тапай за Калашникова</h1></header>
 
   <main>
-    <!-- Игра -->
     <section id="game" class="active">
       <h2>Нажми на картинку!</h2>
       <div class="tap-wrapper">
@@ -224,13 +201,11 @@
       <p>Уровень: <span id="level">1</span></p>
     </section>
 
-    <!-- Задания -->
     <section id="tasks">
       <h2>🎯 Задания</h2>
       <ul id="task-list"></ul>
     </section>
 
-    <!-- Друзья -->
     <section id="friends">
       <h2>👥 Друзья</h2>
       <form onsubmit="addFriend(event)">
@@ -244,14 +219,12 @@
       </table>
     </section>
 
-    <!-- Статистика -->
     <section id="stats">
       <h2>📊 Статистика</h2>
       <p>Всего тапов: <span id="stat-total">0</span></p>
       <p>Рекорд: <span id="stat-best">0</span></p>
     </section>
 
-    <!-- Достижения -->
     <section id="achievements">
       <h2>🏅 Достижения</h2>
       <ul id="achievement-list"></ul>
@@ -268,7 +241,6 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      // Лоадер
       let p = 0;
       const bar = document.querySelector('.loader-progress-bar');
       const loader = document.getElementById('loader');
