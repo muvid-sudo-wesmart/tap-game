@@ -32,48 +32,49 @@
 
 .tap-container {
   position: relative;
-  width: 200px;
-  height: 200px;
-  background: #fff;
-  border-radius: 50%;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  /* чтобы картинка лежала поверх градиента */
+
+  /* сам белый круг */
+  background: #fff;
+  border-radius: 50%;
+
+  /* отступ под «толщину» круга */
+  padding: 20px;
+
+  /* чтобы «залезть» над ::after */
   z-index: 1;
 }
 
-/* псевдо-элемент с градиентом за белым кругом */
-.tap-container::before {
+/* псевдо-элемент — градиент, увеличенный за пределы белого круга */
+.tap-container::after {
   content: '';
   position: absolute;
-  /* расширяем градиентную область за пределы круга */
-  top: -40px;
-  left: -40px;
-  width: calc(100% + 80px);
-  height: calc(100% + 80px);
+  /* расширяем на размер паддинга */
+  top: -20px;
+  left: -20px;
+  right: -20px;
+  bottom: -20px;
+
   border-radius: 50%;
+
+  /* от центра: до 50% — белый (на стыке с белым кругом),
+     от 50% до 100% — плавный переход в прозрачность */
   background: radial-gradient(
     circle at center,
-    rgba(255,255,255,1) 0%,
-    rgba(255,255,255,0) 80%
-  );
-  z-index: 0;
-}
-
-  /* сначала чистый белый радиус 120px, потом градиент до прозрачности к 140px */
-background: radial-gradient(
-    circle at center,
-    #fff 0%,
-    #fff 70%,
+    rgba(255,255,255,1) 50%,
     rgba(255,255,255,0) 100%
   );
 
-  border-radius: 50%;
+  /* под самим белым кругом */
+  z-index: 0;
 }
+
+/* ваша картинка останется той же */
 #tap-image {
   display: block;
-  width: 240px;   /* размер картинки */
+  width: 200px;
   height: auto;
 }
 
