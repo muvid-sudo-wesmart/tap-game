@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Тапай за Калашникова</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-yHgt4G9Q7R+zNNpnFy5dAg==" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0 }
     body {
@@ -21,10 +21,8 @@
     #loader {
       position: fixed; inset: 0;
       background: #003973;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
       z-index: 1000;
     }
     #loader img {
@@ -105,6 +103,34 @@
       display: block;
     }
 
+    .task-card {
+      background: #fff;
+      color: #000;
+      border-radius: 8px;
+      padding: 12px;
+      margin: 8px auto;
+      max-width: 600px;
+      text-align: left;
+    }
+    .task-card a {
+      color: #0077cc;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .task-card button {
+      margin-top: 8px;
+      padding: 6px 12px;
+      background: #2196F3;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .done {
+      color: green;
+      font-weight: bold;
+    }
+
     nav.bottom-nav {
       position: fixed;
       bottom: 0;
@@ -138,7 +164,6 @@
   </style>
 </head>
 <body>
-
   <div id="loader">
     <img src="https://raw.githubusercontent.com/muvid-sudo-wesmart/tap-game/main/Frame_159-3.png" alt="Загрузка">
     <div class="loader-progress"><div class="loader-progress-bar"></div></div>
@@ -161,6 +186,26 @@
       <div class="level-remaining" id="level-remaining">Осталось до следующего уровня: 1000</div>
       <p>Тапов: <span id="counter">0</span></p>
       <p>Рекорд: <span id="best">0</span></p>
+    </section>
+
+    <section id="tasks">
+      <h2>🎯 Задания</h2>
+      <ul id="task-list"></ul>
+    </section>
+
+    <section id="friends">
+      <h2>👥 Друзья</h2>
+      <p>Здесь будут друзья…</p>
+    </section>
+
+    <section id="stats">
+      <h2>📊 Статистика</h2>
+      <p>Здесь будет статистика…</p>
+    </section>
+
+    <section id="achievements">
+      <h2>🏅 Достижения</h2>
+      <p>Здесь будут достижения…</p>
     </section>
   </main>
 
@@ -215,6 +260,37 @@
       if (section) section.classList.add('active');
     }
 
+    function renderTasks() {
+      const tasks = [
+        {id:'t1', text:'Подпишись на <a href="https://t.me/volonteri_kalashnikova" target="_blank">Telegram</a>', reward:300},
+        {id:'t2', text:'Подпишись на <a href="https://vk.com/id803959232" target="_blank">VK</a>', reward:300},
+        {id:'t3', text:'Проголосуй 14 сентября', reward:500},
+        {id:'t4', text:'Пригласи 3 друзей', reward:700},
+        {id:'t5', text:'Пригласи 5 друзей', reward:1000}
+      ];
+      const ul = document.getElementById('task-list');
+      ul.innerHTML = '';
+      tasks.forEach(t => {
+        const done = localStorage.getItem('task_' + t.id);
+        const li = document.createElement('li');
+        li.className = 'task-card';
+        li.innerHTML = `
+          <strong>${t.text}</strong><br>🎁 ${t.reward} тапов<br>
+          ${done ? '<span class="done">✅ Выполнено</span>' :
+          `<button onclick="completeTask('${t.id}',${t.reward})">Выполнить</button>`}`;
+        ul.appendChild(li);
+      });
+    }
+
+    function completeTask(id, reward) {
+      if (!localStorage.getItem('task_' + id)) {
+        count += reward;
+        localStorage.setItem('task_' + id, 'done');
+        updateLevelUI();
+        renderTasks();
+      }
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
       let p = 0;
       const bar = document.querySelector('.loader-progress-bar');
@@ -226,10 +302,10 @@
           clearInterval(iv);
           setTimeout(() => loader.style.display = 'none', 200);
           updateLevelUI();
+          renderTasks();
         }
       }, 400);
     });
   </script>
-
 </body>
 </html>
