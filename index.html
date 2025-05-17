@@ -84,27 +84,28 @@
       color: rgba(255,255,255,0.8);
     }
 
-    /* ====== Бейдж с ореолом ====== */
+    /* ====== Бейдж с белым кругом и градиентом-ореолом ====== */
     .badge-container {
       position: relative;
       width: 240px;
       height: 240px;
-      margin: 0 auto;
-      background: #13335c; /* подложка под градиент */
+      margin: 0 auto 40px;
+      background: #fff;
       border-radius: 50%;
+      z-index: 1;
     }
     .badge-container::before {
       content: '';
       position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      top: -30px;
+      left: -30px;
+      width: calc(100% + 60px);
+      height: calc(100% + 60px);
       border-radius: 50%;
       background: radial-gradient(
         circle at center,
-        rgba(255,255,255,0.6) 30%,
-        rgba(255,255,255,0) 80%
+        rgba(255,255,255,0.6) 40%,
+        rgba(255,255,255,0) 100%
       );
       z-index: 0;
     }
@@ -113,7 +114,7 @@
       width: 200px;
       height: auto;
       border-radius: 50%;
-      z-index: 1;
+      z-index: 2;
       display: block;
       margin: 20px auto;
     }
@@ -130,6 +131,7 @@
       padding: 8px 0;
       position: sticky;
       bottom: 0;
+      margin-top: auto;
     }
     .bottom-nav button {
       background: transparent;
@@ -168,17 +170,17 @@
     <div class="votes">12549 голосов</div>
     <div class="tagline">СЛЫШАТЬ. ПОМОГАТЬ. РЕШАТЬ.</div>
     <div class="badge-container">
-      <img src="assets/icons/badge.png" alt="Бейдж">
+      <img src="https://raw.githubusercontent.com/muvid-sudo-wesmart/tap-game/main/tap.png" alt="Бейдж">
     </div>
   </div>
 
   <!-- Нижнее меню -->
   <nav class="bottom-nav">
-    <button class="active"><img src="assets/icons/home.svg" alt="Главная">Главная</button>
-    <button><img src="assets/icons/tasks.svg" alt="Задания">Задания</button>
-    <button><img src="assets/icons/friends.svg" alt="Друзья">Друзья</button>
-    <button><img src="assets/icons/profile.svg" alt="Профиль">Профиль</button>
-    <button><img src="assets/icons/top.svg" alt="Топ">Топ</button>
+    <button class="active"><img src="https://img.icons8.com/ios-filled/50/ffffff/home.png" alt="Главная">Главная</button>
+    <button><img src="https://img.icons8.com/ios-filled/50/ffffff/list--v1.png" alt="Задания">Задания</button>
+    <button><img src="https://img.icons8.com/ios-filled/50/ffffff/user-group-man-man.png" alt="Друзья">Друзья</button>
+    <button><img src="https://img.icons8.com/ios-filled/50/ffffff/user.png" alt="Профиль">Профиль</button>
+    <button><img src="https://img.icons8.com/ios-filled/50/ffffff/rank.png" alt="Топ">Топ</button>
   </nav>
 </body>
 </html>
