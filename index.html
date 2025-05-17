@@ -1,164 +1,22 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Тапай за Калашникова</title>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0 }
     body {
       font-family: Arial, sans-serif;
       background: radial-gradient(circle at center, #d9f3ff, #003973);
       color: #fff;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+      margin: 0;
       padding-bottom: 60px;
+      min-height: 100vh;
     }
-
-    #loader {
-      position: fixed;
-      inset: 0;
-      background: #003973;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-    }
-    #loader img {
-      width: 80%;
-      max-width: 280px;
-      border-radius: 12px;
-    }
-    .loader-progress {
-      width: 80%; height: 10px;
-      background: rgba(255,255,255,0.3);
-      border-radius: 5px; overflow: hidden;
-      margin-top: 10px;
-    }
-    .loader-progress-bar {
-      height: 100%; width: 0%;
-      background: #2196F3;
-      transition: width 2s linear;
-    }
-    .loader-text {
-      margin-top: 10px;
-      font-size: 1.2em;
-      color: #fff;
-    }
-
-    .level-bar {
-      background: #dce5f1;
-      border-radius: 12px;
-      padding: 10px 16px;
-      margin: 12px auto 0;
-      max-width: 320px;
-      width: 90%;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      box-shadow: 0 0 4px rgba(0,0,0,0.2);
-    }
-    .bar-container {
-      flex: 1;
-      background: #fff;
-      height: 10px;
-      border-radius: 5px;
-      overflow: hidden;
-      margin-right: 12px;
-    }
-    .bar-fill {
-      height: 100%; background: #ff6600;
-      width: 0%; transition: width 0.3s ease;
-    }
-    .level-info {
-      font-weight: bold; color: #000; font-size: 0.95em;
-    }
-
-    h2.title {
-      margin-top: 12px;
-      font-size: 1.3em;
-      text-align: center;
-      color: #fff;
-    }
-
-    .tap-wrapper {
-      margin: 40px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex: 1;
-      position: relative;
-    }
-    #tap-image {
-      width: 240px;
-      cursor: pointer;
-      transition: transform 0.1s ease;
-    }
-    #tap-image:active {
-      transform: scale(1.2);
-    }
-
-    .tap-plus {
-      position: absolute;
-      font-size: 1.5em;
-      animation: riseFade 0.8s ease-out forwards;
-      pointer-events: none;
-    }
-    @keyframes riseFade {
-      0% { opacity: 1; transform: translateY(0); }
-      100% { opacity: 0; transform: translateY(-40px); }
-    }
-
-    .level-label,
-    .level-remaining,
-    #counter,
-    #best {
-      color: #fff;
-      font-size: 1.1em;
-      text-align: center;
-    }
-
-    main section {
-      display: none;
-      padding: 20px;
-      text-align: center;
-    }
-    main section.active {
-      display: block;
-    }
-
-    .task-card {
-      background: #fff;
-      color: #000;
-      border-radius: 8px;
-      padding: 12px;
-      margin: 8px auto;
-      max-width: 600px;
-      text-align: left;
-    }
-    .task-card a {
-      color: #0077cc;
-      text-decoration: none;
-      font-weight: bold;
-    }
-    .task-card button {
-      margin-top: 8px;
-      padding: 6px 12px;
-      background: #2196F3;
-      color: #fff;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-    .done {
-      color: green;
-      font-weight: bold;
-    }
-
     nav.bottom-nav {
       position: fixed;
       bottom: 0;
@@ -189,33 +47,25 @@
     nav.bottom-nav button i {
       font-size: 1.2em;
     }
+    section { display: none; padding: 20px; }
+    section.active { display: block; }
+    .container { max-width: 400px; margin: auto; background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; }
+    .invite-box { background: #eef; color: #000; border-radius: 10px; padding: 12px; margin: 12px 0; display: flex; align-items: center; gap: 12px; }
+    .invite-box i { font-size: 2em; color: #0074D9; }
+    .btn-green { background: #2ecc40; color: white; border: none; padding: 10px 16px; font-size: 1em; cursor: pointer; border-radius: 6px; width: 100%; }
+    .ref-container { display: flex; margin-top: 10px; gap: 8px; }
+    .ref-container input { flex: 1; padding: 8px; font-size: 0.9em; border-radius: 4px; border: none; }
+    .copy-btn { background: #2ecc40; border: none; padding: 8px 12px; border-radius: 4px; color: white; cursor: pointer; }
+    .friend-card { background: #fff; color: #000; padding: 10px; border-radius: 8px; margin: 8px 0; }
   </style>
 </head>
 <body>
-  <div id="loader">
-    <img src="https://raw.githubusercontent.com/muvid-sudo-wesmart/tap-game/main/Frame_159-3.png" alt="Загрузка">
-    <div class="loader-progress"><div class="loader-progress-bar"></div></div>
-    <p class="loader-text">Загрузка…</p>
-  </div>
-
-  <div class="level-bar">
-    <div class="bar-container">
-      <div class="bar-fill" id="level-progress"></div>
-    </div>
-    <div class="level-info" id="level-text">Уровень 1 / 6</div>
-  </div>
-
-  <h2 class="title">СЛЫШАТЬ • ПОМОГАТЬ • РЕШАТЬ</h2>
-
   <main>
     <section id="game" class="active">
-      <div class="tap-wrapper">
-        <img id="tap-image" src="https://raw.githubusercontent.com/muvid-sudo-wesmart/tap-game/main/tap.png" alt="Tap" onclick="tap()">
-      </div>
-      <div class="level-label" id="level-below">Уровень 1</div>
-      <div class="level-remaining" id="level-remaining">Осталось до следующего уровня: 1000</div>
-      <p>Тапов: <span id="counter">0</span></p>
-      <p>Рекорд: <span id="best">0</span></p>
+      <h2>Тапай за Калашникова</h2>
+      <p>Нажимай на кнопку и получай очки!</p>
+      <button onclick="tap()">Тапнуть</button>
+      <p>Тапов: <span id="tap-count">0</span></p>
     </section>
 
     <section id="tasks">
@@ -224,18 +74,38 @@
     </section>
 
     <section id="friends">
-      <h2>👥 Друзья</h2>
-      <p>Здесь будут друзья…</p>
+      <div class="container">
+        <h2>Пригласи друзей</h2>
+        <p style="text-align:center">Ты и твой друг получите бонусы</p>
+
+        <div class="invite-box">
+          <i class="fas fa-user-friends"></i>
+          <div>
+            <strong>Пригласи друга</strong><br>
+            +100 голосов для тебя и твоего друга
+          </div>
+        </div>
+
+        <button class="btn-green" onclick="generateLink()">Пригласить друга</button>
+        <div class="ref-container">
+          <input type="text" id="refLink" readonly>
+          <button class="copy-btn" onclick="copyLink()">📋</button>
+        </div>
+
+        <h3>Список твоих друзей</h3>
+        <div id="friends-list"></div>
+      </div>
     </section>
 
     <section id="stats">
       <h2>📊 Статистика</h2>
-      <p>Здесь будет статистика…</p>
+      <p>Всего тапов: <span id="stat-total">0</span></p>
+      <p>Рекорд: <span id="stat-best">0</span></p>
     </section>
 
     <section id="achievements">
       <h2>🏅 Достижения</h2>
-      <p>Здесь будут достижения…</p>
+      <ul id="achievement-list"></ul>
     </section>
   </main>
 
@@ -258,49 +128,78 @@
   </nav>
 
   <script>
-    let count = 0;
-    const maxLevel = 6;
-    const step = 1000;
-    const colors = ['#ff4444', '#ffbb33', '#99cc00', '#33b5e5', '#aa66cc'];
+    const firebaseConfig = {
+  apiKey: "AIzaSyCwEb_LAx3H80y_HBpz8Uotxf_YbvWccrE",
+  authDomain: "tapgame-35abf.firebaseapp.com",
+  databaseURL: "https://tapgame-35abf-default-rtdb.firebaseio.com",
+  projectId: "tapgame-35abf",
+  storageBucket: "tapgame-35abf.firebasestorage.app",
+  messagingSenderId: "34906975722",
+  appId: "1:34906975722:web:abe58668a3ac34fdddd693",
+  measurementId: "G-WVSTBKJ897"
+};
+    firebase.initializeApp(firebaseConfig);
 
-    function updateLevelUI() {
-      const level = Math.min(Math.floor(count / step) + 1, maxLevel);
-      const progress = level < maxLevel ? (count % step) / step * 100 : 100;
-      const remaining = level < maxLevel ? step - (count % step) : 0;
-
-      document.getElementById('level-text').textContent = `Уровень ${level} / ${maxLevel}`;
-      document.getElementById('level-progress').style.width = progress + '%';
-      document.getElementById('level-below').textContent = `Уровень ${level}`;
-      document.getElementById('level-remaining').textContent =
-        level < maxLevel
-          ? `Осталось до следующего уровня: ${remaining}`
-          : `Максимальный уровень достигнут`;
-
-      document.getElementById('counter').textContent = count;
-      document.getElementById('best').textContent = Math.max(count, parseInt(document.getElementById('best').textContent));
-    }
+    let count = 0, best = 0;
 
     function tap() {
       count++;
-      updateLevelUI();
-      showPlus();
-    }
-
-    function showPlus() {
-      const tapWrapper = document.querySelector('.tap-wrapper');
-      const plus = document.createElement('div');
-      plus.className = 'tap-plus';
-      plus.textContent = '+1';
-      plus.style.color = colors[Math.floor(Math.random() * colors.length)];
-      plus.style.left = Math.random() * 40 + 80 + 'px';
-      tapWrapper.appendChild(plus);
-      setTimeout(() => plus.remove(), 800);
+      if (count > best) best = count;
+      document.getElementById('tap-count').textContent = count;
+      document.getElementById('stat-total').textContent = count;
+      document.getElementById('stat-best').textContent = best;
     }
 
     function showTab(id) {
       document.querySelectorAll('main section').forEach(s => s.classList.remove('active'));
       const section = document.getElementById(id);
       if (section) section.classList.add('active');
+    }
+
+    firebase.auth().onAuthStateChanged(user => {
+      if (!user) return;
+      const uid = user.uid;
+      const refInput = document.getElementById('refLink');
+      refInput.value = `${location.origin}?ref=${uid}`;
+      loadFriends(uid);
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const ref = urlParams.get('ref');
+      if (ref && ref !== uid) {
+        const friendRef = firebase.database().ref(`users/${ref}/friends/${uid}`);
+        friendRef.set({
+          name: user.displayName || "Друг",
+          joinedAt: new Date().toISOString()
+        });
+      }
+    });
+
+    function generateLink() {
+      const link = document.getElementById('refLink');
+      link.select();
+      link.setSelectionRange(0, 99999);
+      document.execCommand('copy');
+    }
+
+    function copyLink() {
+      const link = document.getElementById('refLink');
+      link.select();
+      navigator.clipboard.writeText(link.value);
+    }
+
+    function loadFriends(uid) {
+      const list = document.getElementById('friends-list');
+      firebase.database().ref(`users/${uid}/friends`).on('value', snap => {
+        list.innerHTML = '';
+        const data = snap.val();
+        if (!data) return;
+        Object.entries(data).forEach(([id, info]) => {
+          const div = document.createElement('div');
+          div.className = 'friend-card';
+          div.innerHTML = `<strong>${info.name}</strong><br><small>${new Date(info.joinedAt).toLocaleString()}</small>`;
+          list.appendChild(div);
+        });
+      });
     }
 
     function renderTasks() {
@@ -329,25 +228,13 @@
       if (!localStorage.getItem('task_' + id)) {
         count += reward;
         localStorage.setItem('task_' + id, 'done');
-        updateLevelUI();
+        tap();
         renderTasks();
       }
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-      let p = 0;
-      const bar = document.querySelector('.loader-progress-bar');
-      const loader = document.getElementById('loader');
-      const iv = setInterval(() => {
-        p += 20;
-        bar.style.width = p + '%';
-        if (p >= 100) {
-          clearInterval(iv);
-          setTimeout(() => loader.style.display = 'none', 200);
-          updateLevelUI();
-          renderTasks();
-        }
-      }, 400);
+      renderTasks();
     });
   </script>
 </body>
