@@ -46,12 +46,13 @@
       background: #dce5f1;
       border-radius: 12px;
       padding: 10px 16px;
-      margin: 12px auto;
+      margin: 12px auto 0;
       max-width: 320px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       box-shadow: 0 0 4px rgba(0,0,0,0.2);
+      width: 90%;
     }
     .bar-container {
       flex: 1; background: #fff;
@@ -161,7 +162,14 @@
   </style>
 </head>
 <body>
+<div class="level-bar">
+  <div class="bar-container">
+    <div class="bar-fill" id="level-progress"></div>
+  </div>
+  <div class="level-info" id="level-text">Уровень 1 / 6</div>
+</div>
 <!-- остальная часть HTML остаётся без изменений -->
+
 
   <div id="loader">
     <img src="https://raw.githubusercontent.com/muvid-sudo-wesmart/tap-game/main/Frame_159-3.png" alt="Загрузка">
