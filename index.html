@@ -5,13 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Тапай за Калашникова</title>
   <style>
-    /* Сброс */
     * { box-sizing: border-box; margin: 0; padding: 0 }
     body {
       font-family: Arial, sans-serif;
-      background: #f0f8ff;
-      color: #333;
-      padding-bottom: 60px; /* пространство под меню */
+      background: #1a2440;
+      color: #fff;
+      padding-bottom: 60px;
     }
 
     /* === Лоадер === */
@@ -35,7 +34,7 @@
     }
     .loader-progress-bar {
       width: 0; height: 100%;
-      background: #2196F3; /* синий вместо зелёного */
+      background: #2196F3;
       transition: width 2s linear;
     }
     .loader-text {
@@ -48,7 +47,7 @@
 
     /* === Шапка === */
     header {
-      background: #2196F3; /* синий */
+      background: #2196F3;
       padding: 16px;
       text-align: center;
     }
@@ -71,6 +70,42 @@
       from { opacity: 0; transform: translateY(20px) }
       to   { opacity: 1; transform: translateY(0) }
     }
+
+    /* === Эффект градиента вокруг картинки === */
+    .tap-wrapper {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin: 24px auto;
+      width: 240px;
+      height: 240px;
+      z-index: 0;
+    }
+    .tap-wrapper::before {
+      content: '';
+      position: absolute;
+      top: -40px;
+      left: -40px;
+      width: calc(100% + 80px);
+      height: calc(100% + 80px);
+      border-radius: 50%;
+      background: radial-gradient(circle, #fff 40%, rgba(33,150,243,0.5) 70%, rgba(33,150,243,0) 100%);
+      z-index: -1;
+    }
+
+    #tap-image {
+      width: 200px;
+      height: auto;
+      cursor: pointer;
+      transition: transform .1s ease;
+      z-index: 1;
+    }
+    #tap-image:active {
+      transform: scale(1.1);
+    }
+
+    /* === Общий текст === */
     main h2 {
       font-size: 1.5em;
       margin-bottom: 12px;
@@ -80,21 +115,11 @@
       margin: 8px 0;
     }
 
-    /* === Игра === */
-    #tap-image {
-      width: 200px;
-      cursor: pointer;
-      transition: transform .1s ease;
-      margin: 16px 0;
-    }
-    #tap-image:active {
-      transform: scale(1.1);
-    }
-
     /* === Задания === */
     ul { list-style: none; padding: 0; max-width: 600px; margin: auto }
     .task-card {
       background: #fff;
+      color: #000;
       border-radius: 8px;
       padding: 12px;
       margin: 8px 0;
@@ -108,7 +133,7 @@
     .task-card button {
       margin-top: 8px;
       padding: 6px 12px;
-      background: #2196F3; /* синий */
+      background: #2196F3;
       color: #fff;
       border: none;
       border-radius: 4px;
@@ -125,6 +150,7 @@
       gap: 8px;
       justify-content: center;
       margin-bottom: 12px;
+      flex-wrap: wrap;
     }
     form input, form button {
       padding: 8px;
@@ -132,11 +158,11 @@
       border-radius: 4px;
     }
     form input {
-      width: 150px;
+      width: 140px;
       border: 1px solid #ccc;
     }
     form button {
-      background: #2196F3; /* синий */
+      background: #2196F3;
       color: #fff;
       border: none;
       cursor: pointer;
@@ -157,7 +183,7 @@
     /* === Нижнее меню === */
     nav.bottom-nav {
       position: fixed; bottom: 0; left: 0; right: 0;
-      background: #2196F3; /* синий */
+      background: #2196F3;
       display: flex;
       z-index: 500;
     }
@@ -190,7 +216,9 @@
     <!-- Игра -->
     <section id="game" class="active">
       <h2>Нажми на картинку!</h2>
-      <img id="tap-image" src="https://raw.githubusercontent.com/muvid-sudo-wesmart/tap-game/main/tap.png" alt="Tap" onclick="tap()">
+      <div class="tap-wrapper">
+        <img id="tap-image" src="https://raw.githubusercontent.com/muvid-sudo-wesmart/tap-game/main/tap.png" alt="Tap" onclick="tap()">
+      </div>
       <p>Тапов: <span id="counter">0</span></p>
       <p>Рекорд: <span id="best">0</span></p>
       <p>Уровень: <span id="level">1</span></p>
@@ -253,11 +281,9 @@
         }
       }, 400);
 
-      // Данные
       let count = 0, best = 0, friends = [];
       const thresholds = [100, 500, 2000, 5000, 10000];
 
-      // Обновление UI
       function updateUI() {
         document.getElementById('counter').textContent = count;
         document.getElementById('best').textContent = best;
@@ -274,13 +300,11 @@
         ach.innerHTML += `<li>👥 Друзей: ${friends.length}</li>`;
       }
 
-      // Вкладки
       window.showTab = id => {
         document.querySelectorAll('main section').forEach(s => s.classList.remove('active'));
         document.getElementById(id).classList.add('active');
       };
 
-      // Тап
       window.tap = () => {
         count++;
         if (count > best) best = count;
@@ -288,11 +312,10 @@
         renderTasks();
       };
 
-      // Задания
       function renderTasks() {
         const tasks = [
-          {id:'t1', text:'Подпишись на <a href="https://t.me/volonteri_kalashnikova" target="_blank">Telegram</a>', reward:300},
-          {id:'t2', text:'Подпишись на <a href="https://vk.com/id803959232" target="_blank">VK</a>', reward:300},
+          {id:'t1', text:'Подпишись на <a href=\"https://t.me/volonteri_kalashnikova\" target=\"_blank\">Telegram</a>', reward:300},
+          {id:'t2', text:'Подпишись на <a href=\"https://vk.com/id803959232\" target=\"_blank\">VK</a>', reward:300},
           {id:'t3', text:'Проголосуй 14 сентября', reward:500},
           {id:'t4', text:'Пригласи 3 друзей', reward:700},
           {id:'t5', text:'Пригласи 5 друзей', reward:1000}
@@ -305,12 +328,13 @@
           li.className = 'task-card';
           li.innerHTML = `
             <strong>${t.text}</strong><br>🎁 ${t.reward} тапов<br>
-            ${done ? '<span class="done">✅ Выполнено</span>' :
-              `<button onclick="completeTask('${t.id}',${t.reward})">Выполнить</button>`}
+            ${done ? '<span class=\"done\">✅ Выполнено</span>' :
+              `<button onclick=\"completeTask('${t.id}',${t.reward})\">Выполнить</button>`}
           `;
           ul.appendChild(li);
         });
       }
+
       window.completeTask = (id, reward) => {
         if (!localStorage.getItem('task_' + id)) {
           count += reward;
@@ -321,7 +345,6 @@
         }
       };
 
-      // Друзья
       function renderFriends() {
         const tb = document.getElementById('friends-table');
         tb.innerHTML = '';
@@ -329,6 +352,7 @@
           tb.innerHTML += `<tr><td>${i+1}</td><td>${f.name}</td><td>${f.taps}</td></tr>`;
         });
       }
+
       window.addFriend = e => {
         e.preventDefault();
         const name = document.getElementById('friend-name').value.trim();
@@ -341,7 +365,6 @@
         e.target.reset();
       };
 
-      // Инициализация
       updateUI();
       renderTasks();
       renderFriends();
