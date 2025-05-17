@@ -64,13 +64,24 @@
     }
 
     .tap-wrapper {
-      margin: 0 auto 24px;
+      margin: 40px auto 24px;
       text-align: center;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 240px;
     }
+
+    .tap-circle {
+      width: 240px;
+      height: 240px;
+      background: #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 40px rgba(255, 255, 255, 0.5);
+    }
+
     #tap-image {
       width: 200px;
       cursor: pointer;
@@ -80,14 +91,12 @@
       transform: scale(1.1);
     }
 
-    .level-label {
-      font-size: 1.2em;
-      margin-bottom: 6px;
-    }
-    .level-remaining {
-      font-size: 1em;
-      color: #ccc;
-      margin-bottom: 12px;
+    .level-label,
+    .level-remaining,
+    #counter,
+    #best {
+      color: #fff;
+      font-size: 1.1em;
     }
 
     main section {
