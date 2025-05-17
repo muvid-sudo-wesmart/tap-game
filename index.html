@@ -9,11 +9,12 @@
     html, body { height:100%; margin:0; padding:0; overflow:hidden; }
     body {
       font-family: Arial, sans-serif;
-      background: radial-gradient(circle at center, #ffffff 120px, #4a5d8c 100%);
-      color: #fff;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+  background-color: #4a5d8c;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin:0; padding:0; overflow:hidden;
     }
 
     /* ====== Хедер ====== */
@@ -26,24 +27,18 @@
 
     /* ====== Секция «Игра» ====== */
     #game {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-      position: relative;
+       flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  position: relative;
     }
 
     /* Белый круг 240×240 с картинкой по центру */
     .tap-container {
-      position: relative;
-      width: 200px; height: 200px;
-      background: #fff;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      background: radial-gradient(circle at center, #ffffff 120px, #4a5d8c 100%);
     }
     #tap-image {
       width: 220px;
