@@ -8,12 +8,22 @@
     * { box-sizing: border-box; margin: 0; padding: 0 }
     body {
       font-family: Arial, sans-serif;
-      background: radial-gradient(circle at center, #66ccff, #003973);
+      background: radial-gradient(circle at center, #aeefff, #003973);
       background-repeat: no-repeat;
       background-size: cover;
       color: #fff;
       padding-bottom: 60px;
       min-height: 100vh;
+      animation: pulseBackground 10s infinite ease-in-out;
+    }
+
+    @keyframes pulseBackground {
+      0%, 100% {
+        background: radial-gradient(circle at center, #aeefff, #003973);
+      }
+      50% {
+        background: radial-gradient(circle at center, #ffffff, #003973);
+      }
     }
 
     #loader {
