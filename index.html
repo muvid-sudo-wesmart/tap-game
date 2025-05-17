@@ -16,60 +16,36 @@
       min-height: 100vh;
     }
 
-    #loader {
-      position: fixed; inset: 0;
-      background: transparent;
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      z-index: 1000;
-    }
-    #loader img {
-      position: absolute; top: 0; left: 0;
-      width: 100%; height: 100%; object-fit: cover;
-      z-index: 0;
-    }
-    .loader-progress {
-      width: 80%; height: 10px;
-      background: rgba(255,255,255,0.3);
-      border-radius: 5px; overflow: hidden;
-      position: relative; z-index: 1; margin-top: 8px;
-    }
-    .loader-progress-bar {
-      width: 0; height: 100%;
-      background: #2196F3;
-      transition: width 2s linear;
-    }
-    .loader-text {
-      margin-top: 12px;
-      color: #fff;
-      font-size: 1.25em;
-      position: relative;
-      z-index: 1;
-    }
-
     .level-bar {
-      width: 100%;
-      background: #003366;
-      padding: 10px;
+      background: #dce5f1;
+      border-radius: 12px;
+      padding: 10px 16px;
+      margin: 12px auto;
+      max-width: 320px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 0 4px rgba(0,0,0,0.2);
     }
-    .level-inner {
-      width: 100%;
-      max-width: 600px;
-      margin: auto;
+    .level-bar .bar-container {
+      flex: 1;
       background: #fff;
-      border-radius: 8px;
+      height: 10px;
+      border-radius: 5px;
       overflow: hidden;
-      height: 16px;
+      margin-right: 12px;
     }
-    .level-progress {
-      background: #2196F3;
+    .level-bar .bar-fill {
       height: 100%;
+      background: #ff6600;
+      width: 0%;
       transition: width 0.3s ease;
     }
-    .level-text {
-      text-align: center;
-      margin-top: 6px;
+    .level-bar .level-info {
+      font-weight: bold;
+      color: #000;
       font-size: 0.95em;
+      white-space: nowrap;
     }
 
     main section {
@@ -197,12 +173,24 @@
 <body>
 
   <div class="level-bar">
-    <div class="level-inner">
-      <div class="level-progress" id="level-progress" style="width: 0%;"></div>
+    <div class="bar-container">
+      <div class="bar-fill" id="level-progress"></div>
     </div>
-    <div class="level-text" id="level-text">Уровень 1 / 6</div>
+    <div class="level-info" id="level-text">Уровень 1 / 6</div>
   </div>
 
+<script>
+  let count = 0;
+  const maxLevel = 6;
+  const step = 1000;
+
+  function updateLevelUI() {
+    const level = Math.min(Math.floor(count / step) + 1, maxLevel);
+    const progress = Math.min((count % step) / step * 100, 100);
+    document.getElementById('level-text').textContent = `Уровень ${level} / ${maxLevel}`;
+    document.getElementById('level-progress').style.width = progress + '%';
+  }
+</script>
 <!-- остальная часть кода без изменений -->
 
 
