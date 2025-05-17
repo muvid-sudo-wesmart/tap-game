@@ -18,29 +18,6 @@
       padding-bottom: 60px;
     }
 
-    #loader {
-      position: fixed; inset: 0;
-      background: #003973;
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      z-index: 1000;
-    }
-    #loader img {
-      max-width: 80%; height: auto; border-radius: 16px;
-    }
-    .loader-progress {
-      width: 80%; height: 10px;
-      background: rgba(255,255,255,0.3);
-      border-radius: 5px; overflow: hidden;
-      margin-top: 8px;
-    }
-    .loader-progress-bar {
-      width: 0; height: 100%; background: #2196F3; transition: width 2s linear;
-    }
-    .loader-text {
-      margin-top: 12px; color: #fff; font-size: 1.25em;
-    }
-
     .level-bar {
       background: #dce5f1;
       border-radius: 12px;
@@ -69,8 +46,15 @@
       font-weight: bold; color: #000; font-size: 0.95em;
     }
 
+    h2.title {
+      margin-top: 12px;
+      font-size: 1.3em;
+      text-align: center;
+      color: #fff;
+    }
+
     .tap-wrapper {
-      margin: 40px;
+      margin: 40px auto 32px;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -78,12 +62,12 @@
       position: relative;
     }
     #tap-image {
-      width: 240px;
+      width: 200px;
       cursor: pointer;
       transition: transform 0.1s ease;
     }
     #tap-image:active {
-      transform: scale(1.2);
+      transform: scale(1.1);
     }
 
     .tap-plus {
@@ -113,34 +97,6 @@
     }
     main section.active {
       display: block;
-    }
-
-    .task-card {
-      background: #fff;
-      color: #000;
-      border-radius: 8px;
-      padding: 12px;
-      margin: 8px auto;
-      max-width: 600px;
-      text-align: left;
-    }
-    .task-card a {
-      color: #0077cc;
-      text-decoration: none;
-      font-weight: bold;
-    }
-    .task-card button {
-      margin-top: 8px;
-      padding: 6px 12px;
-      background: #2196F3;
-      color: #fff;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-    .done {
-      color: green;
-      font-weight: bold;
     }
 
     nav.bottom-nav {
@@ -176,17 +132,14 @@
   </style>
 </head>
 <body>
-  <div id="loader">
-    <img src="https://raw.githubusercontent.com/muvid-sudo-wesmart/tap-game/main/Frame_159-3.png" alt="Загрузка">
-    <div class="loader-progress"><div class="loader-progress-bar"></div></div>
-    <p class="loader-text">Загрузка…</p>
-  </div>
-
-  
-  <h2 style="margin-top: 12px; font-size: 1.3em; text-align: center; color: #fff;">СЛЫШАТЬ • ПОМОГАТЬ • РЕШАТЬ</h2>
+  <div class="level-bar">
+    <div class="bar-container">
+      <div class="bar-fill" id="level-progress"></div>
     </div>
     <div class="level-info" id="level-text">Уровень 1 / 6</div>
   </div>
+
+  <h2 class="title">СЛЫШАТЬ • ПОМОГАТЬ • РЕШАТЬ</h2>
 
   <main>
     <section id="game" class="active">
@@ -197,26 +150,6 @@
       <div class="level-remaining" id="level-remaining">Осталось до следующего уровня: 1000</div>
       <p>Тапов: <span id="counter">0</span></p>
       <p>Рекорд: <span id="best">0</span></p>
-    </section>
-
-    <section id="tasks">
-      <h2>🎯 Задания</h2>
-      <ul id="task-list"></ul>
-    </section>
-
-    <section id="friends">
-      <h2>👥 Друзья</h2>
-      <p>Здесь будут друзья…</p>
-    </section>
-
-    <section id="stats">
-      <h2>📊 Статистика</h2>
-      <p>Здесь будет статистика…</p>
-    </section>
-
-    <section id="achievements">
-      <h2>🏅 Достижения</h2>
-      <p>Здесь будут достижения…</p>
     </section>
   </main>
 
@@ -284,51 +217,8 @@
       if (section) section.classList.add('active');
     }
 
-    function renderTasks() {
-      const tasks = [
-        {id:'t1', text:'Подпишись на <a href="https://t.me/volonteri_kalashnikova" target="_blank">Telegram</a>', reward:300},
-        {id:'t2', text:'Подпишись на <a href="https://vk.com/id803959232" target="_blank">VK</a>', reward:300},
-        {id:'t3', text:'Проголосуй 14 сентября', reward:500},
-        {id:'t4', text:'Пригласи 3 друзей', reward:700},
-        {id:'t5', text:'Пригласи 5 друзей', reward:1000}
-      ];
-      const ul = document.getElementById('task-list');
-      ul.innerHTML = '';
-      tasks.forEach(t => {
-        const done = localStorage.getItem('task_' + t.id);
-        const li = document.createElement('li');
-        li.className = 'task-card';
-        li.innerHTML = `
-          <strong>${t.text}</strong><br>🎁 ${t.reward} тапов<br>
-          ${done ? '<span class="done">✅ Выполнено</span>' :
-          `<button onclick="completeTask('${t.id}',${t.reward})">Выполнить</button>`}`;
-        ul.appendChild(li);
-      });
-    }
-
-    function completeTask(id, reward) {
-      if (!localStorage.getItem('task_' + id)) {
-        count += reward;
-        localStorage.setItem('task_' + id, 'done');
-        updateLevelUI();
-        renderTasks();
-      }
-    }
-
     document.addEventListener('DOMContentLoaded', () => {
-      let p = 0;
-      const bar = document.querySelector('.loader-progress-bar');
-      const loader = document.getElementById('loader');
-      const iv = setInterval(() => {
-        p += 20;
-        bar.style.width = p + '%';
-        if (p >= 100) {
-          clearInterval(iv);
-          setTimeout(() => loader.style.display = 'none', 200);
-          updateLevelUI();
-          renderTasks();
-        }
-      }, 400);
+      updateLevelUI();
     });
   </script>
 </body>
