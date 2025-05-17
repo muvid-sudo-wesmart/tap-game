@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Тапай за Калашникова</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-yHgt4G9Q7R+zNNpnFy5dAg==" crossorigin="anonymous" referrerpolicy="no-referrer"/>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0 }
     body {
@@ -39,9 +40,7 @@
       width: 0; height: 100%; background: #2196F3; transition: width 2s linear;
     }
     .loader-text {
-      margin-top: 12px;
-      font-size: 1.25em;
-      color: #fff;
+      margin-top: 12px; color: #fff; font-size: 1.25em;
     }
 
     .level-bar {
@@ -65,31 +64,27 @@
       margin-right: 12px;
     }
     .bar-fill {
-      height: 100%;
-      background: #ff6600;
-      width: 0%;
-      transition: width 0.3s ease;
+      height: 100%; background: #ff6600;
+      width: 0%; transition: width 0.3s ease;
     }
     .level-info {
-      font-weight: bold;
-      color: #000;
-      font-size: 0.95em;
+      font-weight: bold; color: #000; font-size: 0.95em;
     }
 
     .tap-wrapper {
-      margin: 40px;
+      margin: 40px auto 32px;
       display: flex;
       justify-content: center;
       align-items: center;
       flex: 1;
     }
     #tap-image {
-      width: 240px;
+      width: 200px;
       cursor: pointer;
       transition: transform 0.1s ease;
     }
     #tap-image:active {
-      transform: scale(1.2);
+      transform: scale(1.1);
     }
 
     .level-label,
@@ -115,21 +110,30 @@
       bottom: 0;
       left: 0;
       right: 0;
-      background: #2196F3;
+      background: #fff;
       display: flex;
+      justify-content: space-around;
+      padding: 6px;
+      border-radius: 12px 12px 0 0;
+      box-shadow: 0 -2px 6px rgba(0,0,0,0.2);
       z-index: 500;
     }
     nav.bottom-nav button {
       flex: 1;
-      padding: 12px 0;
       background: none;
       border: none;
-      color: #fff;
-      font-size: 1em;
+      text-align: center;
+      padding: 6px 4px;
+      color: #003973;
+      font-size: 0.75em;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
       cursor: pointer;
     }
-    nav.bottom-nav button:hover {
-      background: rgba(255,255,255,0.15);
+    nav.bottom-nav button i {
+      font-size: 1.2em;
     }
   </style>
 </head>
@@ -158,34 +162,24 @@
       <p>Тапов: <span id="counter">0</span></p>
       <p>Рекорд: <span id="best">0</span></p>
     </section>
-
-    <section id="tasks">
-      <h2>🎯 Задания</h2>
-      <p>Здесь будут задания…</p>
-    </section>
-
-    <section id="friends">
-      <h2>👥 Друзья</h2>
-      <p>Здесь будут друзья…</p>
-    </section>
-
-    <section id="stats">
-      <h2>📊 Статистика</h2>
-      <p>Здесь будет статистика…</p>
-    </section>
-
-    <section id="achievements">
-      <h2>🏅 Достижения</h2>
-      <p>Здесь будут достижения…</p>
-    </section>
   </main>
 
   <nav class="bottom-nav">
-    <button onclick="showTab('game')">Игра</button>
-    <button onclick="showTab('tasks')">Задания</button>
-    <button onclick="showTab('friends')">Друзья</button>
-    <button onclick="showTab('stats')">Статистика</button>
-    <button onclick="showTab('achievements')">Достижения</button>
+    <button onclick="showTab('game')">
+      <i class="fas fa-gamepad"></i><span>Игра</span>
+    </button>
+    <button onclick="showTab('tasks')">
+      <i class="fas fa-bullseye"></i><span>Задания</span>
+    </button>
+    <button onclick="showTab('friends')">
+      <i class="fas fa-user-friends"></i><span>Друзья</span>
+    </button>
+    <button onclick="showTab('stats')">
+      <i class="fas fa-chart-line"></i><span>Статистика</span>
+    </button>
+    <button onclick="showTab('achievements')">
+      <i class="fas fa-medal"></i><span>Достижения</span>
+    </button>
   </nav>
 
   <script>
