@@ -90,6 +90,7 @@
     #best {
       color: #fff;
       font-size: 1.1em;
+      text-align: center;
     }
 
     main section {
@@ -114,12 +115,19 @@
   </style>
 </head>
 <body>
+<div id="loader">
+  <img src="https://raw.githubusercontent.com/muvid-sudo-wesmart/tap-game/main/Frame_159-3.png" alt="Загрузка">
+  <div class="loader-progress"><div class="loader-progress-bar"></div></div>
+  <p class="loader-text">Загрузка…</p>
+</div>
+
 <div class="level-bar">
   <div class="bar-container">
     <div class="bar-fill" id="level-progress"></div>
   </div>
   <div class="level-info" id="level-text">Уровень 1 / 6</div>
 </div>
+
 <main>
   <section id="game" class="active">
     <div class="tap-wrapper">
@@ -131,6 +139,7 @@
     <p>Рекорд: <span id="best">0</span></p>
   </section>
 </main>
+
 <script>
   let count = 0;
   const maxLevel = 6;
@@ -173,6 +182,7 @@
     }, 400);
   });
 </script>
+
 <nav class="bottom-nav">
   <button onclick="showTab('game')">Игра</button>
   <button onclick="showTab('tasks')">Задания</button>
