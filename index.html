@@ -9,7 +9,7 @@
     * { box-sizing: border-box; margin: 0; padding: 0 }
     body {
       font-family: Arial, sans-serif;
-      background: radial-gradient(circle at center, #aeefff, #003973);
+      background: radial-gradient(circle at center, #d9f3ff, #003973);
       color: #fff;
       min-height: 100vh;
       display: flex;
@@ -176,99 +176,161 @@
   </style>
 </head>
 <body>
+  <div id="loader">
+    <img src="https://raw.githubusercontent.com/muvid-sudo-wesmart/tap-game/main/Frame_159-3.png" alt="Загрузка">
+    <div class="loader-progress"><div class="loader-progress-bar"></div></div>
+    <p class="loader-text">Загрузка…</p>
+  </div>
 
-<script>
-  let count = 0;
-  const maxLevel = 6;
-  const step = 1000;
-  const colors = ['#ff4444', '#ffbb33', '#99cc00', '#33b5e5', '#aa66cc'];
+  <div class="level-bar">
+    <div class="bar-container">
+      <div class="bar-fill" id="level-progress"></div>
+    </div>
+    <div class="level-info" id="level-text">Уровень 1 / 6</div>
+  </div>
 
-  function updateLevelUI() {
-    const level = Math.min(Math.floor(count / step) + 1, maxLevel);
-    const progress = level < maxLevel ? (count % step) / step * 100 : 100;
-    const remaining = level < maxLevel ? step - (count % step) : 0;
+  <main>
+    <section id="game" class="active">
+      <div class="tap-wrapper">
+        <img id="tap-image" src="https://raw.githubusercontent.com/muvid-sudo-wesmart/tap-game/main/tap.png" alt="Tap" onclick="tap()">
+      </div>
+      <div class="level-label" id="level-below">Уровень 1</div>
+      <div class="level-remaining" id="level-remaining">Осталось до следующего уровня: 1000</div>
+      <p>Тапов: <span id="counter">0</span></p>
+      <p>Рекорд: <span id="best">0</span></p>
+    </section>
 
-    document.getElementById('level-text').textContent = `Уровень ${level} / ${maxLevel}`;
-    document.getElementById('level-progress').style.width = progress + '%';
-    document.getElementById('level-below').textContent = `Уровень ${level}`;
-    document.getElementById('level-remaining').textContent =
-      level < maxLevel
-        ? `Осталось до следующего уровня: ${remaining}`
-        : `Максимальный уровень достигнут`;
+    <section id="tasks">
+      <h2>🎯 Задания</h2>
+      <ul id="task-list"></ul>
+    </section>
 
-    document.getElementById('counter').textContent = count;
-    document.getElementById('best').textContent = Math.max(count, parseInt(document.getElementById('best').textContent));
-  }
+    <section id="friends">
+      <h2>👥 Друзья</h2>
+      <p>Здесь будут друзья…</p>
+    </section>
 
-  function tap() {
-    count++;
-    updateLevelUI();
-    showPlus();
-  }
+    <section id="stats">
+      <h2>📊 Статистика</h2>
+      <p>Здесь будет статистика…</p>
+    </section>
 
-  function showPlus() {
-    const tapWrapper = document.querySelector('.tap-wrapper');
-    const plus = document.createElement('div');
-    plus.className = 'tap-plus';
-    plus.textContent = '+1';
-    plus.style.color = colors[Math.floor(Math.random() * colors.length)];
-    plus.style.left = Math.random() * 40 + 80 + 'px';
-    tapWrapper.appendChild(plus);
-    setTimeout(() => plus.remove(), 800);
-  }
+    <section id="achievements">
+      <h2>🏅 Достижения</h2>
+      <p>Здесь будут достижения…</p>
+    </section>
+  </main>
 
-  function showTab(id) {
-    document.querySelectorAll('main section').forEach(s => s.classList.remove('active'));
-    const section = document.getElementById(id);
-    if (section) section.classList.add('active');
-  }
+  <nav class="bottom-nav">
+    <button onclick="showTab('game')">
+      <i class="fas fa-gamepad"></i><span>Игра</span>
+    </button>
+    <button onclick="showTab('tasks')">
+      <i class="fas fa-bullseye"></i><span>Задания</span>
+    </button>
+    <button onclick="showTab('friends')">
+      <i class="fas fa-user-friends"></i><span>Друзья</span>
+    </button>
+    <button onclick="showTab('stats')">
+      <i class="fas fa-chart-line"></i><span>Статистика</span>
+    </button>
+    <button onclick="showTab('achievements')">
+      <i class="fas fa-medal"></i><span>Достижения</span>
+    </button>
+  </nav>
 
-  function renderTasks() {
-    const tasks = [
-      {id:'t1', text:'Подпишись на <a href="https://t.me/volonteri_kalashnikova" target="_blank">Telegram</a>', reward:300},
-      {id:'t2', text:'Подпишись на <a href="https://vk.com/id803959232" target="_blank">VK</a>', reward:300},
-      {id:'t3', text:'Проголосуй 14 сентября', reward:500},
-      {id:'t4', text:'Пригласи 3 друзей', reward:700},
-      {id:'t5', text:'Пригласи 5 друзей', reward:1000}
-    ];
-    const ul = document.getElementById('task-list');
-    ul.innerHTML = '';
-    tasks.forEach(t => {
-      const done = localStorage.getItem('task_' + t.id);
-      const li = document.createElement('li');
-      li.className = 'task-card';
-      li.innerHTML = `
-        <strong>${t.text}</strong><br>🎁 ${t.reward} тапов<br>
-        ${done ? '<span class="done">✅ Выполнено</span>' :
-        `<button onclick="completeTask('${t.id}',${t.reward})">Выполнить</button>`}`;
-      ul.appendChild(li);
-    });
-  }
+  <script>
+    let count = 0;
+    const maxLevel = 6;
+    const step = 1000;
+    const colors = ['#ff4444', '#ffbb33', '#99cc00', '#33b5e5', '#aa66cc'];
 
-  function completeTask(id, reward) {
-    if (!localStorage.getItem('task_' + id)) {
-      count += reward;
-      localStorage.setItem('task_' + id, 'done');
-      updateLevelUI();
-      renderTasks();
+    function updateLevelUI() {
+      const level = Math.min(Math.floor(count / step) + 1, maxLevel);
+      const progress = level < maxLevel ? (count % step) / step * 100 : 100;
+      const remaining = level < maxLevel ? step - (count % step) : 0;
+
+      document.getElementById('level-text').textContent = `Уровень ${level} / ${maxLevel}`;
+      document.getElementById('level-progress').style.width = progress + '%';
+      document.getElementById('level-below').textContent = `Уровень ${level}`;
+      document.getElementById('level-remaining').textContent =
+        level < maxLevel
+          ? `Осталось до следующего уровня: ${remaining}`
+          : `Максимальный уровень достигнут`;
+
+      document.getElementById('counter').textContent = count;
+      document.getElementById('best').textContent = Math.max(count, parseInt(document.getElementById('best').textContent));
     }
-  }
 
-  document.addEventListener('DOMContentLoaded', () => {
-    let p = 0;
-    const bar = document.querySelector('.loader-progress-bar');
-    const loader = document.getElementById('loader');
-    const iv = setInterval(() => {
-      p += 20;
-      bar.style.width = p + '%';
-      if (p >= 100) {
-        clearInterval(iv);
-        setTimeout(() => loader.style.display = 'none', 200);
+    function tap() {
+      count++;
+      updateLevelUI();
+      showPlus();
+    }
+
+    function showPlus() {
+      const tapWrapper = document.querySelector('.tap-wrapper');
+      const plus = document.createElement('div');
+      plus.className = 'tap-plus';
+      plus.textContent = '+1';
+      plus.style.color = colors[Math.floor(Math.random() * colors.length)];
+      plus.style.left = Math.random() * 40 + 80 + 'px';
+      tapWrapper.appendChild(plus);
+      setTimeout(() => plus.remove(), 800);
+    }
+
+    function showTab(id) {
+      document.querySelectorAll('main section').forEach(s => s.classList.remove('active'));
+      const section = document.getElementById(id);
+      if (section) section.classList.add('active');
+    }
+
+    function renderTasks() {
+      const tasks = [
+        {id:'t1', text:'Подпишись на <a href="https://t.me/volonteri_kalashnikova" target="_blank">Telegram</a>', reward:300},
+        {id:'t2', text:'Подпишись на <a href="https://vk.com/id803959232" target="_blank">VK</a>', reward:300},
+        {id:'t3', text:'Проголосуй 14 сентября', reward:500},
+        {id:'t4', text:'Пригласи 3 друзей', reward:700},
+        {id:'t5', text:'Пригласи 5 друзей', reward:1000}
+      ];
+      const ul = document.getElementById('task-list');
+      ul.innerHTML = '';
+      tasks.forEach(t => {
+        const done = localStorage.getItem('task_' + t.id);
+        const li = document.createElement('li');
+        li.className = 'task-card';
+        li.innerHTML = `
+          <strong>${t.text}</strong><br>🎁 ${t.reward} тапов<br>
+          ${done ? '<span class="done">✅ Выполнено</span>' :
+          `<button onclick="completeTask('${t.id}',${t.reward})">Выполнить</button>`}`;
+        ul.appendChild(li);
+      });
+    }
+
+    function completeTask(id, reward) {
+      if (!localStorage.getItem('task_' + id)) {
+        count += reward;
+        localStorage.setItem('task_' + id, 'done');
         updateLevelUI();
         renderTasks();
       }
-    }, 400);
-  });
-</script>
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      let p = 0;
+      const bar = document.querySelector('.loader-progress-bar');
+      const loader = document.getElementById('loader');
+      const iv = setInterval(() => {
+        p += 20;
+        bar.style.width = p + '%';
+        if (p >= 100) {
+          clearInterval(iv);
+          setTimeout(() => loader.style.display = 'none', 200);
+          updateLevelUI();
+          renderTasks();
+        }
+      }, 400);
+    });
+  </script>
 </body>
 </html>
