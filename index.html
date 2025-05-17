@@ -46,7 +46,7 @@
       margin-right: 8px;
     }
     .header-top .progress-bar-inner {
-      width: 100%; /* заполнение */
+      width: 80%; /* пример заполнения */
       height: 100%;
       background: #ffc107;
     }
@@ -84,12 +84,14 @@
       color: rgba(255,255,255,0.8);
     }
 
-    /* ====== Бейдж ====== */
+    /* ====== Бейдж с ореолом ====== */
     .badge-container {
       position: relative;
       width: 240px;
       height: 240px;
       margin: 0 auto;
+      background: #13335c; /* подложка под градиент */
+      border-radius: 50%;
     }
     .badge-container::before {
       content: '';
@@ -99,7 +101,11 @@
       width: 100%;
       height: 100%;
       border-radius: 50%;
-      background: radial-gradient(circle at center, rgba(62,152,255,0.4) 0%, rgba(62,152,255,0) 70%);
+      background: radial-gradient(
+        circle at center,
+        rgba(255,255,255,0.6) 30%,
+        rgba(255,255,255,0) 80%
+      );
       z-index: 0;
     }
     .badge-container img {
@@ -109,7 +115,7 @@
       border-radius: 50%;
       z-index: 1;
       display: block;
-      margin: 0 auto;
+      margin: 20px auto;
     }
 
     /* ====== Нижнее меню ====== */
@@ -162,17 +168,17 @@
     <div class="votes">12549 голосов</div>
     <div class="tagline">СЛЫШАТЬ. ПОМОГАТЬ. РЕШАТЬ.</div>
     <div class="badge-container">
-      <img src="https://raw.githubusercontent.com/muvid-sudo-wesmart/tap-game/main/tap.png" alt="Бейдж">
+      <img src="assets/icons/badge.png" alt="Бейдж">
     </div>
   </div>
 
   <!-- Нижнее меню -->
   <nav class="bottom-nav">
-    <button class="active"><img src="icon-home.svg" alt="">Главная</button>
-    <button><img src="icon-tasks.svg" alt="">Задания</button>
-    <button><img src="icon-friends.svg" alt="">Друзья</button>
-    <button><img src="icon-profile.svg" alt="">Профиль</button>
-    <button><img src="icon-top.svg" alt="">Топ</button>
+    <button class="active"><img src="assets/icons/home.svg" alt="Главная">Главная</button>
+    <button><img src="assets/icons/tasks.svg" alt="Задания">Задания</button>
+    <button><img src="assets/icons/friends.svg" alt="Друзья">Друзья</button>
+    <button><img src="assets/icons/profile.svg" alt="Профиль">Профиль</button>
+    <button><img src="assets/icons/top.svg" alt="Топ">Топ</button>
   </nav>
 </body>
 </html>
