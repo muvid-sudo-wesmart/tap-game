@@ -122,17 +122,16 @@
    nav.bottom-nav {
   position: fixed;
   bottom: env(safe-area-inset-bottom, 0);
-  left: env(safe-area-inset-left, 0);
-  right: env(safe-area-inset-right, 0);
-  background: #2196F3;
-  display: flex;
-  z-index: 500;
-  padding-bottom: calc(env(safe-area-inset-bottom, 0) + 6px);
-  border-radius: 20px 20px 0 0;
-  max-width: 480px;
-  margin: auto;
   left: 50%;
   transform: translateX(-50%);
+  background: #2196F3;
+  display: flex;
+  padding: 8px;
+  z-index: 500;
+  border-radius: 20px 20px 0 0;
+  max-width: 100%;
+  width: 100%;
+  box-sizing: border-box;
 }
     nav.bottom-nav button {
       background: none;
