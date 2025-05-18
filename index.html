@@ -17,7 +17,7 @@
     section.active { display: block; }
     .tap-wrapper { text-align: center; margin: 30px 0; position: relative; }
     #tap-image { width: 240px; transition: transform .1s ease; }
-    #tap-image:active { transform: scale(1.2); }
+    /* removed */ transform: scale(1.2); }
     .tap-plus {
       position: absolute;
       font-size: 1.5em;
@@ -370,6 +370,23 @@ document.addEventListener('DOMContentLoaded', () => {
   updateUI();
   renderTasks();
   renderFriends();
+});
+
+const tapImg = document.getElementById('tap-image');
+tapImg.addEventListener('touchstart', () => {
+  tapImg.style.transform = 'scale(1.1)';
+}, { passive: true });
+tapImg.addEventListener('touchend', () => {
+  tapImg.style.transform = 'scale(1)';
+});
+tapImg.addEventListener('mousedown', () => {
+  tapImg.style.transform = 'scale(1.1)';
+});
+tapImg.addEventListener('mouseup', () => {
+  tapImg.style.transform = 'scale(1)';
+});
+tapImg.addEventListener('mouseleave', () => {
+  tapImg.style.transform = 'scale(1)';
 });
 </script>
 </body>
