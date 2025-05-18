@@ -292,12 +292,24 @@ function animatePlus() {
   plus.className = 'tap-plus';
   plus.textContent = '+1';
   plus.style.color = colors[Math.floor(Math.random() * colors.length)];
+
   const wrapper = img.parentElement;
   wrapper.appendChild(plus);
+
+  const rect = img.getBoundingClientRect();
+  const offsetX = img.offsetLeft + img.offsetWidth / 2;
+  const offsetY = img.offsetTop + img.offsetHeight / 2;
+
+  const angle = Math.random() * 2 * Math.PI;
+  const radius = 40 + Math.random() * 40;
+  const x = offsetX + radius * Math.cos(angle);
+  const y = offsetY + radius * Math.sin(angle);
+
   plus.style.position = 'absolute';
-  plus.style.left = img.offsetLeft + img.offsetWidth / 2 + 'px';
-  plus.style.top = img.offsetTop + img.offsetHeight / 2 + 'px';
+  plus.style.left = `${x}px`;
+  plus.style.top = `${y}px`;
   plus.style.transform = 'translate(-50%, -50%)';
+
   setTimeout(() => plus.remove(), 800);
 }
 
