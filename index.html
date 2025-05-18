@@ -1,60 +1,62 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Тапай за Калашникова</title>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js">  function renderTasks() {
-    const tasks = [
-      {id:'t1', text:'Подпишись на <a href="https://t.me/volonteri_kalashnikova" target="_blank">Telegram</a>', reward:300},
-      {id:'t2', text:'Подпишись на <a href="https://vk.com/id803959232" target="_blank">VK</a>', reward:300},
-      {id:'t3', text:'Проголосуй 14 сентября', reward:500},
-      {id:'t4', text:'Пригласи 3 друзей', reward:700},
-      {id:'t5', text:'Пригласи 5 друзей', reward:1000}
-    ];
-    const ul = document.getElementById('task-list');
-    ul.innerHTML = '';
-    tasks.forEach(t => {
-      const done = localStorage.getItem('task_' + t.id);
-      const li = document.createElement('li');
-      li.className = 'task-card';
-      li.innerHTML = `
-        <strong>${t.text}</strong><br>🎁 ${t.reward} тапов<br>
-        ${done ? '<span class="done">✅ Выполнено</span>' :
-        `<button onclick="completeTask('${t.id}',${t.reward})">Выполнить</button>`}`;
-      ul.appendChild(li);
-    });
-  }
-
-  function completeTask(id, reward) {
-  if (!localStorage.getItem('task_' + id)) {
-    localStorage.setItem('task_' + id, 'done');
-    count += reward;
-    if (count > best) best = count;
-    updateUI();
-    renderTasks();
-    updateStatsAndAchievements?.();
-  }
-}
-</script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
   <style>
+    * { box-sizing: border-box; margin: 0; padding: 0 }
     body {
       font-family: Arial, sans-serif;
-      background: radial-gradient(circle at center, #eaf6ff 120px, #1a2440 100%);
+      background: radial-gradient(circle at center, #d9f3ff, #003973);
       color: #fff;
-      margin: 0;
-      padding-bottom: 60px;
       min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-bottom: 60px;
     }
+
+    #loader {
+      position: fixed;
+      inset: 0;
+      background: #003973;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    #loader img {
+      width: 80%;
+      max-width: 280px;
+      border-radius: 12px;
+    }
+    .loader-progress {
+      width: 80%; height: 10px;
+      background: rgba(255,255,255,0.3);
+      border-radius: 5px; overflow: hidden;
+      margin-top: 10px;
+    }
+    .loader-progress-bar {
+      height: 100%; width: 0%;
+      background: #2196F3;
+      transition: width 2s linear;
+    }
+    .loader-text {
+      margin-top: 10px;
+      font-size: 1.2em;
+      color: #fff;
+    }
+
     .level-bar {
       background: #dce5f1;
       border-radius: 12px;
       padding: 10px 16px;
-      margin: 12px auto;
+      margin: 12px auto 0;
       max-width: 320px;
+      width: 90%;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -69,30 +71,37 @@
       margin-right: 12px;
     }
     .bar-fill {
-      height: 100%;
-      background: #ff6600;
-      width: 0%;
-      transition: width 0.3s ease;
+      height: 100%; background: #ff6600;
+      width: 0%; transition: width 0.3s ease;
     }
     .level-info {
-      font-weight: bold;
-      color: #000;
-      font-size: 0.95em;
-      white-space: nowrap;
+      font-weight: bold; color: #000; font-size: 0.95em;
     }
-    .tap-wrapper {
-      margin: 64px auto 32px;
+
+    h2.title {
+      margin-top: 12px;
+      font-size: 1.3em;
       text-align: center;
+      color: #fff;
+    }
+
+    .tap-wrapper {
+      margin: 40px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex: 1;
       position: relative;
     }
     #tap-image {
-      width: 200px;
+      width: 240px;
       cursor: pointer;
-      transition: transform .1s ease;
+      transition: transform 0.1s ease;
     }
     #tap-image:active {
-      transform: scale(1.1);
+      transform: scale(1.2);
     }
+
     .tap-plus {
       position: absolute;
       font-size: 1.5em;
@@ -103,6 +112,53 @@
       0% { opacity: 1; transform: translateY(0); }
       100% { opacity: 0; transform: translateY(-40px); }
     }
+
+    .level-label,
+    .level-remaining,
+    #counter,
+    #best {
+      color: #fff;
+      font-size: 1.1em;
+      text-align: center;
+    }
+
+    main section {
+      display: none;
+      padding: 20px;
+      text-align: center;
+    }
+    main section.active {
+      display: block;
+    }
+
+    .task-card {
+      background: #fff;
+      color: #000;
+      border-radius: 8px;
+      padding: 12px;
+      margin: 8px auto;
+      max-width: 600px;
+      text-align: left;
+    }
+    .task-card a {
+      color: #0077cc;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .task-card button {
+      margin-top: 8px;
+      padding: 6px 12px;
+      background: #2196F3;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .done {
+      color: green;
+      font-weight: bold;
+    }
+
     nav.bottom-nav {
       position: fixed;
       bottom: 0;
@@ -136,59 +192,53 @@
   </style>
 </head>
 <body>
+  <div id="loader">
+    <img src="https://raw.githubusercontent.com/muvid-sudo-wesmart/tap-game/main/Frame_159-3.png" alt="Загрузка">
+    <div class="loader-progress"><div class="loader-progress-bar"></div></div>
+    <p class="loader-text">Загрузка…</p>
+  </div>
+
   <div class="level-bar">
     <div class="bar-container">
       <div class="bar-fill" id="level-progress"></div>
     </div>
     <div class="level-info" id="level-text">Уровень 1 / 6</div>
   </div>
+
+  <h2 class="title">СЛЫШАТЬ • ПОМОГАТЬ • РЕШАТЬ</h2>
+
   <main>
     <section id="game" class="active">
       <div class="tap-wrapper">
         <img id="tap-image" src="https://raw.githubusercontent.com/muvid-sudo-wesmart/tap-game/main/tap.png" alt="Tap" onclick="tap()">
       </div>
-      <div style="text-align:center">
-        <p id="level-below">Уровень 1</p>
-        <p id="level-remaining">Осталось до следующего уровня: 1000</p>
-        <p>Тапов: <span id="counter">0</span></p>
-        <p>Рекорд: <span id="best">0</span></p>
-      </div>
+      <div class="level-label" id="level-below">Уровень 1</div>
+      <div class="level-remaining" id="level-remaining">Осталось до следующего уровня: 1000</div>
+      <p>Тапов: <span id="counter">0</span></p>
+      <p>Рекорд: <span id="best">0</span></p>
     </section>
 
     <section id="tasks">
       <h2>🎯 Задания</h2>
       <ul id="task-list"></ul>
     </section>
+
     <section id="friends">
-  <h2>👥 Друзья</h2>
-  <form onsubmit="addFriend(event)">
-    <input id="friend-name" placeholder="Имя" required>
-    <input id="friend-taps" type="number" placeholder="Тапы" required>
-    <button type="submit">OK</button>
-  </form>
-  <table>
-    <thead><tr><th>#</th><th>Имя</th><th>Тапы</th></tr></thead>
-    <tbody id="friends-table"></tbody>
-  </table>
-</section>
+      <h2>👥 Друзья</h2>
+      <p>Здесь будут друзья…</p>
+    </section>
 
-<section id="stats">
-  <h2>📊 Статистика</h2>
-  <p>Всего тапов: <span id="stat-total">0</span></p>
-  <p>Рекорд: <span id="stat-best">0</span></p>
-</section>
+    <section id="stats">
+      <h2>📊 Статистика</h2>
+      <p>Здесь будет статистика…</p>
+    </section>
 
-<section id="achievements">
-  <h2>🏅 Достижения</h2>
-  <ul id="achievement-list"></ul>
-</section>
-    <section id="tasks">
-  <h2>🎯 Задания</h2>
-  <ul id="task-list"></ul>
-</section>
-
-
+    <section id="achievements">
+      <h2>🏅 Достижения</h2>
+      <p>Здесь будут достижения…</p>
+    </section>
   </main>
+
   <nav class="bottom-nav">
     <button onclick="showTab('game')">
       <i class="fas fa-gamepad"></i><span>Игра</span>
@@ -196,34 +246,24 @@
     <button onclick="showTab('tasks')">
       <i class="fas fa-bullseye"></i><span>Задания</span>
     </button>
-    <button onclick="showTab('friends')"><i class="fas fa-user-friends"></i>Друзья</button>
-  <button onclick="showTab('stats')"><i class="fas fa-chart-line"></i>Статистика</button>
-  <button onclick="showTab('achievements')"><i class="fas fa-medal"></i>Достижения</button>
-    <button onclick="showTab('tasks')"><i class="fas fa-list-check"></i>Задания</button>
-
-
+    <button onclick="showTab('friends')">
+      <i class="fas fa-user-friends"></i><span>Друзья</span>
+    </button>
+    <button onclick="showTab('stats')">
+      <i class="fas fa-chart-line"></i><span>Статистика</span>
+    </button>
+    <button onclick="showTab('achievements')">
+      <i class="fas fa-medal"></i><span>Достижения</span>
+    </button>
   </nav>
-  <script>
-    const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_PROJECT.firebaseapp.com",
-      databaseURL: "https://YOUR_PROJECT.firebaseio.com",
-      projectId: "YOUR_PROJECT",
-      storageBucket: "YOUR_PROJECT.appspot.com",
-      messagingSenderId: "SENDER_ID",
-      appId: "APP_ID"
-    };
-    firebase.initializeApp(firebaseConfig);
 
+  <script>
+    let count = 0;
     const maxLevel = 6;
     const step = 1000;
     const colors = ['#ff4444', '#ffbb33', '#99cc00', '#33b5e5', '#aa66cc'];
-    let count = parseInt(localStorage.getItem('tap_count')) || 0;
-    let best = parseInt(localStorage.getItem('tap_best')) || 0;
 
     function updateLevelUI() {
-      localStorage.setItem('tap_count', count);
-      localStorage.setItem('tap_best', best);
       const level = Math.min(Math.floor(count / step) + 1, maxLevel);
       const progress = level < maxLevel ? (count % step) / step * 100 : 100;
       const remaining = level < maxLevel ? step - (count % step) : 0;
@@ -232,71 +272,28 @@
       document.getElementById('level-progress').style.width = progress + '%';
       document.getElementById('level-below').textContent = `Уровень ${level}`;
       document.getElementById('level-remaining').textContent =
-        level < maxLevel ? `Осталось до следующего уровня: ${remaining}` : `Максимальный уровень достигнут`;
+        level < maxLevel
+          ? `Осталось до следующего уровня: ${remaining}`
+          : `Максимальный уровень достигнут`;
 
       document.getElementById('counter').textContent = count;
-      document.getElementById('best').textContent = Math.max(count, best);
-    }
-
-    function addPoints(amount = 1) {
-      count += amount;
-      if (count > best) best = count;
-      updateLevelUI();
-      showPlus(amount);
+      document.getElementById('best').textContent = Math.max(count, parseInt(document.getElementById('best').textContent));
     }
 
     function tap() {
-      addPoints(1);
-        count++;
-  if (count > best) best = count;
-  updateUI();
-  animatePlus();
-  updateStatsAndAchievements();
-}
+      count++;
+      updateLevelUI();
+      showPlus();
     }
-    let friends = [];
 
-function addFriend(e) {
-  e.preventDefault();
-  const name = document.getElementById('friend-name').value.trim();
-  const taps = parseInt(document.getElementById('friend-taps').value);
-  if (name && !isNaN(taps)) {
-    friends.push({ name, taps });
-    updateUI();
-    renderFriends();
-  }
-  e.target.reset();
-}
-
-function renderFriends() {
-  const tb = document.getElementById('friends-table');
-  tb.innerHTML = '';
-  friends.forEach((f, i) => {
-    tb.innerHTML += `<tr><td>${i + 1}</td><td>${f.name}</td><td>${f.taps}</td></tr>`;
-  });
-}
-
-function updateStatsAndAchievements() {
-  document.getElementById('stat-total').textContent = count;
-  document.getElementById('stat-best').textContent = best;
-
-  const ach = document.getElementById('achievement-list');
-  ach.innerHTML = '';
-  if (best >= 100) ach.innerHTML += '<li>🔥 100 тапов</li>';
-  if (best >= 1000) ach.innerHTML += '<li>💥 1 000 тапов</li>';
-  if (best >= 5000) ach.innerHTML += '<li>🚀 5 000 тапов</li>';
-  ach.innerHTML += `<li>👥 Друзей: ${friends.length}</li>`;
-}
-
-
-    function showPlus(amount) {
-      const wrapper = document.querySelector('.tap-wrapper');
+    function showPlus() {
+      const tapWrapper = document.querySelector('.tap-wrapper');
       const plus = document.createElement('div');
       plus.className = 'tap-plus';
-      plus.textContent = `+${amount}`;
+      plus.textContent = '+1';
       plus.style.color = colors[Math.floor(Math.random() * colors.length)];
       plus.style.left = Math.random() * 40 + 80 + 'px';
-      wrapper.appendChild(plus);
+      tapWrapper.appendChild(plus);
       setTimeout(() => plus.remove(), 800);
     }
 
@@ -306,27 +303,51 @@ function updateStatsAndAchievements() {
       if (section) section.classList.add('active');
     }
 
-    firebase.auth().onAuthStateChanged(user => {
-      if (!user) return;
-      const uid = user.uid;
-      const urlParams = new URLSearchParams(window.location.search);
-      const ref = urlParams.get('ref');
-      if (ref && ref !== uid) {
-        const refPath = firebase.database().ref(`users/${ref}/friends/${uid}`);
-        refPath.set({
-          name: user.displayName || "Друг",
-          joinedAt: new Date().toISOString()
-        });
-        addPoints(100); // Бонус за приглашение
+    function renderTasks() {
+      const tasks = [
+        {id:'t1', text:'Подпишись на <a href="https://t.me/volonteri_kalashnikova" target="_blank">Telegram</a>', reward:300},
+        {id:'t2', text:'Подпишись на <a href="https://vk.com/id803959232" target="_blank">VK</a>', reward:300},
+        {id:'t3', text:'Проголосуй 14 сентября', reward:500},
+        {id:'t4', text:'Пригласи 3 друзей', reward:700},
+        {id:'t5', text:'Пригласи 5 друзей', reward:1000}
+      ];
+      const ul = document.getElementById('task-list');
+      ul.innerHTML = '';
+      tasks.forEach(t => {
+        const done = localStorage.getItem('task_' + t.id);
+        const li = document.createElement('li');
+        li.className = 'task-card';
+        li.innerHTML = `
+          <strong>${t.text}</strong><br>🎁 ${t.reward} тапов<br>
+          ${done ? '<span class="done">✅ Выполнено</span>' :
+          `<button onclick="completeTask('${t.id}',${t.reward})">Выполнить</button>`}`;
+        ul.appendChild(li);
+      });
+    }
+
+    function completeTask(id, reward) {
+      if (!localStorage.getItem('task_' + id)) {
+        count += reward;
+        localStorage.setItem('task_' + id, 'done');
+        updateLevelUI();
+        renderTasks();
       }
-    });
+    }
 
     document.addEventListener('DOMContentLoaded', () => {
-      updateLevelUI();
-       updateUI();
-    renderTasks();
-    renderFriends();
-    updateStatsAndAchievements();
+      let p = 0;
+      const bar = document.querySelector('.loader-progress-bar');
+      const loader = document.getElementById('loader');
+      const iv = setInterval(() => {
+        p += 20;
+        bar.style.width = p + '%';
+        if (p >= 100) {
+          clearInterval(iv);
+          setTimeout(() => loader.style.display = 'none', 200);
+          updateLevelUI();
+          renderTasks();
+        }
+      }, 400);
     });
   </script>
 </body>
