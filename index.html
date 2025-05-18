@@ -16,9 +16,14 @@
     section { display: none; padding: 20px; text-align: center; }
     section.active { display: block; }
     .tap-wrapper { text-align: center; margin: 30px 0; position: relative; }
-    #tap-image { width: 240px; transition: transform .1s ease; }
-    /* removed */ transform: scale(1.2); }
+    #tap-image { width: 200px; transition: transform .1s ease; }
+    /* removed */ transform: scale(1.1); }
     .tap-plus {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
       position: absolute;
       font-size: 1.5em;
       animation: riseFade 0.8s ease-out forwards;
@@ -275,12 +280,12 @@ function tap() {
 }
 
 function animatePlus() {
-  const wrapper = document.querySelector('.tap-wrapper');
+  const img = document.getElementById('tap-image');
+  const wrapper = img.parentElement;
   const plus = document.createElement('div');
   plus.className = 'tap-plus';
   plus.textContent = '+1';
   plus.style.color = colors[Math.floor(Math.random() * colors.length)];
-  plus.style.left = 'calc(50% - 10px)';
   wrapper.appendChild(plus);
   setTimeout(() => plus.remove(), 800);
 }
