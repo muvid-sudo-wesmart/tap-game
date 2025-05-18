@@ -18,8 +18,8 @@
     .tap-wrapper {
   display: inline-block; text-align: center; margin: 30px 0; position: relative; }
     #tap-image {
-  display: block; width: 200px; transition: transform .1s ease; }
-    /* removed */ transform: scale(1.1); }
+  display: block; width: 220px; transition: transform .1s ease; }
+    /* removed */ transform: scale(1.2); }
     .tap-plus {
   position: absolute;
   top: 50%;
@@ -383,6 +383,10 @@ function showTab(id) {
 
 
 document.addEventListener('DOMContentLoaded', () => {
+  if (!localStorage.getItem('tasks_reset_v2')) {
+    ['t1', 't2', 't3', 't4', 't5'].forEach(id => localStorage.removeItem('task_' + id));
+    localStorage.setItem('tasks_reset_v2', 'yes');
+  }
   let p = 0;
   const bar = document.querySelector('.loader-progress-bar');
   const loader = document.getElementById('loader');
