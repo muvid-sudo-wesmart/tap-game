@@ -4,11 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Тапай за Калашникова</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: radial-gradient(circle at center, #c0e8ff 0%, #1a2440 100%);
+      background: radial-gradient(circle at center, #d5f1ff 0%, #1a2440 100%);
       color: #fff;
       margin: 0;
       padding-bottom: 70px;
@@ -16,21 +17,17 @@
     section { display: none; padding: 20px; text-align: center; }
     section.active { display: block; }
     .tap-wrapper {
-  display: inline-block; text-align: center; margin: 30px 0; position: relative; }
+      display: inline-block;
+      text-align: center;
+      margin: 30px 0;
+      position: relative;
+    }
     #tap-image {
-  display: block; width: 220px; transition: transform .1s ease; }
-    /* removed */ transform: scale(1.2); }
+      display: block;
+      width: 220px;
+      transition: transform .1s ease;
+    }
     .tap-plus {
-  position: absolute;
-  top: 50%;
-  left: calc(100% + 10px);
-  transform: translateY(-50%);
-
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-
       position: absolute;
       font-size: 1.5em;
       animation: riseFade 0.8s ease-out forwards;
@@ -89,50 +86,20 @@
       color: green;
       font-weight: bold;
     }
-    form {
-      display: flex;
-      gap: 8px;
-      justify-content: center;
-      flex-wrap: wrap;
-      margin-bottom: 10px;
-    }
-    form input, form button {
-      padding: 8px;
-      font-size: 1em;
-      border-radius: 4px;
-    }
-    form input { width: 130px; border: 1px solid #ccc; }
-    form button {
+    nav.bottom-nav {
+      position: fixed;
+      bottom: env(safe-area-inset-bottom, 0);
+      left: 50%;
+      transform: translateX(-50%);
       background: #2196F3;
-      color: #fff;
-      border: none;
-      cursor: pointer;
+      display: flex;
+      padding: 8px;
+      z-index: 500;
+      border-radius: 20px 20px 0 0;
+      max-width: 100%;
+      width: 100%;
+      box-sizing: border-box;
     }
-    table {
-      width: 90%;
-      max-width: 500px;
-      margin: auto;
-      border-collapse: collapse;
-    }
-    th, td {
-      padding: 6px;
-      border-bottom: 1px solid #ccc;
-      text-align: left;
-    }
-   nav.bottom-nav {
-  position: fixed;
-  bottom: env(safe-area-inset-bottom, 0);
-  left: 50%;
-  transform: translateX(-50%);
-  background: #2196F3;
-  display: flex;
-  padding: 8px;
-  z-index: 500;
-  border-radius: 20px 20px 0 0;
-  max-width: 100%;
-  width: 100%;
-  box-sizing: border-box;
-}
     nav.bottom-nav button {
       background: none;
       border: none;
@@ -146,43 +113,41 @@
       font-size: 1.2em;
       margin-bottom: 2px;
     }
-  
-#loader {
-  position: fixed; inset: 0;
-  background: #1a2440;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
-#loader img {
-  max-width: 80%;
-  height: auto;
-  border-radius: 16px;
-}
-.loader-progress {
-  width: 80%; height: 10px;
-  background: rgba(255,255,255,0.3);
-  border-radius: 5px;
-  overflow: hidden;
-  margin-top: 8px;
-}
-.loader-progress-bar {
-  width: 0;
-  height: 100%;
-  background: #2196F3;
-  transition: width 2s linear;
-}
-.loader-text {
-  margin-top: 12px;
-  color: #fff;
-  font-size: 1.25em;
-}
-</style>
-
+    #loader {
+      position: fixed;
+      inset: 0;
+      background: #1a2440;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    #loader img {
+      max-width: 80%;
+      height: auto;
+      border-radius: 16px;
+    }
+    .loader-progress {
+      width: 80%; height: 10px;
+      background: rgba(255,255,255,0.3);
+      border-radius: 5px;
+      overflow: hidden;
+      margin-top: 8px;
+    }
+    .loader-progress-bar {
+      width: 0;
+      height: 100%;
+      background: #2196F3;
+      transition: width 2s linear;
+    }
+    .loader-text {
+      margin-top: 12px;
+      color: #fff;
+      font-size: 1.25em;
+    }
+  </style>
 </head>
-
 <body>
 <div id="loader">
   <img src="https://raw.githubusercontent.com/muvid-sudo-wesmart/tap-game/main/Frame_159-3.png" alt="Загрузка">
@@ -190,13 +155,10 @@
   <p class="loader-text">Загрузка…</p>
 </div>
 
-
-
 <h2 style="text-align:center; font-size:1.4em; font-weight:normal; margin-top:12px;">
   СЛЫШАТЬ • ПОМОГАТЬ • РЕШАТЬ
 </h2>
 <div class="level-bar">
-
   <div class="bar-container"><div class="bar-fill" id="level-progress"></div></div>
   <div class="level-info" id="level-text">Уровень 1 / 6</div>
 </div>
@@ -214,21 +176,42 @@
 
   <section id="tasks">
     <h2>🎯 Задания</h2>
-    <ul id="task-list" style="list-style: none; padding-left: 0;"></ul>
+    <ul id="task-list" style="list-style: none;"></ul>
   </section>
 
   <section id="friends">
     <h2>👥 Друзья</h2>
-    <form onsubmit="addFriend(event)">
-      <input id="friend-name" placeholder="Имя" required>
-      <input id="friend-taps" type="number" placeholder="Тапы" required>
-      <button type="submit">OK</button>
-    </form>
+    <div id="referral-link" style="margin: 12px auto; text-align: center;"></div>
     <table>
       <thead><tr><th>#</th><th>Имя</th><th>Тапы</th></tr></thead>
       <tbody id="friends-table"></tbody>
     </table>
-  </section>
+  
+<div id="referral-link" style="text-align:center; margin-top: 16px;"></div>
+<script>
+function showReferralLink() {
+  let refId = localStorage.getItem('telegram_user_id') || "test_user";
+  const botName = "KalashnikovTap_bot"; // замените на имя вашего бота
+  const link = `https://t.me/${botName}?start=${refId}`;
+  const div = document.getElementById('referral-link');
+  div.innerHTML = `
+    <p>Ваша реферальная ссылка:</p>
+    <input id="ref-link" type="text" readonly value="${link}" style="width:90%;padding:6px;font-size:1em;"><br>
+    <button onclick="copyReferral()" style="margin-top:6px;padding:6px 12px;font-size:1em;">Скопировать</button>
+  `;
+}
+function copyReferral() {
+  const input = document.getElementById("ref-link");
+  input.select();
+  input.setSelectionRange(0, 99999);
+  navigator.clipboard.writeText(input.value).then(() => {
+    alert("Ссылка скопирована!");
+  });
+}
+document.addEventListener('DOMContentLoaded', showReferralLink);
+</script>
+
+</section>
 
   <section id="stats">
     <h2>📊 Статистика</h2>
@@ -238,7 +221,7 @@
 
   <section id="achievements">
     <h2>🏅 Достижения</h2>
-    <ul id="achievement-list" style="list-style: none; padding-left: 0;"></ul>
+    <ul id="achievement-list" style="list-style: none;"></ul>
   </section>
 </main>
 
@@ -250,13 +233,14 @@
   <button onclick="showTab('achievements')"><i class="fas fa-medal"></i>Достижения</button>
 </nav>
 
+<!-- JavaScript будет добавлен отдельно -->
+
 <script>
 let count = parseInt(localStorage.getItem('tap_count')) || 0;
 let best = parseInt(localStorage.getItem('tap_best')) || 0;
 const step = 1000;
 const maxLevel = 6;
 const colors = ['#ff4444', '#ffbb33', '#99cc00', '#33b5e5', '#aa66cc'];
-let friends = [];
 
 function updateUI() {
   localStorage.setItem('tap_count', count);
@@ -296,13 +280,10 @@ function animatePlus() {
   wrapper.appendChild(plus);
 
   const rect = img.getBoundingClientRect();
-  const offsetX = img.offsetLeft + img.offsetWidth / 2;
-  const offsetY = img.offsetTop + img.offsetHeight / 2;
-
   const angle = Math.random() * 2 * Math.PI;
   const radius = 40 + Math.random() * 40;
-  const x = offsetX + radius * Math.cos(angle);
-  const y = offsetY + radius * Math.sin(angle);
+  const x = img.offsetLeft + img.offsetWidth/2 + radius * Math.cos(angle);
+  const y = img.offsetTop + img.offsetHeight/2 + radius * Math.sin(angle);
 
   plus.style.position = 'absolute';
   plus.style.left = `${x}px`;
@@ -343,26 +324,6 @@ function completeTask(id, reward) {
   }
 }
 
-function addFriend(e) {
-  e.preventDefault();
-  const name = document.getElementById('friend-name').value.trim();
-  const taps = parseInt(document.getElementById('friend-taps').value);
-  if (name && !isNaN(taps)) {
-    friends.push({ name, taps });
-    renderFriends();
-    updateStatsAndAchievements();
-  }
-  e.target.reset();
-}
-
-function renderFriends() {
-  const tb = document.getElementById('friends-table');
-  tb.innerHTML = '';
-  friends.forEach((f, i) => {
-    tb.innerHTML += `<tr><td>${i + 1}</td><td>${f.name}</td><td>${f.taps}</td></tr>`;
-  });
-}
-
 function updateStatsAndAchievements() {
   document.getElementById('stat-total').textContent = count;
   document.getElementById('stat-best').textContent = best;
@@ -372,7 +333,28 @@ function updateStatsAndAchievements() {
   if (best >= 100) ach.innerHTML += '<li>🔥 100 тапов</li>';
   if (best >= 1000) ach.innerHTML += '<li>💥 1 000 тапов</li>';
   if (best >= 5000) ach.innerHTML += '<li>🚀 5 000 тапов</li>';
-  ach.innerHTML += `<li>👥 Друзей: ${friends.length}</li>`;
+}
+
+function renderFriends() {
+  const tb = document.getElementById('friends-table');
+  tb.innerHTML = '';
+  (JSON.parse(localStorage.getItem('friends') || '[]')).forEach((f, i) => {
+    tb.innerHTML += `<tr><td>${i + 1}</td><td>${f.name}</td><td>${f.taps}</td></tr>`;
+  });
+}
+
+function addFriend(e) {
+  e.preventDefault();
+  const name = document.getElementById('friend-name').value.trim();
+  const taps = parseInt(document.getElementById('friend-taps').value);
+  if (name && !isNaN(taps)) {
+    const list = JSON.parse(localStorage.getItem('friends') || '[]');
+    list.push({ name, taps });
+    localStorage.setItem('friends', JSON.stringify(list));
+    renderFriends();
+    updateStatsAndAchievements();
+  }
+  e.target.reset();
 }
 
 function showTab(id) {
@@ -380,12 +362,12 @@ function showTab(id) {
   document.getElementById(id).classList.add('active');
 }
 
-
 document.addEventListener('DOMContentLoaded', () => {
-  if (!localStorage.getItem('tasks_reset_v2')) {
+  if (!localStorage.getItem('tasks_reset_v3')) {
     ['t1', 't2', 't3', 't4', 't5'].forEach(id => localStorage.removeItem('task_' + id));
-    localStorage.setItem('tasks_reset_v2', 'yes');
+    localStorage.setItem('tasks_reset_v3', 'yes');
   }
+
   let p = 0;
   const bar = document.querySelector('.loader-progress-bar');
   const loader = document.getElementById('loader');
@@ -420,5 +402,166 @@ tapImg.addEventListener('mouseleave', () => {
   tapImg.style.transform = 'scale(1)';
 });
 </script>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script>
+// Инициализация Firebase
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+  databaseURL: "https://YOUR_PROJECT_ID-default-rtdb.firebaseio.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT_ID.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+// Сохраняем друга по реферальной ссылке
+document.addEventListener('DOMContentLoaded', () => {
+  const currentUser = localStorage.getItem("telegram_user_id");
+  const referrerId = localStorage.getItem("referrer_id");
+  if (referrerId && currentUser && referrerId !== currentUser) {
+    const refPath = `referrals/${referrerId}/${currentUser}`;
+    firebase.database().ref(refPath).set(true);
+  }
+});
+
+// Показываем друзей
+function loadReferralFriends() {
+  const userId = localStorage.getItem("telegram_user_id");
+  const refList = document.getElementById("friends-table");
+  if (!userId || !refList) return;
+
+  firebase.database().ref("referrals/" + userId).once("value", snapshot => {
+    const data = snapshot.val();
+    if (data) {
+      refList.innerHTML = "";
+      const ids = Object.keys(data);
+      ids.forEach((id, index) => {
+        const row = `<tr><td>${index + 1}</td><td>ID ${id}</td><td>🎁</td></tr>`;
+        refList.innerHTML += row;
+      });
+    }
+  });
+}
+</script>
+
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyCwEb_LAx3H80y_HBpz8Uotxf_YbvWccrE",
+  authDomain: "tapgame-35abf.firebaseapp.com",
+  databaseURL: "https://tapgame-35abf-default-rtdb.firebaseio.com",
+  projectId: "tapgame-35abf",
+  storageBucket: "tapgame-35abf.firebasestorage.app",
+  messagingSenderId: "34906975722",
+  appId: "1:34906975722:web:abe58668a3ac34fdddd693",
+  measurementId: "G-WVSTBKJ897"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+// Сохраняем друга по реферальной ссылке
+document.addEventListener('DOMContentLoaded', () => {
+  const currentUser = localStorage.getItem("telegram_user_id");
+  const referrerId = localStorage.getItem("referrer_id");
+  if (referrerId && currentUser && referrerId !== currentUser) {
+    const refPath = `referrals/${referrerId}/${currentUser}`;
+    firebase.database().ref(refPath).set(true);
+  }
+});
+
+// Показываем друзей
+function loadReferralFriends() {
+  const userId = localStorage.getItem("telegram_user_id");
+  const refList = document.getElementById("friends-table");
+  if (!userId || !refList) return;
+
+  firebase.database().ref("referrals/" + userId).once("value", snapshot => {
+    const data = snapshot.val();
+    if (data) {
+      refList.innerHTML = "";
+      const ids = Object.keys(data);
+      ids.forEach((id, index) => {
+        const row = `<tr><td>${index + 1}</td><td>ID ${id}</td><td>🎁</td></tr>`;
+        refList.innerHTML += row;
+      });
+    }
+  });
+}
+</script>
+
+
+<script>
+window.addEventListener('DOMContentLoaded', () => {
+  if (window.Telegram && Telegram.WebApp && Telegram.WebApp.initDataUnsafe) {
+    const user = Telegram.WebApp.initDataUnsafe.user;
+    if (user && user.id) {
+      localStorage.setItem('telegram_user_id', user.id);
+    }
+  }
+  const params = new URLSearchParams(window.location.search);
+  if (params.has('start')) {
+    localStorage.setItem('referrer_id', params.get('start'));
+  }
+  loadReferralFriends(); // обновить список друзей
+});
+</script>
+
 </body>
 </html>
+
+
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script>
+let tg = window.Telegram.WebApp;
+tg.expand(); // разворачивает WebApp на весь экран
+
+let telegramUser = tg.initDataUnsafe?.user;
+if (telegramUser) {
+  console.log("Пользователь Telegram:", telegramUser.username || telegramUser.first_name);
+  localStorage.setItem('telegram_user_id', telegramUser.id);
+  localStorage.setItem('telegram_username', telegramUser.username || telegramUser.first_name);
+}
+</script>
+
+
+
+<script>
+// === Обработка реферальной ссылки через Telegram WebApp ===
+const urlParams = new URLSearchParams(window.Telegram.WebApp.initDataUnsafe?.start_param || '');
+const ref = urlParams.get('ref') || tg.initDataUnsafe?.start_param;
+if (ref && !localStorage.getItem('referrer_id')) {
+  localStorage.setItem('referrer_id', ref);
+  console.log("Реферальный код:", ref);
+}
+</script>
+
+
+
+<script>
+// === Дополнительная проверка ref-параметра из обычного URL (например ?start=ref123) ===
+const pageParams = new URLSearchParams(window.location.search);
+const startParam = pageParams.get('start');
+if (startParam && !localStorage.getItem('referrer_id')) {
+  localStorage.setItem('referrer_id', startParam);
+  console.log("Реферал из обычного URL:", startParam);
+}
+</script>
+
+
+
+
+
+
+
+
+
+
